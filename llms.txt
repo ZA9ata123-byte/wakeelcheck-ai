@@ -1,0 +1,31 @@
+# AITChek.online — AI Agent Readiness & Security Audit Engine for E-Commerce
+
+> AITChek.online is the pioneer AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and AI Shopping Agent Readiness Audit Platform. It evaluates e-commerce stores across 64+ critical dimensions to ensure compatibility with autonomous AI shopping agents (ChatGPT, Perplexity, Google AI Overviews, Gemini, Claude, Copilot) while protecting merchants from AI agent fraud and fake COD orders.
+
+## Core Capabilities & Services
+
+- **AEO & GEO Optimization**: Audits store visibility, extractable passages, and product recommendations in LLM search engines.
+- **AI Crawlers & Robots Policy Audit**: Validates access permissions for GPTBot, ChatGPT-User, PerplexityBot, ClaudeBot, Google-Extended, and Bingbot.
+- **Machine-Readable Store Files**: Verifies presence of `llms.txt`, `llms-full.txt`, `/pricing.md`, `agent.json`, and `ai-plugin.json`.
+- **Structured Schema.org Audit**: Validates JSON-LD for Product, Offer, AggregateRating, Organization, BreadcrumbList, and FAQPage schemas.
+- **Google PageSpeed Integration**: Live official Google PageSpeed Insights API performance checks.
+- **Agent Anti-Fraud & COD Security**: Audits RFC 9421 cryptographic agent signatures, reverse DNS validation, and Cash-on-Delivery (COD) restrictions for automated orders.
+
+## Target E-Commerce Platforms
+
+- Shopify
+- Salla (سلة)
+- Zid (زد)
+- WooCommerce
+- Custom Headless & OpenCart Stores
+
+## Public API Endpoints
+
+- `GET /api/health` — Platform engine health check
+- `GET /api/audit?url={storeUrl}` — Comprehensive 64-item AI readiness and AEO/GEO audit
+- `GET /api/pagespeed?url={storeUrl}` — Live Google PageSpeed Insights audit proxy
+
+## Official Website
+
+- Website: https://aitchek.online
+- Live App: https://aitchek-online.vercel.app

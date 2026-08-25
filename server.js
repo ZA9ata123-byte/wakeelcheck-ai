@@ -3,7 +3,7 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 8888;
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +19,11 @@ app.get('/api/health', (req, res) => {
     version: '2.0.0',
     timestamp: new Date().toISOString()
   });
+});
+
+// Explicit route for cybershield.html
+app.get('/cybershield.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cybershield.html'));
 });
 
 // Import audit handler

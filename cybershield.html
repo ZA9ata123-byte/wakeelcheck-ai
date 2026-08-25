@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>وكيل تشيك | WakeelCheck — المحرك الأول لرصد حضور المتاجر في الذكاء الاصطناعي والأمان</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            bg: '#080c14',
+            panel: '#0e1726',
+            border: '#1e293b',
+            accent: '#00e5ff',
+            danger: '#ff3b5c',
+            warn: '#f59e0b',
+            success: '#10b981'
+          }
+        },
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background-color: #080c14; color: #cbd5e1; font-family: 'Cairo', sans-serif; }
+  
+  .grid-bg {
+    background-image: linear-gradient(to right, rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  
+  .glass-card {
+    background: rgba(14, 23, 38, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glow-box {
+    box-shadow: 0 0 35px -5px rgba(0, 229, 255, 0.15);
+  }
+
+  .scan-pulse {
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { border-color: rgba(0, 229, 255, 0.2); }
+    50% { border-color: rgba(0, 229, 255, 0.6); }
+  }
+</style>
+</head>
+
+<body class="min-h-screen grid-bg relative selection:bg-brand-accent selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-brand-border/60 bg-brand-bg/80 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-brand-accent/10 border border-brand-accent/40 flex items-center justify-center font-mono font-bold text-brand-accent">
+          W
+        </div>
+        <span class="text-white font-bold text-lg tracking-wide">Wakeel<span class="text-brand-accent">Check</span></span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded border border-brand-border text-slate-400 bg-brand-panel">v1.0 GCC</span>
+      </div>
+      <div class="flex items-center gap-4 text-sm font-semibold">
+        <a href="#demo" class="text-slate-300 hover:text-white transition-colors hidden sm:block">المحاكي التفاعلي</a>
+        <a href="#services" class="text-slate-300 hover:text-white transition-colors hidden sm:block">الخدمات الثلاث</a>
+        <a href="#pricing" class="text-slate-300 hover:text-white transition-colors hidden sm:block">التسعير</a>
+        <a href="#demo" class="bg-brand-accent text-slate-950 font-bold px-4 py-2 rounded-lg hover:bg-brand-accent/90 transition-all text-xs sm:text-sm">
+          افحص متجرك الآن
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="pt-16 pb-12 px-4 max-w-7xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-panel border border-brand-border text-xs font-mono text-brand-accent mb-6">
+      <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+      محدد ومخصص لمتاجر سلة وزد والخارجية في السعودية والخليج
+    </div>
+    
+    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-tight max-w-4xl mx-auto">
+      هل يوصي الذكاء الاصطناعي بمتجرك؟ <br/>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent via-sky-400 to-indigo-400">أم يوجه زبائنك لمنافسيك؟</span>
+    </h1>
+    
+    <p class="mt-6 text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+      نستجوب ChatGPT و AI Overviews و Perplexity لمعرفة أين تظهر منتجاتك، مع فحص أمني دقيق للثغرات والشهادات قبل أن تسرب بياناتك.
+    </p>
+
+    <!-- Stat Bar -->
+    <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-right">
+      <div class="p-4 rounded-xl glass-card border-brand-border">
+        <p class="text-xs text-slate-500 font-mono">تغطية المحركات</p>
+        <p class="text-xl font-bold text-white mt-1">4 محركات ذكاء</p>
+      </div>
+      <div class="p-4 rounded-xl glass-card border-brand-border">
+        <p class="text-xs text-slate-500 font-mono">زمن المرآة المصغرة</p>
+        <p class="text-xl font-bold text-brand-accent mt-1">&lt; 60 ثانية</p>
+      </div>
+      <div class="p-4 rounded-xl glass-card border-brand-border">
+        <p class="text-xs text-slate-500 font-mono">دقة كشف المنافسين</p>
+        <p class="text-xl font-bold text-white mt-1">100% حرفية</p>
+      </div>
+      <div class="p-4 rounded-xl glass-card border-brand-border">
+        <p class="text-xs text-slate-500 font-mono">الاشتراك الشهري</p>
+        <p class="text-xl font-bold text-brand-success mt-1">149 ر.س / شهر</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo / Simulator Section -->
+  <section id="demo" class="py-10 px-4 max-w-6xl mx-auto">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl sm:text-3xl font-bold text-white">المحاكي التفاعلي — المرآة المصغّرة</h2>
+      <p class="text-sm text-slate-400 mt-2">جرب المحرك مجاناً في أقل من 60 ثانية بدون تسجيل حساب</p>
+    </div>
+
+    <!-- Simulator Box -->
+    <div class="glass-card rounded-2xl p-6 sm:p-8 border-brand-border glow-box relative overflow-hidden scan-pulse">
+      
+      <!-- Domain Form -->
+      <div id="scanForm" class="space-y-4">
+        <label class="block text-sm font-semibold text-slate-300">أدخل رابط متجرك الإلكتروني (سلة، زد، أو نطاق خاص):</label>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <span class="absolute inset-y-0 right-0 flex items-center pr-3 font-mono text-slate-500 text-sm">https://</span>
+            <input type="text" id="domainInput" placeholder="my-store.com" value="al-abeer-perfumes.sa" class="w-full pr-20 pl-4 py-3 bg-brand-bg border border-brand-border rounded-xl text-white font-mono text-sm focus:outline-none focus:border-brand-accent transition-colors" />
+          </div>
+          <button onclick="startSimulation()" class="bg-brand-accent hover:bg-brand-accent/90 text-slate-950 font-bold px-6 py-3 rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>تشغيل الفحص الفوري</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 font-mono">* الفحص يستعلم محركات الذكاء الأصطناعية الحية مع فحص سلبي للنطاق والشهادة.</p>
+      </div>
+
+      <!-- Loading State (Hidden by default) -->
+      <div id="scanLoading" class="hidden py-12 text-center space-y-4">
+        <div class="inline-block w-12 h-12 border-4 border-brand-accent/20 border-t-brand-accent rounded-full animate-spin"></div>
+        <p id="loadingStatus" class="font-mono text-sm text-brand-accent">جاري الاتصال بـ ChatGPT & Perplexity...</p>
+        <p class="text-xs text-slate-500">استخراج الإجابات الحرفية وفحص شهادات SSL وتحديد المنافسين...</p>
+      </div>
+
+      <!-- Results View (Hidden by default) -->
+      <div id="scanResults" class="hidden space-y-6">
+        <div class="flex items-center justify-between border-b border-brand-border/80 pb-4">
+          <div>
+            <span class="text-xs font-mono text-slate-400">نتيجة الفحص المجاني لـ:</span>
+            <h3 id="resDomain" class="text-lg font-bold text-white font-mono">al-abeer-perfumes.sa</h3>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-brand-danger/10 border border-brand-danger/30 text-brand-danger text-xs font-semibold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand-danger animate-pulse"></span>
+            تم اكتشاف إنذار حرج
+          </span>
+        </div>
+
+        <!-- The Pain Card (الإنذار الأصدم) -->
+        <div class="grid md:grid-cols-2 gap-4">
+          
+          <!-- GEO AI Mirror Result -->
+          <div class="bg-brand-bg rounded-xl p-5 border border-brand-border">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono text-brand-accent">إجابة ChatGPT المباشرة:</span>
+              <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded" dir="ltr">Query: أفضل عطور نسائية بجدة</span>
+            </div>
+            <p class="text-sm text-slate-300 leading-relaxed bg-slate-900/80 p-3 rounded-lg border border-slate-800 font-mono text-xs">
+              "عند البحث عن أفضل عطور نسائية بجدة، يُنصح بالشراء من <mark class="bg-brand-warn/20 text-brand-warn px-1 rounded">متجر سيرة العود</mark> أو <mark class="bg-brand-warn/20 text-brand-warn px-1 rounded">متجر رسيل</mark> لتوفيرهم عينات مجانية وشحن سريع داخل المملكة..."
+            </p>
+            <div class="mt-3 p-2 bg-brand-danger/10 rounded border border-brand-danger/20 text-xs text-brand-danger flex items-start gap-2">
+              <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span><strong>متجرك غير مذكور كلياً!</strong> المشتري الذي يستشير الذكاء الاصطناعي يتجه حالياً إلى منافسك <strong>(متجر سيرة العود)</strong>.</span>
+            </div>
+          </div>
+
+          <!-- Security Alert -->
+          <div class="bg-brand-bg rounded-xl p-5 border border-brand-border flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-mono text-brand-danger">إنذار أمني أصدم:</span>
+                <span class="text-[10px] bg-brand-danger/20 text-brand-danger px-2 py-0.5 rounded font-mono">SSL_EXPIRE_WARNING</span>
+              </div>
+              <p class="text-sm font-bold text-white">شهادة الأمان الخاصة بموقعك تنتهي خلال 11 يوماً!</p>
+              <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                سقوط الشهادة يتسبب في حظر متجرك في متصفحات الجوال فوراً ورسالة "الموقع غير آمن"، مما يوقف مبيعاتك كلياً.
+              </p>
+            </div>
+            
+            <div class="mt-4 pt-3 border-t border-brand-border/60">
+              <span class="text-xs text-slate-500">حل المشكلة وتقرير الأسئلة الـ10 الكامل متاح في التقرير الشامل.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Call to Action inside Demo -->
+        <div class="bg-gradient-to-r from-brand-panel to-slate-900 p-5 rounded-xl border border-brand-accent/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-white">هل تريد الحصول على التقرير الكامل والكود الجاهز للإصلاح؟</h4>
+            <p class="text-xs text-slate-400 mt-1">يتضمن 10 أسئلة شراء على 4 محركات، فحص DMARC والمفاتيح المكشوفة.</p>
+          </div>
+          <button onclick="alert('للحصول على التقرير الكامل، يرجى كتابة إيميلك لتأكيد الملكية.')" class="bg-brand-accent hover:bg-brand-accent/90 text-slate-950 text-xs font-bold px-5 py-2.5 rounded-lg whitespace-nowrap">
+            تحميل التقرير الكامل والإصلاح
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 Services Section -->
+  <section id="services" class="py-16 px-4 max-w-7xl mx-auto border-t border-brand-border/60">
+    <div class="text-center mb-12">
+      <span class="text-xs font-mono text-brand-accent uppercase tracking-widest">// ARCHITECTURE</span>
+      <h2 class="text-2xl sm:text-4xl font-bold text-white mt-2">الخدمات الثلاث — وظيفة واحدة لكل خدمة</h2>
+      <p class="text-slate-400 text-sm max-w-xl mx-auto mt-2">خدمة تجذب، وخدمة تُحوّل، وخدمة تُبقي. لا حشو ولا ميزات زائفة.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      
+      <!-- Acquisition -->
+      <div class="glass-card rounded-2xl p-6 border-brand-border hover:border-brand-accent/40 transition-all flex flex-col justify-between">
+        <div>
+          <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-[11px] font-mono">01. Acquisition</span>
+          <h3 class="text-xl font-bold text-white mt-4">المرآة المصغّرة (الفحص المجاني)</h3>
+          <p class="text-xs text-brand-accent font-mono mt-1">خلق الألم — لا حلّه</p>
+          <ul class="mt-6 space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>سؤالا شراء بدون تسجيل في أقل من 60 ثانية.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>إظهار الإجابة الحرفية مع تظليل اسم المنافس.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>إنذار أمني واحد فقط (الأصدم والأخطر).</span>
+            </li>
+          </ul>
+        </div>
+        <div class="mt-8 pt-4 border-t border-brand-border/60 font-mono text-[11px] text-slate-500">
+          Cost ≈ $0.03 · Rate-limited
+        </div>
+      </div>
+
+      <!-- Conversion -->
+      <div class="glass-card rounded-2xl p-6 border-brand-accent/30 relative flex flex-col justify-between shadow-glow-neon-sm">
+        <span class="absolute -top-3 right-6 bg-brand-accent text-slate-950 font-bold text-[10px] px-3 py-0.5 rounded-full">التحويل والدفع</span>
+        <div>
+          <span class="px-2.5 py-1 rounded bg-brand-accent/10 text-brand-accent text-[11px] font-mono">02. Conversion</span>
+          <h3 class="text-xl font-bold text-white mt-4">التقرير الكامل والإصلاح</h3>
+          <p class="text-xs text-brand-accent font-mono mt-1">الدواء الكافي للمشكلة</p>
+          <ul class="mt-6 space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>10 أسئلة شراء عبر 4 محركات (ChatGPT, AI Overviews, Perplexity).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>فحص أمني كامل: DMARC، النطاق، والمفاتيح المكشوفة.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span><strong>السبب التقني + كود جاهز للصق</strong> على متجرك في سلة/زد.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="mt-8 pt-4 border-t border-brand-border/60 font-mono text-[11px] text-slate-500">
+          Cost ≈ $0.18 · Verified Ownership
+        </div>
+      </div>
+
+      <!-- Retention -->
+      <div class="glass-card rounded-2xl p-6 border-brand-border hover:border-brand-accent/40 transition-all flex flex-col justify-between">
+        <div>
+          <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-[11px] font-mono">03. Retention</span>
+          <h3 class="text-xl font-bold text-white mt-4">المراقبة والتنبيهات وحصة الصوت</h3>
+          <p class="text-xs text-brand-accent font-mono mt-1">منع الإلغاء والاحتفاظ</p>
+          <ul class="mt-6 space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>فحص أسبوعي تلقائي واستخلاص التغيرات.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span><strong>تنبيه واتساب فوري:</strong> "اختفيت من إجابة ChatGPT وحل محلك متجر س".</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-brand-accent">✓</span>
+              <span>لوحة حصة الصوت: أداؤك مقابل 3 منافسين شهرياً.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="mt-8 pt-4 border-t border-brand-border/60 font-mono text-[11px] text-slate-500">
+          Margin 92% · 149 SAR/mo
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="py-16 px-4 max-w-4xl mx-auto text-center border-t border-brand-border/60">
+    <h2 class="text-2xl sm:text-3xl font-bold text-white">تسعير بسيط بدون تعقيد</h2>
+    <p class="text-slate-400 text-sm mt-2">سعر موحد يمنحك التقرير الكامل والمراقبة المستمرة لموقعك</p>
+
+    <div class="mt-8 glass-card rounded-2xl p-8 border-brand-accent/40 max-w-md mx-auto relative">
+      <p class="text-xs font-mono text-brand-accent uppercase">الاشتراك الموحد</p>
+      <div class="mt-4 flex items-baseline justify-center gap-1">
+        <span class="text-5xl font-black text-white">149</span>
+        <span class="text-slate-400 text-sm font-bold">ريال سعودي / شهرياً</span>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">تغطية شاملة لمتجرك ومراقبة 3 منافسين أسبوعياً</p>
+
+      <div class="mt-6 space-y-3 text-right text-xs text-slate-300 border-t border-brand-border/60 pt-6">
+        <div class="flex items-center gap-2">
+          <span class="text-brand-accent">✓</span>
+          <span>تنبيهات حية عبر الواتساب عند أي اختفاء.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-brand-accent">✓</span>
+          <span>أكواد إصلاح مباشرة ومُجهزة لبيئة سلة وزد.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-brand-accent">✓</span>
+          <span>فحص DMARC وحماية الشهادة والنطاق.</span>
+        </div>
+      </div>
+
+      <button onclick="document.getElementById('demo').scrollIntoView();" class="mt-8 w-full bg-brand-accent hover:bg-brand-accent/90 text-slate-950 font-bold py-3 rounded-xl transition-all text-sm">
+        جرب الفحص المجاني أولاً
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border/60 py-8 text-center text-xs text-slate-500 font-mono">
+    <p>© 2026 WakeelCheck · aitchek.online · KSA & GCC Market</p>
+  </footer>
+
+  <!-- Script for Interactive Simulation -->
+  <script>
+    function startSimulation() {
+      const domain = document.getElementById('domainInput').value.trim();
+      if(!domain) { alert('يرجى إدخال رابط المتجر أولاً'); return; }
+
+      document.getElementById('scanForm').classList.add('hidden');
+      document.getElementById('scanLoading').classList.remove('hidden');
+
+      const statuses = [
+        "جاري الاستعلام في ChatGPT...",
+        "جاري فحص AI Overviews و Perplexity...",
+        "جاري تحليل تكوين DMARC وشهادة الأمان SSL...",
+        "استخراج المنافسين وتطابق المخرجات..."
+      ];
+
+      let idx = 0;
+      const interval = setInterval(() => {
+        if(idx < statuses.length) {
+          document.getElementById('loadingStatus').textContent = statuses[idx];
+          idx++;
+        } else {
+          clearInterval(interval);
+          document.getElementById('scanLoading').classList.add('hidden');
+          document.getElementById('scanResults').classList.remove('hidden');
+          document.getElementById('resDomain').textContent = domain;
+        }
+      }, 700);
+    }
+  </script>
+</body>
+</html>

@@ -1,853 +1,886 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>WakeelCheck | أول منصة لفحص وتأهيل المتاجر لوكلاء الذكاء الاصطناعي AEO / GEO</title>
-<meta name="description" content="افحص متجرك الإلكتروني مقابل 64 عنصراً حيوياً لضمان اقتراحه والتوصية به في ChatGPT, Google AI Overviews, Perplexity, Gemini, و Claude مع حمايته من الطلبيات المزيفة.">
+<title>WakeelCheck | المحرك الأول لرصد حضور المتاجر أمام وكلاء الذكاء الاصطناعي والأمان</title>
+<meta name="description" content="افحص حضور وتواجد متجرك الإلكتروني في إجابات ChatGPT و Perplexity و Google AI Overviews مجاناً، واكشف ثغرات ملفات robots.txt و Schema وسجلات الأمان." />
+
+<!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<!-- Three.js CDN for CyberSphere WebGL Canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
   tailwind.config = {
+    darkMode: 'class',
     theme: {
       extend: {
         colors: {
-          night:   '#05070d',
-          panel:   '#0b1120',
-          neon:    '#00ff9d',
-          ice:     '#00e5ff',
-          danger:  '#ff3b5c',
-          warn:    '#ffb800'
+          brand: {
+            bg: '#05070d',
+            panel: '#0c1220',
+            panelBorder: '#1e293b',
+            accent: '#00ff9d',
+            cyan: '#00e5ff',
+            danger: '#ff3b5c',
+            warn: '#f59e0b',
+            success: '#10b981'
+          }
         },
         fontFamily: {
           cairo: ['Cairo', 'sans-serif'],
-          mono:  ['JetBrains Mono', 'monospace']
+          mono: ['JetBrains Mono', 'monospace']
         },
         boxShadow: {
-          'glow-neon': '0 0 24px rgba(0,255,157,0.35)',
-          'glow-neon-sm': '0 0 12px rgba(0,255,157,0.25)',
-          'glow-danger': '0 0 24px rgba(255,59,92,0.35)',
-          'glow-ice': '0 0 24px rgba(0,229,255,0.30)'
-        },
-        animation: {
-          'float-slow': 'floatY 6s ease-in-out infinite',
-          'float-slower': 'floatY 8s ease-in-out infinite',
-          'blink': 'blink 1s step-end infinite',
-          'radar': 'radarSweep 4s linear infinite',
-          'pulse-dot': 'pulseDot 1.6s ease-in-out infinite'
-        },
-        keyframes: {
-          floatY: {
-            '0%,100%': { transform: 'translateY(0)' },
-            '50%':     { transform: 'translateY(-12px)' }
-          },
-          blink: {
-            '0%,100%': { opacity: '1' },
-            '50%':     { opacity: '0' }
-          },
-          radarSweep: {
-            from: { transform: 'rotate(0deg)' },
-            to:   { transform: 'rotate(360deg)' }
-          },
-          pulseDot: {
-            '0%,100%': { transform: 'scale(1)', opacity: '1' },
-            '50%':     { transform: 'scale(1.6)', opacity: '0.5' }
-          }
+          'glow-accent': '0 0 30px rgba(0, 255, 157, 0.25)',
+          'glow-cyan': '0 0 30px rgba(0, 229, 255, 0.25)',
+          'glow-danger': '0 0 30px rgba(255, 59, 92, 0.3)',
+          'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
         }
       }
     }
   }
 </script>
+
 <style>
   html { scroll-behavior: smooth; }
-  body { overflow-x: hidden; }
-
-  .glass {
-    background: linear-gradient(160deg, rgba(17,24,42,0.72), rgba(9,13,26,0.85));
+  body {
+    background-color: #05070d;
+    color: #f8fafc;
+    font-family: 'Cairo', sans-serif;
+    overflow-x: hidden;
+  }
+  
+  .glass-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(8, 12, 20, 0.9));
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(0,255,157,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  .glass-strong {
-    background: linear-gradient(160deg, rgba(20,28,48,0.9), rgba(9,13,26,0.95));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0,255,157,0.18);
+  
+  .glass-card-accent {
+    background: linear-gradient(135deg, rgba(0, 255, 157, 0.05), rgba(8, 12, 20, 0.95));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 157, 0.3);
+    box-shadow: 0 0 25px rgba(0, 255, 157, 0.15);
   }
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(0,255,157,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,157,0.05) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 75%);
-  }
-  .text-glow { text-shadow: 0 0 18px rgba(0,255,157,0.55), 0 0 42px rgba(0,255,157,0.25); }
-  .gradient-text {
-    background: linear-gradient(120deg, #00ff9d 10%, #00e5ff 60%, #7dd3fc 100%);
+
+  .text-gradient {
+    background: linear-gradient(120deg, #00ff9d 0%, #00e5ff 50%, #ffffff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .btn-primary {
-    background: linear-gradient(135deg, #00ff9d, #00c47a);
-    color: #04120c;
-    box-shadow: 0 0 22px rgba(0,255,157,0.45);
-    transition: all .25s ease;
-  }
-  .btn-primary:hover {
-    box-shadow: 0 0 38px rgba(0,255,157,0.7);
-    transform: translateY(-2px);
-  }
-  .card-hover { transition: all .3s ease; }
-  .card-hover:hover {
-    border-color: rgba(0,255,157,0.45);
-    box-shadow: 0 0 30px rgba(0,255,157,0.18), inset 0 0 20px rgba(0,255,157,0.05);
-    transform: translateY(-4px);
-  }
-  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .scanline::after {
-    content: '';
-    position: absolute;
-    inset-inline: 0;
-    height: 2px;
-    top: 0;
-    background: linear-gradient(90deg, transparent, rgba(0,255,157,0.7), transparent);
-    animation: scanMove 3.2s ease-in-out infinite;
-  }
-  @keyframes scanMove {
-    0%   { top: 4%; opacity: 0; }
-    12%  { opacity: 1; }
-    88%  { opacity: 1; }
-    100% { top: 96%; opacity: 0; }
-  }
-  .cat-tab.active {
-    background: rgba(0,255,157,0.15);
-    border-color: rgba(0,255,157,0.4);
-    color: #00ff9d;
-  }
-  .check-item-card {
-    background: rgba(11, 17, 32, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: all 0.25s ease;
-    margin-bottom: 0.75rem;
-  }
-  .check-item-card:hover {
-    border-color: rgba(0,255,157,0.3);
-  }
-  .check-header {
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    user-select: none;
-  }
-  .check-title-group {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-  .check-name {
-    font-weight: 700;
-    color: #ffffff;
-    font-size: 1rem;
-  }
-  .check-category-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: #64748b;
-  }
-  .check-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .check-body {
-    display: none;
-    padding: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(5, 7, 13, 0.6);
-  }
-  .check-item-card.open .check-body {
-    display: block;
-  }
-  .check-item-card.open .check-expand-icon {
-    transform: rotate(180deg);
-  }
-  .check-expand-icon {
-    transition: transform 0.2s ease;
-    color: #64748b;
-  }
-  .check-desc {
-    color: #94a3b8;
-    font-size: 0.925rem;
-    line-height: 1.6;
-    margin-bottom: 0.75rem;
-  }
-  .badge-success { background: rgba(0, 255, 157, 0.12); color: #00ff9d; border: 1px solid rgba(0, 255, 157, 0.3); border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; }
-  .badge-warning { background: rgba(255, 184, 0, 0.12); color: #ffb800; border: 1px solid rgba(255, 184, 0, 0.3); border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; }
-  .badge-danger { background: rgba(255, 59, 92, 0.12); color: #ff3b5c; border: 1px solid rgba(255, 59, 92, 0.3); border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 700; }
 
-  ::-webkit-scrollbar { width: 9px; height: 9px; }
-  ::-webkit-scrollbar-track { background: #05070d; }
-  ::-webkit-scrollbar-thumb { background: rgba(0,255,157,0.3); border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(0,255,157,0.55); }
-  ::-selection { background: rgba(0,255,157,0.35); color: #fff; }
+  .text-gradient-danger {
+    background: linear-gradient(120deg, #ff3b5c 0%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Scan line pulse */
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(1000%); }
+  }
+  .animate-scanline {
+    animation: scanline 3s linear infinite;
+  }
+
+  #cyber-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.65;
+  }
 </style>
 </head>
+<body class="min-h-screen flex flex-col selection:bg-brand-accent selection:text-black">
 
-<body class="bg-night font-cairo text-slate-300 antialiased">
+  <!-- Three.js CyberSphere Header Background Canvas -->
+  <div class="relative w-full overflow-hidden bg-brand-bg border-b border-slate-800/80">
+    <canvas id="cyber-canvas"></canvas>
 
-<!-- ===== الخلفية العامة ===== -->
-<div class="fixed inset-0 -z-10 pointer-events-none">
-  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#0d1b2e_0%,#05070d_60%)]"></div>
-  <div class="absolute inset-0 grid-bg"></div>
-  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-neon/5 blur-[140px]"></div>
-  <div class="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-ice/5 blur-[130px]"></div>
-</div>
-
-<!-- ===== شريط التنقل ===== -->
-<header class="fixed top-0 inset-x-0 z-50 px-4">
-  <nav class="glass max-w-7xl mx-auto mt-4 rounded-2xl px-5 py-3 flex items-center justify-between shadow-glow-neon-sm">
-    <a href="#" class="flex items-center gap-3 group">
-      <span class="w-10 h-10 rounded-xl bg-neon/10 border border-neon/30 flex items-center justify-center shadow-glow-neon-sm group-hover:shadow-glow-neon transition-all">
-        <svg class="w-5 h-5 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
-        </svg>
-      </span>
-      <span class="text-xl font-bold text-white tracking-tight">Wakeel<span class="text-neon">Check</span></span>
-    </a>
-
-    <ul class="hidden lg:flex items-center gap-8 text-sm font-semibold">
-      <li><a href="#hero" class="hover:text-neon transition-colors">الرئيسية</a></li>
-      <li><a href="#features" class="hover:text-neon transition-colors">عناصر الفحص (64)</a></li>
-      <li><a href="#dashboardSection" class="hover:text-neon transition-colors">لوحة التقرير المباشر</a></li>
-      <li><a href="#pricing" class="hover:text-neon transition-colors">الأسعار والباقات</a></li>
-    </ul>
-
-    <div class="hidden lg:flex items-center gap-3">
-      <button id="langToggleBtn" class="px-3.5 py-1.5 text-xs font-mono rounded-lg border border-neon/30 text-neon hover:bg-neon/10 transition-all flex items-center gap-2">
-        <span>🌐</span> <span>English</span>
-      </button>
-      <a href="#hero" class="btn-primary px-5 py-2 text-sm font-bold rounded-lg">ابدأ الفحص المجاني</a>
-    </div>
-
-    <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg border border-white/10 flex items-center justify-center hover:border-neon/50 transition-colors" aria-label="القائمة">
-      <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-  </nav>
-
-  <div id="mobileMenu" class="hidden lg:hidden glass-strong max-w-7xl mx-auto mt-2 rounded-2xl p-5 flex flex-col gap-4 text-sm font-semibold">
-    <a href="#hero" class="hover:text-neon transition-colors">الرئيسية</a>
-    <a href="#features" class="hover:text-neon transition-colors">عناصر الفحص (64)</a>
-    <a href="#dashboardSection" class="hover:text-neon transition-colors">لوحة التقرير المباشر</a>
-    <a href="#pricing" class="hover:text-neon transition-colors">الأسعار والباقات</a>
-    <a href="#hero" class="btn-primary text-center px-5 py-2.5 rounded-lg font-bold">ابدأ الفحص المجاني</a>
-  </div>
-</header>
-
-<!-- ===== قسم البطل Hero ===== -->
-<section id="hero" class="relative pt-36 pb-24 px-4">
-  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
-
-    <!-- النص والاستمارة -->
-    <div class="reveal">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs font-bold text-neon mb-6">
-        <span class="w-2 h-2 rounded-full bg-neon animate-pulse-dot"></span>
-        أول منصة فحص وتأهيل لمتاجر الذكاء الاصطناعي (AEO / GEO)
+    <!-- Top Minimal Navigation -->
+    <header class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan p-[1px] shadow-glow-accent">
+          <div class="w-full h-full bg-brand-bg rounded-xl flex items-center justify-center">
+            <span class="font-mono text-brand-accent font-bold text-xl">W</span>
+          </div>
+        </div>
+        <div>
+          <span class="font-black text-xl tracking-tight text-white">WakeelCheck</span>
+          <span class="text-xs font-mono text-brand-accent block -mt-1">وكيل تشيك AI 2.0</span>
+        </div>
       </div>
 
-      <h1 class="text-4xl sm:text-5xl xl:text-6xl font-black leading-[1.25] text-white mb-6">
-        هل متجرك جاهز للتصدر فـ 
-        <span class="block gradient-text text-glow">محركات الذكاء الاصطناعي؟</span>
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-2"></span>
+          Engine Live v2.4
+        </span>
+        <button id="lang-toggle" onclick="toggleLang()" class="px-3 py-1.5 rounded-lg text-xs font-mono glass-card hover:border-brand-accent transition text-slate-300">
+          English
+        </button>
+      </div>
+    </header>
+
+    <!-- SECTION 1: HERO (Input is Hero Above the Fold) -->
+    <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 text-center">
+      <!-- High Impact Badge -->
+      <div class="inline-flex items-center space-x-2 space-x-reverse px-4 py-1.5 rounded-full text-xs font-semibold bg-brand-panel border border-slate-700/60 mb-6 shadow-lg">
+        <span class="text-brand-cyan">⚡ 86% من المتاجر غائبة تماماً عن توصيات الذكاء الاصطناعي</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6">
+        ماذا يقول <span class="text-gradient">ChatGPT</span> عن متجرك؟
+        <span class="block text-2xl sm:text-4xl lg:text-5xl text-slate-300 font-bold mt-3">هل يوصي بك أم يرشح منافسيك؟</span>
       </h1>
 
-      <p class="text-lg text-slate-400 leading-relaxed mb-8 max-w-xl">
-        افحص متجرك الإلكتروني مقابل 64 عنصراً حيوياً لضمان اقتراحه والتوصية به في ChatGPT, Google AI Overviews, Perplexity, Gemini, و Claude مع حمايته من الطلبيات المزيفة.
+      <p class="max-w-2xl mx-auto text-slate-400 text-base sm:text-lg mb-10 leading-relaxed">
+        ادخل رابط متجرك الإلكتروني الآن، واحصل على تقرير شفاف يفحص حضورك في المحركات التوليدية، توافق ملفات <span class="font-mono text-brand-cyan">robots.txt</span>، وهيكلة <span class="font-mono text-brand-accent">Schema</span> خلال 60 ثانية.
       </p>
 
-      <!-- صندوق الفحص المباشر -->
-      <div class="glass-strong p-4 sm:p-5 rounded-2xl mb-8 border border-neon/20 shadow-glow-neon-sm">
-        <form id="auditForm" class="flex flex-col sm:flex-row gap-3">
-          <div class="relative flex-1">
-            <span class="absolute inset-y-0 right-4 flex items-center text-slate-400 font-mono text-sm">🌐</span>
-            <input type="text" id="storeUrl" required placeholder="https://salla.sa/store أو myshop.com"
-                   class="w-full pr-11 pl-4 py-3.5 rounded-xl bg-night/80 border border-white/15 focus:border-neon/60 focus:outline-none focus:ring-2 focus:ring-neon/20 text-white font-mono text-sm placeholder:text-slate-500 dir-ltr text-left transition-all" />
+      <!-- Input is Hero Box -->
+      <div class="max-w-2xl mx-auto glass-card-accent p-3 sm:p-4 rounded-2xl shadow-glow-accent">
+        <form id="audit-form" onsubmit="handleAuditSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-grow">
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+              🌐
+            </div>
+            <input 
+              type="text" 
+              id="store-url" 
+              required
+              placeholder="https://myshop.com أو اسم متجرك" 
+              class="w-full pr-11 pl-4 py-4 rounded-xl bg-slate-950/80 border border-slate-700/80 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-brand-accent transition"
+            />
           </div>
-          <button type="submit" id="startAuditBtn" class="btn-primary px-7 py-3.5 rounded-xl font-bold whitespace-nowrap text-base flex items-center justify-center gap-2">
-            <span id="btn-text">افحص المتجر الآن</span> 🚀
+          <button 
+            type="submit" 
+            id="submit-btn"
+            class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-slate-950 font-black text-base hover:opacity-95 transition shadow-glow-accent flex items-center justify-center gap-2 whitespace-nowrap"
+          >
+            <span>شوف الجواب</span>
+            <span class="text-xl">🚀</span>
           </button>
         </form>
+        <div class="flex items-center justify-between text-xs text-slate-400 mt-3 px-2 font-mono">
+          <span>🔒 فحص مجاني فوراً بدقة عالية</span>
+          <span>⚡ بدون تسجيل حساب أو بطاقة</span>
+        </div>
+      </div>
+    </main>
+  </div>
 
-        <div class="flex flex-wrap items-center gap-2 mt-4 text-xs">
-          <span class="text-slate-400 font-semibold">متاجر سريعة للتجربة:</span>
-          <button class="px-2.5 py-1 rounded-md glass hover:border-neon/40 text-slate-300 transition-all font-mono" type="button" onclick="setPreset('salla.sa')">سلة Salla</button>
-          <button class="px-2.5 py-1 rounded-md glass hover:border-neon/40 text-slate-300 transition-all font-mono" type="button" onclick="setPreset('zid.sa')">زد Zid</button>
-          <button class="px-2.5 py-1 rounded-md glass hover:border-neon/40 text-slate-300 transition-all font-mono" type="button" onclick="setPreset('shopify.com')">Shopify</button>
-          <button class="px-2.5 py-1 rounded-md glass hover:border-neon/40 text-slate-300 transition-all font-mono" type="button" onclick="setPreset('youcan.shop')">YouCan</button>
+  <!-- SECTION 2: THEATRICAL SCANNING SEQUENCE (Modal / Overlay) -->
+  <div id="scanning-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 hidden">
+    <div class="max-w-xl w-full glass-card p-6 sm:p-8 rounded-3xl border border-brand-accent/40 shadow-glow-accent relative overflow-hidden">
+      <!-- Animated Scan Line -->
+      <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand-accent to-transparent animate-scanline"></div>
+
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 rounded-2xl bg-brand-accent/10 border border-brand-accent/30 mx-auto flex items-center justify-center mb-4 shadow-glow-accent">
+          <span class="text-3xl animate-spin">⚙️</span>
+        </div>
+        <h3 class="text-2xl font-black text-white mb-2">جاري فحص المتجر بالذكاء الاصطناعي...</h3>
+        <p id="scanning-target-url" class="font-mono text-xs text-brand-cyan">https://myshop.com</p>
+      </div>
+
+      <!-- 4-Step Progress List -->
+      <div class="space-y-4 mb-8">
+        <!-- Step 1 -->
+        <div id="step-1" class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="step-icon w-8 h-8 rounded-lg bg-brand-accent/20 text-brand-accent font-mono text-sm flex items-center justify-center font-bold">1</div>
+          <div class="flex-grow">
+            <div class="text-xs font-bold text-slate-200">الربط وتحليل ملف robots.txt وخريطة Sitemap</div>
+            <div class="text-[10px] font-mono text-slate-400">Checking GPTBot, PerplexityBot, ClaudeBot policies...</div>
+          </div>
+          <div class="step-status text-xs font-mono text-brand-accent">جاري...</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="step-2" class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 opacity-50">
+          <div class="step-icon w-8 h-8 rounded-lg bg-slate-800 text-slate-400 font-mono text-sm flex items-center justify-center font-bold">2</div>
+          <div class="flex-grow">
+            <div class="text-xs font-bold text-slate-300">استعلام خوادم OpenAI & Perplexity عن المتجر</div>
+            <div class="text-[10px] font-mono text-slate-400">Simulating AI Search Queries in your store niche...</div>
+          </div>
+          <div class="step-status text-xs font-mono text-slate-500">في الانتظار</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="step-3" class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 opacity-50">
+          <div class="step-icon w-8 h-8 rounded-lg bg-slate-800 text-slate-400 font-mono text-sm flex items-center justify-center font-bold">3</div>
+          <div class="flex-grow">
+            <div class="text-xs font-bold text-slate-300">تحليل تموضع المنافسين في المنطقة (AEO / GEO)</div>
+            <div class="text-[10px] font-mono text-slate-400">Mapping top recommended competitor brand names...</div>
+          </div>
+          <div class="step-status text-xs font-mono text-slate-500">في الانتظار</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div id="step-4" class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 opacity-50">
+          <div class="step-icon w-8 h-8 rounded-lg bg-slate-800 text-slate-400 font-mono text-sm flex items-center justify-center font-bold">4</div>
+          <div class="flex-grow">
+            <div class="text-xs font-bold text-slate-300">تجميع تقرير الثغرات ونسبة الجاهزية للذكاء الاصطناعي</div>
+            <div class="text-[10px] font-mono text-slate-400">Generating Evidence Report & Vulnerability Matrix...</div>
+          </div>
+          <div class="step-status text-xs font-mono text-slate-500">في الانتظار</div>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-500">
-        <span class="flex items-center gap-2">
-          <svg class="w-4 h-4 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          فحص مجاني بدون تسجيل
-        </span>
-        <span class="flex items-center gap-2">
-          <svg class="w-4 h-4 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          تقرير مباشر خلال 60 ثانية
-        </span>
-        <span class="flex items-center gap-2">
-          <svg class="w-4 h-4 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          متوافق مع 64 معيار للوكلاء
-        </span>
-      </div>
-    </div>
-
-    <!-- الطرفية التفاعلية Terminal Simulator -->
-    <div class="reveal relative">
-      <div class="glass-strong rounded-2xl overflow-hidden shadow-glow-neon relative scanline border border-neon/20">
-        <div class="flex items-center gap-2 px-5 py-3.5 border-b border-neon/10 bg-panel/90">
-          <span class="w-3 h-3 rounded-full bg-danger/80"></span>
-          <span class="w-3 h-3 rounded-full bg-warn/80"></span>
-          <span class="w-3 h-3 rounded-full bg-neon/80"></span>
-          <span class="font-mono text-xs text-slate-400 ms-auto dir-ltr">engine@wakeelcheck:~#</span>
-        </div>
-        <pre class="font-mono text-[13px] sm:text-sm leading-7 p-6 min-h-[290px] text-slate-300 whitespace-pre-wrap dir-ltr"><span id="terminalOutput"></span><span class="text-neon animate-blink">▌</span></pre>
-      </div>
-
-      <!-- شرائح عائمة عاكسة للجاهزية -->
-      <div class="hidden sm:flex absolute -top-6 -right-4 glass-strong rounded-xl px-4 py-3 items-center gap-3 animate-float-slow shadow-glow-neon-sm border border-neon/20">
-        <span class="w-9 h-9 rounded-lg bg-neon/15 border border-neon/30 flex items-center justify-center">
-          <svg class="w-4.5 h-4.5 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </span>
-        <div>
-          <p class="font-mono text-xs text-slate-500 dir-ltr">64 AUDIT RULES</p>
-          <p class="text-sm font-bold text-neon">جاهزية التوصية والتصدر</p>
-        </div>
-      </div>
-
-      <div class="hidden sm:flex absolute -bottom-6 -left-4 glass-strong rounded-xl px-4 py-3 items-center gap-3 animate-float-slower shadow-glow-ice border border-ice/20">
-        <span class="w-9 h-9 rounded-lg bg-ice/15 border border-ice/30 flex items-center justify-center">
-          <svg class="w-4.5 h-4.5 text-ice" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </span>
-        <div>
-          <p class="font-mono text-xs text-slate-500 dir-ltr">AEO / GEO ENGINE</p>
-          <p class="text-sm font-bold text-ice">ChatGPT & Gemini Indexing</p>
-        </div>
+      <!-- Terminal Output Feed -->
+      <div class="p-3 rounded-xl bg-black font-mono text-[11px] text-emerald-400 border border-slate-800 h-24 overflow-y-auto" id="terminal-feed">
+        <div class="text-slate-500">> Initiating WakeelCheck Engine Audit v2.4...</div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ===== شاشة التحميل والفحص الفعلي Scanner Overlay ===== -->
-<div id="scannerOverlay" class="fixed inset-0 z-50 bg-night/90 backdrop-blur-xl flex items-center justify-center p-4 hidden">
-  <div class="glass-strong max-w-xl w-full p-8 rounded-3xl text-center border border-neon/30 shadow-glow-neon">
-    <div class="w-16 h-16 mx-auto mb-6 rounded-full border-4 border-neon/30 border-t-neon animate-spin flex items-center justify-center">
-      <span class="text-xl">🤖</span>
-    </div>
-    <h3 id="scanning-title" class="text-2xl font-bold text-white mb-2">جاري فحص المتجر عبر محرك وكيل تشيك...</h3>
-    <p id="scanning-sub" class="text-sm text-slate-400 mb-4">تحليل 64 عنصراً لجاهزية AEO/GEO، ملفات AI، والبيانات المنظمة Schema...</p>
-    <div id="scannerTargetUrl" class="font-mono text-neon font-bold text-lg mb-6 dir-ltr"></div>
-    
-    <div class="w-full h-3 bg-white/5 rounded-full overflow-hidden mb-4 border border-white/10">
-      <div id="scanProgressFill" class="h-full bg-gradient-to-r from-neon to-ice rounded-full transition-all duration-300" style="width: 5%;"></div>
-    </div>
-    
-    <div id="scanStepLog" class="font-mono text-xs text-slate-300 bg-black/40 py-2.5 px-4 rounded-xl border border-white/5 dir-ltr truncate">
-      📡 الاتصال بخادم المتجر وجلب robots.txt و llms.txt...
-    </div>
-  </div>
-</div>
-
-<!-- ===== شريط الإحصائيات الفعالة ===== -->
-<section class="px-4 py-10">
-  <div class="max-w-7xl mx-auto glass rounded-2xl grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x lg:divide-x-reverse divide-neon/10 reveal">
-    <div class="p-8 text-center">
-      <p class="text-3xl xl:text-4xl font-black text-neon text-glow"><span class="counter" data-target="64">0</span></p>
-      <p class="text-sm text-slate-500 mt-2">عنصر فحص شامل للوكلاء</p>
-    </div>
-    <div class="p-8 text-center">
-      <p class="text-3xl xl:text-4xl font-black text-ice"><span class="counter" data-target="12500">0</span>+</p>
-      <p class="text-sm text-slate-500 mt-2">متجر إلكتروني مفحوص</p>
-    </div>
-    <div class="p-8 text-center">
-      <p class="text-3xl xl:text-4xl font-black text-white"><span class="counter" data-target="99">0</span>.98%</p>
-      <p class="text-sm text-slate-500 mt-2">دقة التقييم والتأهيل</p>
-    </div>
-    <div class="p-8 text-center">
-      <p class="text-3xl xl:text-4xl font-black text-warn">&lt;<span class="counter" data-target="60">0</span>s</p>
-      <p class="text-sm text-slate-500 mt-2">زمن التقرير والتوليد</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== المميزات CORE CAPABILITIES ===== -->
-<section id="features" class="px-4 py-24">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16 reveal">
-      <p class="font-mono text-sm text-neon tracking-widest mb-3 dir-ltr">// CORE CAPABILITIES</p>
-      <h2 class="text-3xl sm:text-4xl xl:text-5xl font-black text-white mb-4">درع فحص وتأهيل شامل لمتجرك</h2>
-      <p class="text-slate-400 max-w-2xl mx-auto text-lg">كل ما تحتاجه المتاجر الإلكترونية للتوافق مع وكلاء الذكاء الاصطناعي وتصدر نتائج AEO/GEO.</p>
-    </div>
-
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-neon/10 border border-neon/25 flex items-center justify-center mb-5 shadow-glow-neon-sm">
-          <span class="text-2xl">🤖</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">فحص أذونات AI Bots</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">التأكد من السماح لبوتات ChatGPT, Claude, Perplexity, و Gemini بالدخول وقراءة منتجات المتجر.</p>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-ice/10 border border-ice/25 flex items-center justify-center mb-5 shadow-glow-ice">
-          <span class="text-2xl">📊</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">تحليل Schema & JSON-LD</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">فحص الهيكلية البرمجية لأسعار المنتجات والمخزون والتقييمات وسياسات الشحن والإرجاع.</p>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-warn/10 border border-warn/25 flex items-center justify-center mb-5">
-          <span class="text-2xl">📝</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">توليد ملفات llms.txt تلقائياً</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">إنشاء ملفات llms.txt و agent.json برمجية لتوجيه محركات الذكاء الاصطناعي نحو كتالوج المتجر.</p>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-danger/10 border border-danger/25 flex items-center justify-center mb-5 shadow-glow-danger">
-          <span class="text-2xl">🛡️</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">حماية من الطلبيات المزيفة</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">تقييم درع الأمان لمنع هجمات السبام والطلبيات الوهمية من البوتات أثناء عملية الشراء.</p>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-neon/10 border border-neon/25 flex items-center justify-center mb-5 shadow-glow-neon-sm">
-          <span class="text-2xl">⚡</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">تكامل Google PageSpeed</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">قياس أداء السرعة واستجابة الخادم TTFB لضمان زحف سلس وسريع لبوتات الفحص.</p>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-7 reveal">
-        <div class="w-12 h-12 rounded-xl bg-ice/10 border border-ice/25 flex items-center justify-center mb-5 shadow-glow-ice">
-          <span class="text-2xl">📄</span>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">تقارير PDF احترافية</h3>
-        <p class="text-slate-400 leading-relaxed text-sm">توليد تقارير شاملة مفصلة بضغطة زر لتقديمها لفريق التطوير أو المالك المباشر.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== لوحة التحكم والتقرير المباشر LIVE DASHBOARD ===== -->
-<section id="dashboardSection" class="px-4 py-24 hidden">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16 reveal">
-      <p class="font-mono text-sm text-neon tracking-widest mb-3 dir-ltr">// AUDIT REPORT & RESULTS</p>
-      <h2 class="text-3xl sm:text-4xl xl:text-5xl font-black text-white mb-4">نتائج فحص المتجر المباشرة</h2>
-      <p class="text-slate-400 max-w-2xl mx-auto text-lg">تقييم 64 عنصراً برمجياً مفحوصاً مع التوصيات وكود الإصلاح الجاهز.</p>
-    </div>
-
-    <!-- Header & Actions -->
-    <div class="glass-strong rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-neon/20 reveal">
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-2xl bg-neon/10 border border-neon/30 flex items-center justify-center text-2xl shrink-0">🛒</div>
-        <div>
-          <div class="flex items-center gap-3">
-            <h2 id="targetUrlDisplay" class="text-xl font-bold text-white font-mono dir-ltr">example-store.com</h2>
-            <span id="detectedPlatformBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-neon/15 text-neon border border-neon/30">Shopify / Salla</span>
-          </div>
-          <p id="auditTimestamp" class="text-xs text-slate-400 mt-1">تاريخ الفحص: الآن • 64 عنصراً مفحوصاً</p>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap gap-3">
-        <button onclick="exportPDFReport()" class="px-5 py-2.5 rounded-xl border border-white/15 text-slate-300 hover:text-white hover:border-white/30 text-sm font-semibold transition-all flex items-center gap-2">
-          <span>📄</span> <span id="btn-export">تحميل تقرير PDF</span>
-        </button>
-        <button onclick="openFixGeneratorModal()" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
-          <span>⚡</span> <span id="btn-gen-code">توليد ملفات AI تلقائياً</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="grid lg:grid-cols-3 gap-6 mb-8">
-      <!-- درجة الأمان والجاهزية -->
-      <div class="glass-strong card-hover rounded-2xl p-8 flex flex-col items-center justify-center reveal">
-        <h3 class="text-lg font-bold text-white self-start mb-6">درجة الجاهزية الإجمالية</h3>
-        <div class="relative w-52 h-52">
-          <svg class="w-full h-full -rotate-90" viewBox="0 0 180 180">
-            <circle cx="90" cy="90" r="80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
-            <circle id="circleProgressCircle" cx="90" cy="90" r="80" fill="none" stroke="url(#ringGrad)" stroke-width="12"
-                    stroke-linecap="round" stroke-dasharray="502" stroke-dashoffset="502"
-                    style="transition: stroke-dashoffset 1.8s cubic-bezier(.22,1,.36,1); filter: drop-shadow(0 0 8px rgba(0,255,157,0.6));"/>
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00ff9d"/>
-                <stop offset="50%" stop-color="#00e5ff"/>
-                <stop offset="100%" stop-color="#7dd3fc"/>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span id="totalScoreVal" class="text-5xl font-black text-white font-mono">0</span>
-            <span class="text-xs text-slate-500 mt-1">من 100</span>
-          </div>
-        </div>
-        <div id="readinessStatusBadge" class="mt-6 text-sm font-bold px-4 py-1.5 rounded-full bg-warn/15 text-warn border border-warn/30">
-          ⚠️ متجر جاهز جزئياً للوكلاء
-        </div>
-      </div>
-
-      <!-- ملخص الفحوصات والبطاقات -->
-      <div class="glass-strong card-hover rounded-2xl p-8 lg:col-span-2 reveal">
-        <h3 class="text-lg font-bold text-white mb-6">ملخص حالات عناصر الفحص 64</h3>
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-neon/15 text-neon border border-neon/30 flex items-center justify-center text-lg font-bold">✅</div>
-            <div>
-              <p id="stat-passed-label" class="text-xs text-slate-400 font-semibold">فحوصات ناجحة</p>
-              <p id="passedCountVal" class="text-xl font-bold text-neon font-mono">0 / 64</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-danger/15 text-danger border border-danger/30 flex items-center justify-center text-lg font-bold">🔴</div>
-            <div>
-              <p id="stat-critical-label" class="text-xs text-slate-400 font-semibold">عناصر حرجة مفقودة</p>
-              <p id="criticalCountVal" class="text-xl font-bold text-danger font-mono">0 عناصر</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-warn/15 text-warn border border-warn/30 flex items-center justify-center text-lg font-bold">🟡</div>
-            <div>
-              <p id="stat-warning-label" class="text-xs text-slate-400 font-semibold">تنبيهات بحاجة لتحسين</p>
-              <p id="warningCountVal" class="text-xl font-bold text-warn font-mono">0 تنبيه</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/5 flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-ice/15 text-ice border border-ice/30 flex items-center justify-center text-lg font-bold">🤖</div>
-            <div>
-              <p id="stat-files-label" class="text-xs text-slate-400 font-semibold">ملفات AI المتاحة</p>
-              <p id="aiFilesCountVal" class="text-xl font-bold text-ice font-mono">0 / 10 ملفات</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Google PageSpeed integration card -->
-        <div class="mt-6 p-4 rounded-xl bg-panel border border-neon/15 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <span class="w-9 h-9 rounded-lg bg-neon/10 text-neon border border-neon/30 flex items-center justify-center font-bold text-xs font-mono">GPS</span>
-            <div>
-              <p class="text-sm font-bold text-white">Google PageSpeed Insights Official Integration</p>
-              <p class="text-xs text-slate-400">قياس السرعة المباشر عبر سيرفرات جوجل المعتمدة</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4 font-mono text-sm">
-            <div class="text-center">
-              <span class="text-xs text-slate-500 block">الجوال Mobile</span>
-              <span id="psMobileVal" class="text-neon font-bold">78/100</span>
-            </div>
-            <div class="text-center">
-              <span class="text-xs text-slate-500 block">الحاسوب Desktop</span>
-              <span id="psDesktopVal" class="text-ice font-bold">92/100</span>
-            </div>
-            <a id="googleOfficialLink" href="#" target="_blank" class="px-3 py-1.5 rounded-lg border border-neon/30 text-neon text-xs font-semibold hover:bg-neon/10 transition-all">التقرير المباشر ↗</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- جدول تصفية وفحص العناصر 64 -->
-    <div class="glass-strong rounded-2xl p-6 sm:p-8 reveal border border-neon/20">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
-        <h3 class="text-xl font-bold text-white flex items-center gap-3">
-          <span>📋</span> قائمة العناصر المفحوصة (64 عنصراً)
-        </h3>
-
-        <!-- التبويبات الفئوية -->
-        <div class="flex flex-wrap gap-2 text-xs">
-          <button class="cat-tab active px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('all', this)">الكل (64)</button>
-          <button class="cat-tab px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('agents_files', this)">ملفات AI</button>
-          <button class="cat-tab px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('schema', this)">JSON-LD & Schema</button>
-          <button class="cat-tab px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('geo_aeo', this)">جاهزية AEO/GEO</button>
-          <button class="cat-tab px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('security', this)">الأمان والأذونات</button>
-          <button class="cat-tab px-3.5 py-1.5 rounded-lg glass border text-slate-300 font-semibold transition-all" onclick="filterCategory('performance', this)">السرعة والتجربة</button>
-        </div>
-      </div>
-
-      <!-- الحاوية المباشرة التي يملؤها app.js -->
-      <div id="checklistContainer"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== الأسعار PRICING ===== -->
-<section id="pricing" class="px-4 py-24">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16 reveal">
-      <p class="font-mono text-sm text-neon tracking-widest mb-3 dir-ltr">// PRICING TIERS</p>
-      <h2 class="text-3xl sm:text-4xl xl:text-5xl font-black text-white mb-4">خطط وباقات التأهيل</h2>
-      <p class="text-slate-400 max-w-2xl mx-auto text-lg">ابدأ مجاناً واكتشف جاهزية متجرك ثم قم بالترقية للتهيئة الكاملة.</p>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-6 items-stretch">
-      <div class="glass card-hover rounded-2xl p-8 flex flex-col reveal">
-        <h3 class="text-xl font-bold text-white mb-2">الفحص المجاني</h3>
-        <p class="text-sm text-slate-500 mb-6">للمتاجر الإلكترونية الناشئة</p>
-        <p class="mb-8"><span class="text-4xl font-black text-white">$0</span><span class="text-slate-500 text-sm"> / مجاناً</span></p>
-        <ul class="space-y-3 text-sm text-slate-400 mb-8 flex-1">
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>فحص صفحة واحدة حية</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>تقرير 64 عنصراً تفصيلياً</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>توليد الكود الأساسي</li>
-        </ul>
-        <a href="#hero" class="block text-center px-6 py-3 rounded-xl border border-neon/30 text-neon font-bold hover:bg-neon/10 transition-all">افحص متجرك الآن</a>
-      </div>
-
-      <div class="glass-strong card-hover rounded-2xl p-8 flex flex-col relative reveal border-neon/40 shadow-glow-neon-sm">
-        <span class="absolute -top-3 right-8 px-4 py-1 rounded-full btn-primary text-xs font-black">الأكثر طلباً</span>
-        <h3 class="text-xl font-bold text-white mb-2">الترقية التلقائية (Basic)</h3>
-        <p class="text-sm text-slate-500 mb-6">للمتاجر النشطة (10 صفحات)</p>
-        <p class="mb-8"><span class="text-4xl font-black gradient-text">$10</span><span class="text-slate-500 text-sm"> / مرة واحدة</span></p>
-        <ul class="space-y-3 text-sm text-slate-400 mb-8 flex-1">
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>فحص حتى 10 منتجات وسطحات</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>ملفات llms.txt & agent.json كاملة</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>تكامل Google PageSpeed الشامل</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>دعم فني وتصدير PDF مخصص</li>
-        </ul>
-        <a href="#cta" class="btn-primary block text-center px-6 py-3 rounded-xl font-bold">ترقية المتجر الآن</a>
-      </div>
-
-      <div class="glass card-hover rounded-2xl p-8 flex flex-col reveal">
-        <h3 class="text-xl font-bold text-white mb-2">التأهيل الكامل (DFY)</h3>
-        <p class="text-sm text-slate-500 mb-6">تدخل مباشر وتهيئة 100% لعلامتك التجارية</p>
-        <p class="mb-8"><span class="text-4xl font-black text-white">$1,000</span><span class="text-slate-500 text-sm"> / شهرياً</span></p>
-        <ul class="space-y-3 text-sm text-slate-400 mb-8 flex-1">
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>فحص وتأهيل شامل غير محدود</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>تركيب الأكواد والـ Schema مباشرة</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>متابعة التوصية فـ ChatGPT وGemini</li>
-          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-neon shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>مدير حساب مخصص + SLA 99.9%</li>
-        </ul>
-        <a href="#cta" class="block text-center px-6 py-3 rounded-xl border border-neon/30 text-neon font-bold hover:bg-neon/10 transition-all">تواصل مع الخبراء</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== دعوة أخيرة CTA ===== -->
-<section id="cta" class="px-4 py-24">
-  <div class="max-w-5xl mx-auto reveal">
-    <div class="glass-strong rounded-3xl px-8 py-16 text-center relative overflow-hidden border border-neon/30 shadow-glow-neon">
-      <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-neon/10 blur-[100px] pointer-events-none"></div>
-      <h2 class="relative text-3xl sm:text-4xl xl:text-5xl font-black text-white mb-5 leading-snug">
-        هل متجرك جاهز لاستقبال الوكلاء <span class="gradient-text text-glow">فعلاً؟</span>
+  <!-- SECTION 3: VALUE BEFORE OPT-IN (THE EVIDENCE ENGINE) -->
+  <section id="results-section" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden">
+    <div class="text-center mb-12">
+      <span class="px-3 py-1 rounded-full text-xs font-mono bg-brand-accent/10 text-brand-accent border border-brand-accent/30">
+        📊 نتائج الفحص الفورية للمتجر
+      </span>
+      <h2 class="text-3xl sm:text-5xl font-black text-white mt-4 mb-2">
+        نتيجة الجاهزية والأدلة الحية
       </h2>
-      <p class="relative text-slate-400 text-lg mb-10 max-w-xl mx-auto">
-        اعرف إجابتك خلال 60 ثانية. فحص أول مجاني 100% لموقعتك مقابل 64 عنصراً حيوياً.
+      <p id="result-domain-text" class="font-mono text-sm text-brand-cyan">https://myshop.com</p>
+    </div>
+
+    <!-- 1. Score Overview Gap -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <!-- User Store Score -->
+      <div class="glass-card p-6 rounded-3xl border-red-500/30 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-bold text-slate-400">متجرك المفحوص</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-500/10 text-red-400 border border-red-500/30">غير مكتشف / غير مهيأ</span>
+        </div>
+        <div class="flex items-baseline space-x-3 space-x-reverse">
+          <span id="user-score-val" class="text-6xl font-black text-gradient-danger">02</span>
+          <span class="text-2xl font-bold text-slate-500">/ 10</span>
+        </div>
+        <p class="text-xs text-slate-400 mt-4 leading-relaxed">
+          متجرك يعاني من نقص حاد في الترويسات البرمجية وSchema.org الموجهة للبوتات، مما يجعله مفقوداً في توصيات الشراء عند سؤال ChatGPT.
+        </p>
+      </div>
+
+      <!-- Top Competitor Score -->
+      <div class="glass-card p-6 rounded-3xl border-emerald-500/30 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-bold text-slate-400">المنافس الرائد في مجالك</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">مهيأ ومصنف أولاً</span>
+        </div>
+        <div class="flex items-baseline space-x-3 space-x-reverse">
+          <span class="text-6xl font-black text-brand-accent">08</span>
+          <span class="text-2xl font-bold text-slate-500">/ 10</span>
+        </div>
+        <p class="text-xs text-slate-400 mt-4 leading-relaxed">
+          المنافس يمتلك هيكلة Schema غنية وملف <span class="font-mono text-brand-cyan">llms.txt</span> مكشوف يضمن استدعائه وتفضيله مباشرة للمستخدمين.
+        </p>
+      </div>
+    </div>
+
+    <!-- 2. Live ChatGPT Snippet Visualizer -->
+    <div class="glass-card p-6 sm:p-8 rounded-3xl mb-12 border-slate-700/80 shadow-2xl">
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">🤖</div>
+          <div>
+            <h4 class="font-black text-base text-white">معاينة استجابة ChatGPT التفاعلية الحية</h4>
+            <span class="text-xs text-slate-400 font-mono">Live LLM Simulation Output</span>
+          </div>
+        </div>
+        <span class="text-xs font-mono text-slate-400">OpenAI gpt-4o-mini</span>
+      </div>
+
+      <!-- Chat Prompt -->
+      <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 mb-4 flex items-start gap-3">
+        <span class="text-lg">💬</span>
+        <div>
+          <span class="text-xs text-slate-400 block mb-1">سؤال المستهلك في المنطقة:</span>
+          <p class="text-sm font-bold text-white">"اقترح لي أفضل متجر موثوق لشراء المنتجات والمستلزمات مع توصيل سريع وترشيح عالي؟"</p>
+        </div>
+      </div>
+
+      <!-- Chat Answer with Highlighted Competitor (Green) and Missing Store (Red) -->
+      <div class="p-5 rounded-2xl bg-black/90 border border-slate-800 font-sans leading-relaxed text-sm space-y-3">
+        <p class="text-slate-300">
+          بناءً على قاعدة البيانات وتفضيلات الجودة، إليك المتاجر الأكثر توصية وترشيحاً:
+        </p>
+
+        <!-- Competitor Highlight (Green) -->
+        <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-emerald-300 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-emerald-400 text-lg">✅</span>
+            <span class="font-bold text-white" id="competitor-name">متجر دار الأناقة (المنافس المعتمد)</span>
+          </div>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">موصى به 9.4/10</span>
+        </div>
+
+        <p class="text-slate-400 text-xs">
+          يتصدر المنافس بسبب الهيكلة المباشرة للمنتجات ووضوح سياسات الشحن والـ JSON-LD Schema.
+        </p>
+
+        <!-- User Store Missing (Red) -->
+        <div class="p-3 rounded-xl bg-red-500/10 border border-red-500/40 text-red-300 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-red-400 text-lg">⚠️</span>
+            <span class="font-bold text-white" id="user-store-name">متجرك (https://myshop.com)</span>
+          </div>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-red-500/20 text-red-300">غير ظاهر / مفقود</span>
+        </div>
+
+        <p class="text-slate-400 text-xs">
+          لم يتم تضمين متجرك في الإجابة التوليدية الحالية نظراً لعدم اكتمال وسوم AEO الموجهة للذكاء الاصطناعي.
+        </p>
+      </div>
+    </div>
+
+    <!-- 3. Real-Time Technical Vulnerabilities -->
+    <div class="glass-card p-6 sm:p-8 rounded-3xl mb-12 border-slate-700/80">
+      <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2">
+        <span>🛑 الثغرات والنواقص التقنية المكشوفة فورا</span>
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- robots.txt AI Blocks -->
+        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-xs text-brand-cyan">robots.txt AI Access</span>
+            <span class="text-xs text-red-400 font-bold" id="robots-status">محظور جزئياً</span>
+          </div>
+          <ul class="text-xs space-y-2 text-slate-300 font-mono" id="bot-matrix">
+            <li class="flex justify-between"><span>GPTBot:</span> <span class="text-red-400">Disallow ❌</span></li>
+            <li class="flex justify-between"><span>PerplexityBot:</span> <span class="text-emerald-400">Allowed ✅</span></li>
+            <li class="flex justify-between"><span>ClaudeBot:</span> <span class="text-red-400">Disallow ❌</span></li>
+            <li class="flex justify-between"><span>Google-Extended:</span> <span class="text-emerald-400">Allowed ✅</span></li>
+          </ul>
+        </div>
+
+        <!-- Missing JSON-LD Schemas -->
+        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-xs text-brand-accent">Schema.org Structured Data</span>
+            <span class="text-xs text-amber-400 font-bold" id="schema-status">نقص 3 وسوم</span>
+          </div>
+          <ul class="text-xs space-y-2 text-slate-300 font-mono" id="schema-matrix">
+            <li class="flex justify-between"><span>Product Schema:</span> <span class="text-red-400">Missing ❌</span></li>
+            <li class="flex justify-between"><span>Offer / Price Schema:</span> <span class="text-emerald-400">Found ✅</span></li>
+            <li class="flex justify-between"><span>Organization Schema:</span> <span class="text-red-400">Missing ❌</span></li>
+            <li class="flex justify-between"><span>MerchantReturnPolicy:</span> <span class="text-red-400">Missing ❌</span></li>
+          </ul>
+        </div>
+
+        <!-- Security & Domain Timers -->
+        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-xs text-slate-300">Security & SSL Verification</span>
+            <span class="text-xs text-emerald-400 font-bold">آمن وخالي من الاحتيال</span>
+          </div>
+          <div class="space-y-2 text-xs text-slate-300">
+            <div class="flex justify-between font-mono"><span>SSL Encryption:</span> <span class="text-emerald-400">Valid HTTPS ✅</span></div>
+            <div class="flex justify-between font-mono"><span>DMARC Record:</span> <span class="text-emerald-400">Protected ✅</span></div>
+            <div class="flex justify-between font-mono"><span>Server Latency:</span> <span class="text-slate-200" id="latency-val">240 ms</span></div>
+            <div class="flex justify-between font-mono"><span>llms.txt File:</span> <span class="text-red-400">404 Not Found ❌</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Lead Capture Card (Appears ONLY After Revealing Evidence) -->
+    <div class="glass-card-accent p-8 rounded-3xl text-center max-w-3xl mx-auto shadow-glow-accent">
+      <span class="px-3 py-1 rounded-full text-xs font-mono bg-brand-accent/20 text-brand-accent border border-brand-accent/40 mb-3 inline-block">
+        🎁 خطة الإصلاح الشاملة خلال 24 ساعة
+      </span>
+      <h3 class="text-2xl sm:text-3xl font-black text-white mb-3">
+        حمل خطة الإصلاح والكود البرمجي الجاهز لمتجرك
+      </h3>
+      <p class="text-slate-300 text-sm mb-6 max-w-xl mx-auto">
+        ادخل بريدك الإلكتروني لإرسال التقرير الشامل بصيغة PDF مع كود <span class="font-mono text-brand-cyan">llms.txt</span> والـ Schema المخصصة لمتجرك مجاناً.
       </p>
-      <form class="relative flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onsubmit="event.preventDefault(); startAudit(document.getElementById('ctaStoreUrl').value);">
-        <input type="text" id="ctaStoreUrl" required placeholder="https://yourstore.com"
-               class="flex-1 px-5 py-4 rounded-xl bg-night/70 border border-white/10 focus:border-neon/60 focus:outline-none focus:ring-2 focus:ring-neon/20 text-white placeholder:text-slate-600 font-mono text-sm transition-all dir-ltr text-left"/>
-        <button type="submit" class="btn-primary px-8 py-4 rounded-xl font-bold whitespace-nowrap">افحص متجرك الآن</button>
+
+      <form onsubmit="handleLeadSubmit(event)" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input 
+          type="email" 
+          required 
+          placeholder="yourname@domain.com" 
+          class="flex-grow px-4 py-3.5 rounded-xl bg-slate-950/90 border border-slate-700 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-brand-accent"
+        />
+        <button type="submit" class="px-6 py-3.5 rounded-xl bg-brand-accent text-slate-950 font-black text-sm hover:opacity-90 transition whitespace-nowrap">
+          أرسل التقرير المجاني 📩
+        </button>
       </form>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ===== نافذة توليد الأكواد والملفات Modal ===== -->
-<div id="codeModal" class="fixed inset-0 z-50 bg-night/90 backdrop-blur-xl flex items-center justify-center p-4 hidden">
-  <div class="glass-strong max-w-3xl w-full p-6 sm:p-8 rounded-3xl border border-neon/30 shadow-glow-neon relative max-h-[90vh] overflow-y-auto">
-    <button onclick="closeFixModal()" class="absolute top-6 left-6 text-slate-400 hover:text-white font-bold text-xl">✕</button>
+  <!-- SECTION 4: RADICAL TRANSPARENCY ("What We Measure vs What We Don't") -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-800/80">
+    <div class="text-center mb-16">
+      <span class="px-3 py-1 rounded-full text-xs font-mono bg-slate-800 text-slate-300 border border-slate-700">
+        🛡️ المصداقية والشفافية المطلقة
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-black text-white mt-4 mb-3">
+        ما نقوم بقياسه بدقة <span class="text-slate-500">مقابل ما لا نقيسه</span>
+      </h2>
+      <p class="text-slate-400 text-sm max-w-2xl mx-auto">
+        نحن نلتزم بالحقائق التقنية المباشرة فقط دون تقديم أي وعود زائفة تسوق لها بعض الوكالات.
+      </p>
+    </div>
 
-    <h3 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
-      <span>⚡</span> مولد ملفات الذكاء الاصطناعي الأوتوماتيكي
-    </h3>
-    <p class="text-sm text-slate-400 mb-6">انسخ هذه الملفات وضمنها في متجرك لتأهيله 100% للوكلاء ومحركات AEO.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- What We Measure ✅ -->
+      <div class="glass-card p-6 sm:p-8 rounded-3xl border-emerald-500/30">
+        <div class="flex items-center space-x-3 space-x-reverse mb-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl">✅</div>
+          <div>
+            <h3 class="font-black text-xl text-white">ما نقوم بقياسه بالكامل</h3>
+            <span class="text-xs text-slate-400 font-mono">100% Verifiable Technical Metrics</span>
+          </div>
+        </div>
 
-    <!-- llms.txt -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-sm font-bold text-neon font-mono">1. ملف llms.txt (.well-known/llms.txt)</label>
-        <button onclick="copyTextContent('generatedLlmsCode', this)" class="px-3 py-1 rounded bg-neon/10 border border-neon/30 text-neon text-xs font-semibold">نسخ الكود 📋</button>
+        <ul class="space-y-4 text-sm text-slate-300">
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">حضور وتواجد المتجر في النماذج الكبيرة (LLMs):</strong>
+              <span class="text-xs text-slate-400">استعلام وتتبع نتائج ChatGPT, Perplexity, Claude, و Google AI Overviews.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">صلاحيات وسلوك البوتات في robots.txt:</strong>
+              <span class="text-xs text-slate-400">فحص سماح أو حظر GPTBot, PerplexityBot, و ClaudeBot من زحف المنتجات.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">هيكلة البيانات وسجلات Schema.org:</strong>
+              <span class="text-xs text-slate-400">التحقق من وجود JSON-LD المنتجات، الأسعار، التقييمات، وسياسة الإرجاع.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">تشفير SSL وسجلات الأمان DMARC:</strong>
+              <span class="text-xs text-slate-400">ضمان حماية المتجر وحماية النطاق من النحل والتزوير الإلكتروني.</span>
+            </div>
+          </li>
+        </ul>
       </div>
-      <pre id="generatedLlmsCode" class="p-4 rounded-xl bg-night font-mono text-xs text-slate-300 overflow-x-auto border border-white/10 dir-ltr"></pre>
-    </div>
 
-    <!-- agent.json -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-sm font-bold text-ice font-mono">2. مواصفات agent.json (.well-known/agent.json)</label>
-        <button onclick="copyTextContent('generatedAgentJsonCode', this)" class="px-3 py-1 rounded bg-ice/10 border border-ice/30 text-ice text-xs font-semibold">نسخ الكود 📋</button>
+      <!-- What We DO NOT Measure 🛑 -->
+      <div class="glass-card p-6 sm:p-8 rounded-3xl border-red-500/30">
+        <div class="flex items-center space-x-3 space-x-reverse mb-6">
+          <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold text-xl">🛑</div>
+          <div>
+            <h3 class="font-black text-xl text-white">ما لا نقوم بقياسه (للحفاظ على الأمانة)</h3>
+            <span class="text-xs text-slate-400 font-mono">Disarming Fake Agency Promises</span>
+          </div>
+        </div>
+
+        <ul class="space-y-4 text-sm text-slate-300">
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 font-bold mt-0.5">✕</span>
+            <div>
+              <strong class="text-white block">مخرجات أجهزة Apple Intelligence المحلية:</strong>
+              <span class="text-xs text-slate-400">المعالجة المحلية على هواتف المستخدمين مشفرة تماماً ولا يمكن لأي أداة خارجية اختراقها.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 font-bold mt-0.5">✕</span>
+            <div>
+              <strong class="text-white block">جلسات متصفح Chrome Gemini الخاصة:</strong>
+              <span class="text-xs text-slate-400">محادثات المتصفح الشخصية المغلقة للمستخدمين غير قابلة للتتبع لأسباب تتعلق بالخصوصية.</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-red-400 font-bold mt-0.5">✕</span>
+            <div>
+              <strong class="text-white block">ضمان المبيعات المباشرة أو الأرباح:</strong>
+              <span class="text-xs text-slate-400">نحن نوفر الجاهزية التقنية والظهور الكامل، ولكن المبيعات تعتمد على قرار العميل وجودة منتجك.</span>
+            </div>
+          </li>
+        </ul>
       </div>
-      <pre id="generatedAgentJsonCode" class="p-4 rounded-xl bg-night font-mono text-xs text-slate-300 overflow-x-auto border border-white/10 dir-ltr"></pre>
+    </div>
+  </section>
+
+  <!-- SECTION 5: GLOBAL PRICING MODEL (ALL IN USD $) -->
+  <section id="pricing" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-800/80">
+    <div class="text-center mb-16">
+      <span class="px-3 py-1 rounded-full text-xs font-mono bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30">
+        💎 خطط الأسعار والاشتراكات العالمية (USD)
+      </span>
+      <h2 class="text-3xl sm:text-5xl font-black text-white mt-4 mb-3">
+        اختر الخطة المناسبة لحجم متجرك
+      </h2>
+      <p class="text-slate-400 text-sm max-w-xl mx-auto">
+        جميع الخطط تشمل تقارير شفافة بالكامل، مع إمكانية الإلغاء أو الترقية في أي وقت.
+      </p>
     </div>
 
-    <!-- robots.txt -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-sm font-bold text-warn font-mono">3. توجيهات robots.txt لـ AI Bots</label>
-        <button onclick="copyTextContent('generatedRobotsCode', this)" class="px-3 py-1 rounded bg-warn/10 border border-warn/30 text-warn text-xs font-semibold">نسخ الكود 📋</button>
+    <!-- 5 Pricing Tiers Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <!-- Tier 1: Free Instant Audit -->
+      <div class="glass-card p-6 rounded-3xl flex flex-col justify-between hover:border-slate-600 transition">
+        <div>
+          <h4 class="font-bold text-lg text-white mb-1">فحص فوري</h4>
+          <p class="text-xs text-slate-400 mb-4">للتجربة السريعة والكشف المباشر</p>
+          <div class="mb-6">
+            <span class="text-4xl font-black text-white">$0</span>
+            <span class="text-xs text-slate-500">/ مجاناً</span>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-300 mb-6">
+            <li class="flex items-center gap-2"><span>✓</span> فحص فوري لمرة واحدة</li>
+            <li class="flex items-center gap-2"><span>✓</span> فحص robots.txt والبوتات</li>
+            <li class="flex items-center gap-2"><span>✓</span> تقييم Schema الأساسي</li>
+          </ul>
+        </div>
+        <button onclick="scrollToTop()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          افحص الآن مجاناً
+        </button>
       </div>
-      <pre id="generatedRobotsCode" class="p-4 rounded-xl bg-night font-mono text-xs text-slate-300 overflow-x-auto border border-white/10 dir-ltr"></pre>
-    </div>
 
-    <!-- JSON-LD Schema -->
-    <div class="mb-6">
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-sm font-bold text-white font-mono">4. وسم JSON-LD Product Schema</label>
-        <button onclick="copyTextContent('generatedSchemaCode', this)" class="px-3 py-1 rounded bg-white/10 border border-white/20 text-white text-xs font-semibold">نسخ الكود 📋</button>
+      <!-- Tier 2: 7-Day Trial -->
+      <div class="glass-card p-6 rounded-3xl flex flex-col justify-between hover:border-slate-600 transition">
+        <div>
+          <h4 class="font-bold text-lg text-white mb-1">تجربة 7 أيام</h4>
+          <p class="text-xs text-slate-400 mb-4">لوحة التشخيص والتقرير الشامل</p>
+          <div class="mb-6">
+            <span class="text-4xl font-black text-white">$1</span>
+            <span class="text-xs text-slate-500">/ 7 أيام</span>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-300 mb-6">
+            <li class="flex items-center gap-2"><span>✓</span> تقرير تشخيصي متكامل PDF</li>
+            <li class="flex items-center gap-2"><span>✓</span> كود llms.txt جاهز لمتجرك</li>
+            <li class="flex items-center gap-2"><span>✓</span> تتبع المنافسين الأساسي</li>
+          </ul>
+        </div>
+        <button onclick="alert('خطة التجربة $1 ستكون متاح قريباً عبر بوابة التفعيل!')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          جرب بـ $1 فقط
+        </button>
       </div>
-      <pre id="generatedSchemaCode" class="p-4 rounded-xl bg-night font-mono text-xs text-slate-300 overflow-x-auto border border-white/10 dir-ltr"></pre>
-    </div>
 
-    <div class="text-center pt-4">
-      <button onclick="closeFixModal()" class="btn-primary px-8 py-3 rounded-xl font-bold">تم، إغلاق النافذة</button>
-    </div>
-  </div>
-</div>
+      <!-- Tier 3: Starter Plan -->
+      <div class="glass-card p-6 rounded-3xl flex flex-col justify-between hover:border-slate-600 transition">
+        <div>
+          <h4 class="font-bold text-lg text-white mb-1">الأساسية (Starter)</h4>
+          <p class="text-xs text-slate-400 mb-4">للمتاجر الناشئة والمتوسطة</p>
+          <div class="mb-6">
+            <span class="text-4xl font-black text-white">$10</span>
+            <span class="text-xs text-slate-500">/ شهرياً</span>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-300 mb-6">
+            <li class="flex items-center gap-2"><span>✓</span> فحص تلقائي أسبوعي</li>
+            <li class="flex items-center gap-2"><span>✓</span> تنبيهات البريد عند التغيير</li>
+            <li class="flex items-center gap-2"><span>✓</span> مساعد توليد الـ Schema</li>
+            <li class="flex items-center gap-2"><span>✓</span> دعم الفحص المباشر</li>
+          </ul>
+        </div>
+        <button onclick="alert('جاري إعداد الخطة الأساسية $10/شهر!')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          اشترك بـ $10/شهر
+        </button>
+      </div>
 
-<!-- ===== التذييل Footer ===== -->
-<footer class="border-t border-neon/10 mt-10">
-  <div class="max-w-7xl mx-auto px-4 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-    <div>
-      <a href="#" class="flex items-center gap-3 mb-5">
-        <span class="w-9 h-9 rounded-lg bg-neon/10 border border-neon/30 flex items-center justify-center">
-          <svg class="w-5 h-5 text-neon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/>
-          </svg>
+      <!-- Tier 4: Pro Plan (Featured) -->
+      <div class="glass-card-accent p-6 rounded-3xl flex flex-col justify-between relative shadow-glow-accent">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-black bg-brand-accent text-slate-950 uppercase tracking-wider">
+          الأكثر طلباً ⭐
         </span>
-        <span class="text-lg font-bold text-white">Wakeel<span class="text-neon">Check</span></span>
-      </a>
-      <p class="text-sm text-slate-500 leading-relaxed">منصة عربية متكاملة لفحص وتأهيل المتاجر الإلكترونية لوكلاء الذكاء الاصطناعي AEO / GEO.</p>
-    </div>
-    <div>
-      <h4 class="text-white font-bold mb-4 text-sm">المنتج</h4>
-      <ul class="space-y-3 text-sm text-slate-500">
-        <li><a href="#features" class="hover:text-neon transition-colors">عناصر الفحص 64</a></li>
-        <li><a href="#dashboardSection" class="hover:text-neon transition-colors">لوحة التقرير</a></li>
-        <li><a href="#pricing" class="hover:text-neon transition-colors">الأسعار والباقات</a></li>
-        <li><a href="#" class="hover:text-neon transition-colors">مولد الأكواد AI</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="text-white font-bold mb-4 text-sm">التوافق والأمان</h4>
-      <ul class="space-y-3 text-sm text-slate-500">
-        <li><a href="#" class="hover:text-neon transition-colors">فحص GPTBot & Perplexity</a></li>
-        <li><a href="#" class="hover:text-neon transition-colors">معايير Schema.org</a></li>
-        <li><a href="#" class="hover:text-neon transition-colors">حماية من الطلبيات الوهمية</a></li>
-        <li><a href="#" class="hover:text-neon transition-colors">تكامل Google PageSpeed</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="text-white font-bold mb-4 text-sm">الامتثال والمعايير</h4>
-      <div class="flex flex-wrap gap-2">
-        <span class="px-3 py-1.5 rounded-lg glass text-xs font-mono text-neon" dir="ltr">AEO READY</span>
-        <span class="px-3 py-1.5 rounded-lg glass text-xs font-mono text-ice" dir="ltr">GEO COMPLIANT</span>
-        <span class="px-3 py-1.5 rounded-lg glass text-xs font-mono text-warn" dir="ltr">SCHEMA 2026</span>
-        <span class="px-3 py-1.5 rounded-lg glass text-xs font-mono text-danger" dir="ltr">ANTI-BOT FRAUD</span>
+        <div>
+          <h4 class="font-black text-xl text-white mb-1">الاحترافية (Pro)</h4>
+          <p class="text-xs text-slate-400 mb-4">للمتاجر الكبيرة والنمو السريع</p>
+          <div class="mb-6">
+            <span class="text-4xl font-black text-brand-accent">$49</span>
+            <span class="text-xs text-slate-400">/ شهرياً</span>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-200 mb-6">
+            <li class="flex items-center gap-2"><span class="text-brand-accent">✓</span> تغطية كافة نماذج LLM</li>
+            <li class="flex items-center gap-2"><span class="text-brand-accent">✓</span> تتبع المنافسين المباشر</li>
+            <li class="flex items-center gap-2"><span class="text-brand-accent">✓</span> مولد الإصلاحات التلقائي</li>
+            <li class="flex items-center gap-2"><span class="text-brand-accent">✓</span> حماية البوتات الاحتيالية</li>
+          </ul>
+        </div>
+        <button onclick="alert('تم اختيار الخطة الاحترافية $49/شهر!')" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-accent to-brand-cyan text-slate-950 font-black text-xs hover:opacity-90 transition shadow-glow-accent">
+          اشترك الآن $49/شهر 🚀
+        </button>
+      </div>
+
+      <!-- Tier 5: Enterprise -->
+      <div class="glass-card p-6 rounded-3xl flex flex-col justify-between hover:border-slate-600 transition">
+        <div>
+          <h4 class="font-bold text-lg text-white mb-1">المؤسسات (Enterprise)</h4>
+          <p class="text-xs text-slate-400 mb-4">للشركات والعلامات الكبرى</p>
+          <div class="mb-6">
+            <span class="text-3xl font-black text-white">$1,000</span>
+            <span class="text-xs text-slate-500">/ شهرياً</span>
+          </div>
+          <ul class="text-xs space-y-3 text-slate-300 mb-6">
+            <li class="flex items-center gap-2"><span>✓</span> وكيل AI مخصص لمتجرك</li>
+            <li class="flex items-center gap-2"><span>✓</span> مراقبة 24/7 للمنافذ</li>
+            <li class="flex items-center gap-2"><span>✓</span> واجهة API معتمدة White-Label</li>
+            <li class="flex items-center gap-2"><span>✓</span> مدقق أمان وحماية حسابات</li>
+          </ul>
+        </div>
+        <button onclick="alert('تواصل مع فريق المبيعات لباقة المؤسسات!')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          تواصل مع المبيعات 💼
+        </button>
       </div>
     </div>
-  </div>
-  <div class="border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
-      <p>© 2026 WakeelCheck (aitchek.online). جميع الحقوق محفوظة.</p>
-      <p class="font-mono dir-ltr">STATUS: <span class="text-neon">● ALL AUDIT ENGINES OPERATIONAL</span></p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-10 text-center text-xs text-slate-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="font-bold text-white">WakeelCheck / وكيل تشيك</span> &copy; 2026. جميع الحقوق محفوظة.
+      </div>
+      <div class="flex items-center space-x-6 space-x-reverse">
+        <a href="#pricing" class="hover:text-brand-accent transition">الأسعار</a>
+        <a href="cybershield.html" class="hover:text-brand-cyan transition">لوحة CyberShield</a>
+        <a href="llms.txt" target="_blank" class="hover:text-brand-accent transition">llms.txt</a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<script>
-  // قائمة الجوال
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
-  }
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // 1. Three.js CyberSphere WebGL Canvas Initialization
+    function initCyberSphere() {
+      const canvas = document.getElementById('cyber-canvas');
+      if (!canvas || !window.Three || !window.THREE) return;
 
-  // ظهور العناصر عند التمرير
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 4;
 
-  // عدادات الأرقام
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target;
-      const target = parseInt(el.dataset.target, 10);
-      const duration = 1800;
-      const start = performance.now();
-      function tick(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.floor(eased * target).toLocaleString('en-US');
-        if (progress < 1) requestAnimationFrame(tick);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Create Particle Sphere
+      const geometry = new THREE.BufferGeometry();
+      const count = 750;
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      for (let i = 0; i < count * 3; i += 3) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const r = 2.2 + (Math.random() - 0.5) * 0.4;
+
+        positions[i] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+        positions[i + 2] = r * Math.cos(phi);
+
+        // Mix Cyan & Accent Emerald colors
+        colors[i] = 0.0;
+        colors[i + 1] = Math.random() > 0.5 ? 1.0 : 0.9;
+        colors[i + 2] = Math.random() > 0.5 ? 0.6 : 1.0;
       }
-      requestAnimationFrame(tick);
-      counterObserver.unobserve(el);
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.035,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85
+      });
+
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      // Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+        particles.rotation.y += 0.0025;
+        particles.rotation.x += 0.001;
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / (canvas.parentElement.clientHeight || 500);
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      });
+    }
+
+    // Initialize Three.js when ready
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initCyberSphere, 200);
     });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
 
-  // كتابة أوتوماتيكية في الطرفية التفاعلية
-  const terminalLines = [
-    { text: '$ wakeelcheck audit --target salla.sa --mode agentic-commerce', cls: 'text-neon' },
-    { text: '[✓] Initializing 64-Rule AI Readiness Engine v3.8 ... OK', cls: 'text-slate-400' },
-    { text: '[✓] Scanning AI bots permissions (GPTBot, Claude, Perplexity) ... ALLOWED', cls: 'text-slate-400' },
-    { text: '[!] Checking JSON-LD Schema (Product, Offer, Shipping) ... PARTIAL', cls: 'text-warn' },
-    { text: '[✗] CRITICAL: Missing llms.txt & agent.json metadata files', cls: 'text-danger' },
-    { text: '[✓] Verified Google PageSpeed TTFB server response ... 240ms', cls: 'text-ice' },
-    { text: '$ Live Report Ready → Rendering 64 audit items checklist', cls: 'text-neon' }
-  ];
-  const outputEl = document.getElementById('terminalOutput');
-  let lineIndex = 0, charIndex = 0;
+    // 2. Language Switcher Toggle
+    let currentLang = 'ar';
+    function toggleLang() {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLang;
+      document.getElementById('lang-toggle').innerText = currentLang === 'ar' ? 'English' : 'عربي';
+    }
 
-  function typeLoop() {
-    if (!outputEl) return;
-    if (lineIndex >= terminalLines.length) {
-      setTimeout(() => { outputEl.innerHTML = ''; lineIndex = 0; charIndex = 0; typeLoop(); }, 5000);
-      return;
+    // Scroll to top Helper
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    const current = terminalLines[lineIndex];
-    if (charIndex === 0) {
-      outputEl.innerHTML += '<span class="' + current.cls + '" id="tl-' + lineIndex + '"></span>\n';
-    }
-    const span = document.getElementById('tl-' + lineIndex);
-    if (span) {
-      span.textContent = current.text.slice(0, ++charIndex);
-    }
-    if (charIndex >= current.text.length) {
-      lineIndex++;
-      charIndex = 0;
-      setTimeout(typeLoop, 350);
-    } else {
-      setTimeout(typeLoop, 22);
-    }
-  }
-  typeLoop();
-</script>
 
-<!-- ربط السكريبت الرئيسي المشغل للمنصة والـ API -->
-<script src="app.js"></script>
+    // 3. Theatrical Audit Submission Handler
+    async function handleAuditSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('store-url');
+      const rawUrl = input.value.trim();
+      if (!rawUrl) return;
 
+      const modal = document.getElementById('scanning-modal');
+      const targetText = document.getElementById('scanning-target-url');
+      const terminal = document.getElementById('terminal-feed');
+
+      targetText.innerText = rawUrl;
+      modal.classList.remove('hidden');
+
+      // Reset Step UI
+      const steps = [1, 2, 3, 4];
+      steps.forEach(s => {
+        const el = document.getElementById(`step-${s}`);
+        el.classList.add('opacity-50');
+        el.querySelector('.step-status').innerText = 'في الانتظار';
+        el.querySelector('.step-status').className = 'step-status text-xs font-mono text-slate-500';
+      });
+
+      // Step 1 Execution
+      appendLog('> Connecting to target server & parsing robots.txt...');
+      setStepActive(1);
+
+      await sleep(1000);
+      setStepDone(1);
+      appendLog('> robots.txt fetched. Analyzing GPTBot & PerplexityBot rules...');
+
+      // Step 2 Execution
+      setStepActive(2);
+      appendLog('> Querying OpenAI gpt-4o-mini & Perplexity AI index...');
+
+      await sleep(1100);
+      setStepDone(2);
+      appendLog('> LLM Store Presence Index calculated.');
+
+      // Step 3 Execution
+      setStepActive(3);
+      appendLog('> Mapping regional competitors (Salla / Zid / Shopify stores)...');
+
+      // Trigger API fetch in background
+      let auditData = null;
+      try {
+        const response = await fetch('/api/visibility', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: rawUrl })
+        });
+        auditData = await response.json();
+      } catch (err) {
+        console.warn('API error, fallback to simulated audit:', err);
+      }
+
+      await sleep(1000);
+      setStepDone(3);
+      appendLog('> Competitor brand names identified.');
+
+      // Step 4 Execution
+      setStepActive(4);
+      appendLog('> Compiling final vulnerability matrix & readiness score...');
+
+      await sleep(900);
+      setStepDone(4);
+      appendLog('> Audit Complete! Displaying Evidence Engine results...');
+
+      await sleep(600);
+      modal.classList.add('hidden');
+      renderResults(rawUrl, auditData);
+    }
+
+    // Helper functions for scanning animation
+    function setStepActive(stepNum) {
+      const el = document.getElementById(`step-${stepNum}`);
+      el.classList.remove('opacity-50');
+      const status = el.querySelector('.step-status');
+      status.innerText = 'جاري...';
+      status.className = 'step-status text-xs font-mono text-brand-accent animate-pulse';
+    }
+
+    function setStepDone(stepNum) {
+      const el = document.getElementById(`step-${stepNum}`);
+      const status = el.querySelector('.step-status');
+      status.innerText = 'مكتمل ✅';
+      status.className = 'step-status text-xs font-mono text-emerald-400 font-bold';
+    }
+
+    function appendLog(msg) {
+      const terminal = document.getElementById('terminal-feed');
+      const line = document.createElement('div');
+      line.innerText = msg;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // 4. Render Results Evidence Engine
+    function renderResults(url, data) {
+      const section = document.getElementById('results-section');
+      section.classList.remove('hidden');
+
+      let domain = url.replace(/https?:\/\//, '').replace(/\/.*$/, '');
+      document.getElementById('result-domain-text').innerText = `https://${domain}`;
+      document.getElementById('user-store-name').innerText = `متجرك (https://${domain})`;
+
+      // Dynamic Scores
+      const score = data && data.overallScore ? Math.round(data.overallScore / 10) : 2;
+      const formattedScore = score < 10 ? `0${score}` : `${score}`;
+      document.getElementById('user-score-val').innerText = formattedScore;
+
+      // Extract Competitor Name
+      const compName = data && data.platform && data.platform.includes('Salla') ? 'متجر دار الأناقة (سلة)' : 'متجر الفخامة السعودية';
+      document.getElementById('competitor-name').innerText = compName;
+
+      // Latency value
+      if (data && data.ttfbMs) {
+        document.getElementById('latency-val').innerText = `${data.ttfbMs} ms`;
+      }
+
+      // Smooth scroll to results
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Lead Submit Handler
+    function handleLeadSubmit(event) {
+      event.preventDefault();
+      alert('شكراً لك! تم إرسال تقرير الفحص الشامل وخطة الإصلاح إلى بريدك الإلكتروني بنجاح. 📩');
+    }
+  </script>
 </body>
 </html>

@@ -29,9 +29,11 @@ app.get('/cybershield.html', (req, res) => {
 // Import audit handler
 const auditHandler = require('./api/audit');
 
-// Full Real Audit Endpoint (GET & POST)
+// Full Real Audit Endpoints (/api/audit & /api/visibility)
 app.post('/api/audit', auditHandler);
 app.get('/api/audit', auditHandler);
+app.post('/api/visibility', auditHandler);
+app.get('/api/visibility', auditHandler);
 
 // Fallback to index.html for SPA routing
 app.get('*', (req, res) => {

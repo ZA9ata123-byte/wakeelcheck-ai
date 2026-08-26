@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>WakeelCheck | منصة فحص حضور المتاجر أمام الذكاء الاصطناعي والأمان</title>
-<meta name="description" content="افحص حضور متجرك الإلكتروني في إجابات ChatGPT و Perplexity و Google AI Overviews، واكشف ثغرات الملفات الهيكلية وسجلات الأمان." />
+<meta name="description" content="افحص حضور وتواجد متجرك الإلكتروني في إجابات ChatGPT و Perplexity و Google AI Overviews مجاناً، واكشف ثغرات ملفات robots.txt و Schema وسجلات الأمان." />
 
 <!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -13,6 +13,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<!-- Three.js CDN for WebGL Parallax Plane -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
   tailwind.config = {
@@ -45,21 +48,36 @@
     color: #F8FAFC;
     font-family: 'Cairo', sans-serif;
     -webkit-font-smoothing: antialiased;
-  }
-  
-  .editorial-border {
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: hidden;
   }
   
   .editorial-card {
     background-color: #0F172A;
     border: 1px solid #1E293B;
   }
+
+  .split-frosted-card {
+    background-image: url('frosted_panel.png');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #1E293B;
+  }
+
+  #webgl-hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+  }
 </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-slate-950">
 
-  <!-- TOP HEADER (Clean & Minimalist) -->
+  <!-- TOP NAVIGATION HEADER -->
   <header class="w-full border-b border-slate-800/80 bg-canvas/90 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3 space-x-reverse">
@@ -71,6 +89,7 @@
 
       <div class="flex items-center space-x-4 space-x-reverse">
         <a href="#pricing" class="text-xs text-slate-400 hover:text-white transition hidden sm:inline-block">الأسعار</a>
+        <a href="cybershield.html" class="text-xs font-mono text-slate-400 hover:text-white transition">CyberShield</a>
         <button id="lang-toggle" onclick="toggleLang()" class="px-3 py-1.5 rounded-md border border-slate-700 text-xs font-mono text-slate-300 hover:border-slate-500 transition">
           English
         </button>
@@ -78,47 +97,52 @@
     </div>
   </header>
 
-  <!-- SECTION 1: HERO (Input is Hero - Pure Editorial Craft) -->
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 text-center">
-    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
-      ماذا يقول ChatGPT عن متجرك؟
-    </h1>
+  <!-- HERO SECTION WITH THREE.JS WEBGL BLUEPRINT GRID PARALLAX -->
+  <div class="relative w-full overflow-hidden bg-canvas border-b border-slate-800/80">
+    <canvas id="webgl-hero-canvas"></canvas>
 
-    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-      هل يوصي بك للعملاء أم يوجههم للمنافسين؟ افحص حضور متجرك وسجل الأمان ومستوى الهيكلة في 60 ثانية.
-    </p>
+    <section class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
+        ماذا يقول ChatGPT عن متجرك؟
+        <span class="block text-2xl sm:text-4xl text-slate-300 font-bold mt-2">هل يوصي بك أم يرشح منافسيك؟</span>
+      </h1>
 
-    <!-- Single Focus Hero Input Form -->
-    <div class="max-w-2xl mx-auto">
-      <form id="audit-form" onsubmit="handleAuditSubmit(event)" class="flex flex-col sm:flex-row gap-3">
-        <input 
-          type="text" 
-          id="store-url" 
-          required
-          placeholder="https://myshop.com" 
-          class="flex-grow px-4 py-3.5 rounded-lg bg-slate-950 border border-slate-700 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-sky-500 transition"
-        />
-        <button 
-          type="submit" 
-          id="submit-btn"
-          class="px-7 py-3.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm transition whitespace-nowrap"
-        >
-          شوف الجواب
-        </button>
-      </form>
+      <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        افحص حضور متجرك الإلكتروني، وسجل الأمان ومستوى الهيكلة في محركات الذكاء الاصطناعي في 60 ثانية.
+      </p>
 
-      <!-- Trust Note -->
-      <div class="text-xs text-slate-500 mt-4 font-mono">
-        فحص مجاني فوراً • بدون تسجيل حساب
+      <!-- Single Focus Hero Input Form -->
+      <div class="max-w-2xl mx-auto">
+        <form id="audit-form" onsubmit="handleAuditSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+          <input 
+            type="text" 
+            id="store-url" 
+            required
+            placeholder="https://myshop.com" 
+            class="flex-grow px-4 py-4 rounded-lg bg-slate-950/90 border border-slate-700 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-sky-500 transition"
+          />
+          <button 
+            type="submit" 
+            id="submit-btn"
+            class="px-8 py-4 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-base transition whitespace-nowrap"
+          >
+            شوف الجواب
+          </button>
+        </form>
+
+        <!-- Honest Trust Note -->
+        <div class="text-xs text-slate-500 mt-4 font-mono">
+          فحص مجاني فوراً • بدون تسجيل حساب
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <!-- SECTION 2: THEATRICAL SCANNER MODAL (Clean Linear Loader) -->
-  <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+  <!-- THEATRICAL SCANNER MODAL (4 STEPS) -->
+  <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="max-w-md w-full editorial-card p-6 rounded-2xl border border-slate-700 shadow-2xl">
       <div class="text-center mb-6">
-        <h3 class="text-lg font-bold text-white mb-1">جاري فحص المتجر...</h3>
+        <h3 class="text-lg font-bold text-white mb-1">جاري فحص المتجر بالذكاء الاصطناعي...</h3>
         <p id="scanning-target-url" class="font-mono text-xs text-sky-400">https://myshop.com</p>
       </div>
 
@@ -127,7 +151,7 @@
         <div id="progress-bar" class="bg-sky-500 h-full w-0 transition-all duration-300"></div>
       </div>
 
-      <!-- Step List -->
+      <!-- 4-Step Progress List -->
       <div class="space-y-3 mb-6 text-xs text-slate-300">
         <div id="step-1" class="flex justify-between items-center py-1">
           <span>1. قراءة ملف robots.txt وخريطة الموقع</span>
@@ -147,91 +171,103 @@
         </div>
       </div>
 
-      <!-- Terminal Log Output -->
+      <!-- Terminal Output Feed -->
       <div class="p-3 rounded-lg bg-slate-950 font-mono text-[11px] text-slate-400 border border-slate-800 h-20 overflow-y-auto" id="terminal-feed">
-        <div>> Start scanning process...</div>
+        <div>> Initiating WakeelCheck Master Engine Audit...</div>
       </div>
     </div>
   </div>
 
-  <!-- SECTION 3: EVIDENCE RESULTS SECTION -->
+  <!-- RESULTS SECTION (VALUE BEFORE OPT-IN EVIDENCE ENGINE) -->
   <section id="results-section" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden">
     <div class="text-center mb-10">
-      <span class="text-xs font-mono text-sky-400 uppercase tracking-wider">نتائج الفحص التشخيصية</span>
-      <h2 class="text-2xl sm:text-4xl font-bold text-white mt-2">تقرير الجاهزية والظهور</h2>
+      <span class="text-xs font-mono text-sky-400 uppercase tracking-wider">نتائج الفحص التشخيصية المباشرة</span>
+      <h2 class="text-2xl sm:text-4xl font-bold text-white mt-2">تقرير الجاهزية والظهور أمام البوتات</h2>
       <p id="result-domain-text" class="font-mono text-xs text-slate-400 mt-1">https://myshop.com</p>
     </div>
 
-    <!-- 1. Score Overview Gap -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-      <!-- User Store Score -->
-      <div class="editorial-card p-6 rounded-xl border border-rose-500/30">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-bold text-slate-400">نتيجة متجرك المفحوص</span>
-          <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">غير مكتشف / يحتاج تهيئة</span>
+    <!-- Split-Panel Frosted Glass Comparison Card (Left Red / Right Teal) -->
+    <div class="split-frosted-card rounded-2xl overflow-hidden mb-10 shadow-2xl p-6 sm:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Side: User Store Gaps (Muted/Red) -->
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-rose-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">متجرك المفحوص</span>
+              <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">غير مكتشف / يحتاج تهيئة</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span id="user-score-val" class="text-6xl font-black text-rose-400 font-mono">02</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              متجرك يعاني من غياب الترويسات الهيكلية الموجهة للبوتات وتوافق ملفات <span class="font-mono text-rose-400">robots.txt</span>، مما يتسبب في حظر زحف المساعدين الذكيين.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-rose-400 border-t border-slate-800 pt-3">
+            ⚠️ الحالة: غير موصى به في إجابات ChatGPT
+          </div>
         </div>
-        <div class="flex items-baseline space-x-2 space-x-reverse mb-3">
-          <span id="user-score-val" class="text-5xl font-black text-rose-400 font-mono">02</span>
-          <span class="text-xl font-bold text-slate-500">/ 10</span>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          متجرك غير مهيأ تقنياً بالروابط والملفات الهيكلية، مما يتسبب في غيابه عن التوصيات المباشرة.
-        </p>
-      </div>
 
-      <!-- Top Competitor Score -->
-      <div class="editorial-card p-6 rounded-xl border border-emerald-500/30">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-bold text-slate-400">نتيجة المنافس في نفس المجال</span>
-          <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">موصى به في التوصيات</span>
+        <!-- Right Side: Top Competitor Data (Teal/Sharp) -->
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-emerald-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">المنافس الرائد في مجالك</span>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">موصى به ومصنف أولاً</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span class="text-6xl font-black text-emerald-400 font-mono">08</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              المنافس يتصدر النتائج التوليدية بفضل اكتمال وسوم Schema.org للمنتجات وسماحه لبوتات <span class="font-mono text-emerald-400">GPTBot</span> و <span class="font-mono text-emerald-400">PerplexityBot</span> بالقراءة.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-emerald-400 border-t border-slate-800 pt-3">
+            ✅ الحالة: يتصدر التوصيات الشراء الحالية
+          </div>
         </div>
-        <div class="flex items-baseline space-x-2 space-x-reverse mb-3">
-          <span class="text-5xl font-black text-emerald-400 font-mono">08</span>
-          <span class="text-xl font-bold text-slate-500">/ 10</span>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          المنافس يتصدر بفضل اكتمال وسوم Schema.org وسماحه للبوتات بالقراءة المباشرة.
-        </p>
       </div>
     </div>
 
-    <!-- 2. Live ChatGPT Snippet Visualizer -->
+    <!-- Live ChatGPT Snippet Visualizer -->
     <div class="editorial-card p-6 sm:p-8 rounded-xl mb-10">
       <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-800">
-        <span class="font-bold text-sm text-white">معاينة إجابة ChatGPT الحية</span>
+        <span class="font-bold text-sm text-white">معاينة إجابة ChatGPT التفاعلية الحية</span>
         <span class="text-xs font-mono text-slate-500">OpenAI gpt-4o-mini</span>
       </div>
 
       <!-- Query -->
       <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs mb-4">
-        <span class="text-slate-500 block mb-1">السؤال المستعلم عنه:</span>
-        <span class="text-slate-200 font-bold">"اقترح لي أفضل متجر إلكتروني موثوق للشراء مع توصيل سريع وترشيح ممتاز؟"</span>
+        <span class="text-slate-500 block mb-1">استعلام المستهلك النهائي:</span>
+        <span class="text-slate-200 font-bold">"اقترح لي أفضل متجر موثوق لشراء المستلزمات والمنتجات مع توصيل سريع وترشيح عالي؟"</span>
       </div>
 
-      <!-- Answer Snippet -->
+      <!-- Answer Output -->
       <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 text-xs space-y-3">
-        <p class="text-slate-300">بناءً على بيانات المتاجر المعتمدة في المنطقة، إليك الخيارات الأكثر ترشيحاً:</p>
+        <p class="text-slate-300">إليك المتاجر الأكثر ترشيحاً وتوصية بناءً على البيانات المفهرسة:</p>
 
-        <!-- Competitor Green -->
+        <!-- Competitor Highlighted in Green -->
         <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-between">
-          <span class="font-bold text-white" id="competitor-name">متجر دار الأناقة (المنافس)</span>
-          <span class="font-mono text-[11px] text-emerald-400">موصى به (9.4/10)</span>
+          <span class="font-bold text-white" id="competitor-name">متجر دار الأناقة (المنافس المعتمد)</span>
+          <span class="font-mono text-[11px] text-emerald-400">موصى به (9.4/10) ✓</span>
         </div>
 
-        <!-- User Store Red -->
+        <!-- User Store Highlighted in Red -->
         <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 flex items-center justify-between">
           <span class="font-bold text-white" id="user-store-name">متجرك (https://myshop.com)</span>
-          <span class="font-mono text-[11px] text-rose-400">غير متاح / مفقود</span>
+          <span class="font-mono text-[11px] text-rose-400">غير متاح / مفقود ✕</span>
         </div>
       </div>
     </div>
 
-    <!-- 3. Real-Time Technical Vulnerabilities Card -->
+    <!-- Real-Time Technical Vulnerabilities -->
     <div class="editorial-card p-6 rounded-xl mb-10">
-      <h3 class="font-bold text-sm text-white mb-4">النواقص الفنية المكتشفة في الفحص</h3>
+      <h3 class="font-bold text-sm text-white mb-4">النواقص الفنية والسجلات المكشوفة في الفحص</h3>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Bot Policy -->
+        <!-- robots.txt AI Bot Policies -->
         <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
           <div class="font-bold text-slate-300 mb-2">سياسات البوتات (robots.txt)</div>
           <div class="space-y-1.5 font-mono text-slate-400">
@@ -241,7 +277,7 @@
           </div>
         </div>
 
-        <!-- Schema Markup -->
+        <!-- Schema.org Markup -->
         <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
           <div class="font-bold text-slate-300 mb-2">بيانات Schema.org</div>
           <div class="space-y-1.5 font-mono text-slate-400">
@@ -251,7 +287,7 @@
           </div>
         </div>
 
-        <!-- Security Checks -->
+        <!-- Security & Domain Timers -->
         <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
           <div class="font-bold text-slate-300 mb-2">الأمان وحزمة llms.txt</div>
           <div class="space-y-1.5 font-mono text-slate-400">
@@ -263,10 +299,10 @@
       </div>
     </div>
 
-    <!-- 4. Lead Capture Form -->
-    <div class="editorial-card p-6 sm:p-8 rounded-xl text-center max-w-2xl mx-auto">
-      <h3 class="text-xl font-bold text-white mb-2">احصل على تقرير الإصلاح الشامل</h3>
-      <p class="text-xs text-slate-400 mb-6">أدخل بريدك الإلكتروني لإرسال التقرير بصيغة PDF مع كود Schema المخصص لمتجرك.</p>
+    <!-- Lead Capture Card (Appears ONLY After Revealing Evidence) -->
+    <div class="editorial-card p-6 sm:p-8 rounded-xl text-center max-w-2xl mx-auto border-sky-500/40">
+      <h3 class="text-xl font-bold text-white mb-2">احصل على تقرير الإصلاح الشامل خلال 24 ساعة</h3>
+      <p class="text-xs text-slate-400 mb-6">أدخل بريدك الإلكتروني لتوليد وإرسال التقرير الشامل بصيغة PDF مع كود Schema المخصص لمتجرك.</p>
 
       <form onsubmit="handleLeadSubmit(event)" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
         <input 
@@ -282,16 +318,16 @@
     </div>
   </section>
 
-  <!-- SECTION 4: RADICAL TRANSPARENCY (EDITORIAL TABLE LAYOUT) -->
+  <!-- SECTION 4: RADICAL TRANSPARENCY ("What We Measure vs What We Don't") -->
   <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-800/80">
     <div class="text-center mb-12">
       <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">الشفافية والمصداقية</span>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">ما نقوم لقياسه مقابل ما لا نقيسه</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">ما نقوم بقياسه مقابل ما لا نقيسه</h2>
     </div>
 
     <div class="editorial-card rounded-xl overflow-hidden">
       <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-800">
-        <!-- What We Measure -->
+        <!-- We Measure -->
         <div class="p-6">
           <div class="flex items-center space-x-2 space-x-reverse mb-4 text-emerald-400 font-bold text-sm">
             <span>✓</span>
@@ -317,7 +353,7 @@
           </ul>
         </div>
 
-        <!-- What We DO NOT Measure -->
+        <!-- We DO NOT Measure -->
         <div class="p-6 bg-slate-950/40">
           <div class="flex items-center space-x-2 space-x-reverse mb-4 text-rose-400 font-bold text-sm">
             <span>✕</span>
@@ -342,14 +378,14 @@
     </div>
   </section>
 
-  <!-- SECTION 5: GLOBAL PRICING MODEL (USD $) -->
+  <!-- SECTION 5: GLOBAL PRICING MODEL (ALL IN USD $) -->
   <section id="pricing" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-800/80">
     <div class="text-center mb-12">
       <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">خطط الأسعار (USD $)</span>
       <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">اختر الخطة المناسبة لمتجرك</h2>
     </div>
 
-    <!-- Pricing Grid -->
+    <!-- 5 Pricing Tiers Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       <!-- Free -->
       <div class="editorial-card p-5 rounded-lg flex flex-col justify-between">
@@ -448,8 +484,75 @@
     </div>
   </footer>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC & THREE.JS PARALLAX SCRIPT -->
   <script>
+    // 1. Three.js WebGL Blueprint Grid Plane with Mouse-Follow Parallax
+    function initWebGLParallax() {
+      const canvas = document.getElementById('webgl-hero-canvas');
+      if (!canvas || !window.THREE) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / (canvas.parentElement.clientHeight || 500), 0.1, 1000);
+      camera.position.z = 5;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Load Blueprint Grid Texture
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load('blueprint_grid.png', (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+
+        const geometry = new THREE.PlaneGeometry(12, 8);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.55
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // Mouse Parallax Interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
+          mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+        });
+
+        function renderLoop() {
+          requestAnimationFrame(renderLoop);
+          targetX += (mouseX - targetX) * 0.05;
+          targetY += (mouseY - targetY) * 0.05;
+
+          mesh.rotation.y = targetX;
+          mesh.rotation.x = -targetY;
+
+          renderer.render(scene, camera);
+        }
+
+        renderLoop();
+      });
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / (canvas.parentElement.clientHeight || 500);
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initWebGLParallax, 100);
+    });
+
+    // 2. Language Switcher
     function toggleLang() {
       const isAr = document.documentElement.dir === 'rtl';
       document.documentElement.dir = isAr ? 'ltr' : 'rtl';
@@ -461,6 +564,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // 3. Theatrical Audit Submission Handler
     async function handleAuditSubmit(event) {
       event.preventDefault();
       const rawUrl = document.getElementById('store-url').value.trim();

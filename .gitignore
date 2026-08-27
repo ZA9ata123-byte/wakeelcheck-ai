@@ -10,3 +10,5 @@ test.pdf
 # build
 dist/
 *.tsbuildinfo
+.next/
+next-env.d.ts

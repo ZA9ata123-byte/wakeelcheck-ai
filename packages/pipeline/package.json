@@ -1,0 +1,15 @@
+{
+  "name": "@wakeelcheck/pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@wakeelcheck/core": "workspace:*",
+    "@wakeelcheck/llm": "workspace:*",
+    "@wakeelcheck/readiness": "workspace:*",
+    "@wakeelcheck/security": "workspace:*",
+    "@wakeelcheck/visibility": "workspace:*"
+  },
+  "scripts": { "typecheck": "tsc --noEmit", "test": "node --test test/" }
+}

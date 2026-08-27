@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # الاختبارات أولاً: هي عقد المشروع، وفشلها يوقف كل شيء بعدها.
+      - name: Tests
+        run: pnpm test
+
+      - name: Typecheck (packages)
+        run: pnpm typecheck
+
+      - name: Typecheck (web)
+        run: pnpm --filter @wakeelcheck/web typecheck
+
+      - name: Build
+        run: pnpm --filter @wakeelcheck/web build
+
+      # حارس صريح: لا يدخل المستودع نصّ يطابق نمط سرّ حقيقي.
+      # يمنع تكرار ما حجبه GitHub سابقاً على هذا المشروع.
+      - name: No secret-shaped strings
+        run: |
+          if grep -rInE 'sk_live_[0-9a-zA-Z]{16,}|AIza[0-9A-Za-z_-]{35}|AKIA[0-9A-Z]{16}' \
+               --include='*.ts' --include='*.tsx' --include='*.js' \
+               --exclude-dir=node_modules --exclude-dir=.next . ; then
+            echo "::error::A secret-shaped literal was found. Build test values at runtime instead."
+            exit 1
+          fi
+          echo "clean"

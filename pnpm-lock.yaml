@@ -35,6 +35,15 @@ importers:
         specifier: ^1.0.0
         version: 1.2.0
 
+  packages/security:
+    dependencies:
+      '@wakeelcheck/core':
+        specifier: workspace:*
+        version: link:../core
+      '@wakeelcheck/fetcher':
+        specifier: workspace:*
+        version: link:../fetcher
+
 packages:
 
   '@esbuild/aix-ppc64@0.28.2':

@@ -26,6 +26,12 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/llm:
+    dependencies:
+      '@wakeelcheck/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/readiness:
     dependencies:
       '@wakeelcheck/core':
@@ -43,6 +49,18 @@ importers:
       '@wakeelcheck/fetcher':
         specifier: workspace:*
         version: link:../fetcher
+
+  packages/visibility:
+    dependencies:
+      '@wakeelcheck/core':
+        specifier: workspace:*
+        version: link:../core
+      '@wakeelcheck/llm':
+        specifier: workspace:*
+        version: link:../llm
+      cheerio:
+        specifier: ^1.0.0
+        version: 1.2.0
 
 packages:
 

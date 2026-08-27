@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الدليل التجاري — WakeelCheck</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}</style>
+</head>
+<body>
+<title>دليل وكيل تشيك التجاري</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ══════════ tokens ══════════ */
+:root{
+  direction: rtl;
+
+  --paper:      #f5f5f3;
+  --surface:    #ffffff;
+  --surface-2:  #eeeeea;
+  --rule:       #dbdad3;
+  --rule-soft:  #e8e7e1;
+
+  --ink:        #1e1b16;
+  --ink-2:      #3d3830;
+  --muted:      #6b6459;
+  --faint:      #938c7e;
+
+  --accent:     #9a5c0c;
+  --accent-2:   #7a4708;
+  --accent-wash:#f6ead8;
+  --teal:       #0d6f79;
+  --teal-wash:  #e2f0f1;
+
+  --ok:         #2c7048;
+  --warn:       #a9640d;
+  --crit:       #a8241d;
+  --ok-wash:    #e4f0e9;
+  --warn-wash:  #f8eeda;
+  --crit-wash:  #f7e5e3;
+
+  --shadow: 0 1px 2px rgba(30,27,22,.06), 0 6px 20px -12px rgba(30,27,22,.24);
+
+  --sans: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --measure: 68ch;
+  --pad: clamp(1.1rem, 4vw, 2.5rem);
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:      #14120e;
+    --surface:    #1c1a15;
+    --surface-2:  #26231c;
+    --rule:       #3a352b;
+    --rule-soft:  #2c2821;
+
+    --ink:        #efece4;
+    --ink-2:      #d3cec2;
+    --muted:      #a49c8c;
+    --faint:      #7d7566;
+
+    --accent:     #d99a3d;
+    --accent-2:   #eab35c;
+    --accent-wash:#312414;
+    --teal:       #2ca7b1;
+    --teal-wash:  #123037;
+
+    --ok:         #57b380;
+    --warn:       #d69436;
+    --crit:       #e0736a;
+    --ok-wash:    #17291f;
+    --warn-wash:  #312414;
+    --crit-wash:  #2f1a18;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.45), 0 8px 24px -14px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:      #14120e;
+  --surface:    #1c1a15;
+  --surface-2:  #26231c;
+  --rule:       #3a352b;
+  --rule-soft:  #2c2821;
+
+  --ink:        #efece4;
+  --ink-2:      #d3cec2;
+  --muted:      #a49c8c;
+  --faint:      #7d7566;
+
+  --accent:     #d99a3d;
+  --accent-2:   #eab35c;
+  --accent-wash:#312414;
+  --teal:       #2ca7b1;
+  --teal-wash:  #123037;
+
+  --ok:         #57b380;
+  --warn:       #d69436;
+  --crit:       #e0736a;
+  --ok-wash:    #17291f;
+  --warn-wash:  #312414;
+  --crit-wash:  #2f1a18;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.45), 0 8px 24px -14px rgba(0,0,0,.85);
+}
+
+/* ══════════ base ══════════ */
+*{ box-sizing: border-box; }
+
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap{
+  max-width: 60rem;
+  margin-inline: auto;
+  padding: var(--pad);
+  padding-block: clamp(1.5rem, 5vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.2rem, 5vw, 3.4rem);
+}
+
+p, li{ max-width: var(--measure); }
+h1,h2,h3,h4{ text-wrap: balance; margin: 0; line-height: 1.3; font-weight: 600; }
+
+a{ color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+code, .mono{ font-family: var(--mono); font-size: .86em; }
+code:not(pre code){
+  background: var(--surface-2);
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+  padding: .08em .38em;
+  direction: ltr;
+  display: inline-block;
+  unicode-bidi: isolate;
+}
+
+/* ══════════ masthead ══════════ */
+.masthead{
+  border-block-end: 2px solid var(--ink);
+  padding-block-end: 1.4rem;
+  display: flex; flex-direction: column; gap: .9rem;
+}
+.eyebrow{
+  font-family: var(--mono);
+  font-size: .72rem; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--accent); direction: ltr; text-align: start;
+}
+.masthead h1{ font-size: clamp(1.9rem, 5.6vw, 3rem); font-weight: 700; letter-spacing: -.015em; }
+.standfirst{ font-size: clamp(1rem, 2.4vw, 1.15rem); color: var(--muted); font-weight: 300; max-width: 56ch; }
+.meta{
+  display: flex; flex-wrap: wrap; gap: .5rem .9rem;
+  font-family: var(--mono); font-size: .74rem; color: var(--faint);
+  direction: ltr; justify-content: flex-end;
+}
+
+/* ══════════ sections ══════════ */
+section{ display: flex; flex-direction: column; gap: 1.15rem; }
+.sec-head{
+  display: flex; align-items: baseline; gap: .8rem;
+  border-block-end: 1px solid var(--rule); padding-block-end: .55rem;
+}
+.sec-num{
+  font-family: var(--mono); font-size: .78rem; font-weight: 600;
+  color: var(--accent); flex: none; padding-block-start: .2rem;
+}
+.sec-head h2{ font-size: clamp(1.25rem, 3.2vw, 1.6rem); font-weight: 600; letter-spacing: -.01em; }
+
+/* ══════════ thesis ══════════ */
+.thesis{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 3px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.thesis .label{
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--accent); direction: ltr; text-align: start;
+}
+.thesis p{ margin: 0; font-size: 1.06rem; }
+.thesis strong{ font-weight: 600; color: var(--ink); }
+
+/* ══════════ service blocks ══════════ */
+.svc{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.svc-top{
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .8rem;
+  padding: .9rem 1.2rem;
+  background: var(--surface-2);
+  border-block-end: 1px solid var(--rule);
+}
+.svc-top h3{ font-size: 1.06rem; font-weight: 600; }
+.svc-job{
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent);
+  direction: ltr; margin-inline-start: auto;
+}
+.svc-body{ padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: .75rem; }
+.svc-body ul{ margin: 0; padding-inline-start: 1.15rem; font-size: .9rem; color: var(--ink-2); }
+.svc-body li{ margin-block-end: .2rem; }
+.quote{
+  background: var(--accent-wash);
+  border-radius: 3px;
+  padding: .7rem .95rem;
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--ink);
+  border-inline-start: 3px solid var(--accent);
+}
+.svc-foot{
+  display: flex; flex-wrap: wrap; gap: .4rem .8rem;
+  font-family: var(--mono); font-size: .74rem; color: var(--faint);
+  padding-block-start: .3rem; border-block-start: 1px dashed var(--rule-soft);
+  direction: ltr; justify-content: flex-end;
+}
+
+/* ══════════ tables ══════════ */
+.tbl{ overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+table{ border-collapse: collapse; width: 100%; min-width: 34rem; font-size: .9rem; }
+thead th{
+  background: var(--surface-2); color: var(--ink);
+  font-weight: 600; font-size: .78rem; letter-spacing: .04em;
+  text-align: start; padding: .7rem .85rem;
+  border-block-end: 1px solid var(--rule); white-space: nowrap;
+}
+tbody td{ padding: .68rem .85rem; border-block-end: 1px solid var(--rule-soft); vertical-align: top; color: var(--ink-2); }
+tbody tr:last-child td{ border-block-end: 0; }
+td strong{ color: var(--ink); font-weight: 600; }
+.num{ font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; direction: ltr; text-align: start; }
+.big{ font-size: 1.02rem; font-weight: 600; color: var(--ink); }
+
+/* ══════════ pills ══════════ */
+.pill{
+  display: inline-block; font-family: var(--mono);
+  font-size: .68rem; font-weight: 600; letter-spacing: .03em;
+  padding: .12rem .5rem; border-radius: 100px; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.p-ok{   background: var(--ok-wash);   color: var(--ok);   border-color: var(--ok); }
+.p-warn{ background: var(--warn-wash); color: var(--warn); border-color: var(--warn); }
+.p-crit{ background: var(--crit-wash); color: var(--crit); border-color: var(--crit); }
+.p-acc{  background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+.p-teal{ background: var(--teal-wash); color: var(--teal); border-color: var(--teal); }
+
+/* ══════════ north star ══════════ */
+.star{
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  padding: 1.4rem 1.6rem;
+  display: flex; flex-direction: column; gap: .55rem;
+}
+.star .label{
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--accent-2); direction: ltr; text-align: start;
+}
+.star .metric{ font-size: clamp(1.2rem, 3.4vw, 1.55rem); font-weight: 600; color: var(--paper); }
+.star p{ margin: 0; font-size: .92rem; color: var(--faint); max-width: var(--measure); }
+
+/* ══════════ funnel ══════════ */
+.funnels{ display: grid; gap: .9rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.funnel{
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 1rem 1.15rem;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.funnel h4{ font-size: .98rem; font-weight: 600; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+.steps{ display: flex; flex-direction: column; gap: .3rem; }
+.step{
+  display: grid; grid-template-columns: 1fr auto;
+  gap: .6rem; align-items: baseline;
+  font-size: .87rem; color: var(--ink-2);
+  padding-block: .18rem;
+  border-block-end: 1px dotted var(--rule-soft);
+}
+.step:last-child{ border-block-end: 0; font-weight: 600; color: var(--ink); }
+.step .v{ font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 600; }
+.funnel .note{ font-size: .82rem; color: var(--muted); margin: 0; }
+
+/* ══════════ channels ══════════ */
+.chan{ background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.chan > div{
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: .55rem .9rem; align-items: baseline;
+  padding: .75rem 1.05rem; border-block-end: 1px solid var(--rule-soft);
+  font-size: .9rem;
+}
+.chan > div:last-child{ border-block-end: 0; }
+.chan .rank{ font-family: var(--mono); font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+.chan b{ color: var(--ink); font-weight: 600; }
+.chan .desc{ color: var(--muted); font-size: .85rem; display: block; }
+.chan .when{ font-family: var(--mono); font-size: .72rem; color: var(--faint); white-space: nowrap; direction: ltr; }
+.chan .no{ opacity: .62; }
+.chan .no .rank{ color: var(--crit); }
+
+/* ══════════ stop list ══════════ */
+.stop{ background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.stop div{
+  display: grid; grid-template-columns: auto 1fr; gap: .8rem;
+  padding: .7rem 1rem; border-block-end: 1px solid var(--rule-soft);
+  font-size: .89rem; align-items: baseline;
+}
+.stop div:last-child{ border-block-end: 0; }
+.stop .x{ color: var(--crit); font-family: var(--mono); font-weight: 600; }
+.stop b{ color: var(--ink); font-weight: 600; }
+.stop span:last-child{ color: var(--muted); }
+
+/* ══════════ weekly board ══════════ */
+.board{ display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.tile{
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 4px; padding: .8rem .95rem;
+  display: flex; flex-direction: column; gap: .18rem;
+}
+.tile .k{ font-size: .84rem; font-weight: 600; color: var(--ink); }
+.tile .t{ font-family: var(--mono); font-size: .74rem; color: var(--accent); direction: ltr; text-align: start; }
+.tile .d{ font-size: .78rem; color: var(--muted); }
+
+hr.end{ border: 0; border-block-start: 1px solid var(--rule); margin: 0; }
+.colophon{ font-family: var(--mono); font-size: .72rem; color: var(--faint); direction: ltr; text-align: start; }
+
+@media (prefers-reduced-motion: no-preference){
+  .svc, .funnel, .tile{ transition: border-color .18s ease; }
+  .svc:hover, .funnel:hover, .tile:hover{ border-color: var(--accent); }
+}
+</style>
+
+<div class="wrap" dir="rtl">
+
+  <header class="masthead">
+    <div class="eyebrow">WakeelCheck · Go-To-Market</div>
+    <h1>دليل وكيل تشيك التجاري</h1>
+    <p class="standfirst">
+      الخدمات التي نبيعها ووظيفة كل واحدة، الأهداف التسويقية بأرقام قابلة للقياس،
+      والقنوات بترتيب تشغيلها — رفيق الخريطة التقنية.
+    </p>
+    <div class="meta">
+      <span>aitchek.online</span><span>·</span>
+      <span>market: KSA / GCC</span><span>·</span>
+      <span>2026-08</span>
+    </div>
+  </header>
+
+  <!-- ══════════ 01 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>القاعدة الحاكمة</h2></div>
+
+    <div class="thesis">
+      <div class="label">Operating rule</div>
+      <p>
+        <strong>كل خدمة لها وظيفة واحدة في القمع — لا اثنتان.</strong>
+        خدمة تجذب، وخدمة تُحوّل، وخدمة تُبقي. أي ميزة لا تؤدي واحدة من هذه الثلاث
+        لا تدخل المنتج، مهما بدت جميلة.
+      </p>
+    </div>
+
+    <p>
+      هذه القاعدة تحسم كل جدال قادم عن الميزات. سؤالك عن أي إضافة يصبح واحداً:
+      هل تجذب تاجراً لم يكن يعرفنا؟ هل تُقنع من يعرفنا بالدفع؟ هل تمنع من دفع من الإلغاء؟
+      لا؟ إذاً هي مؤجَّلة — حتى لو كانت أسهل ما نبنيه.
+    </p>
+  </section>
+
+  <!-- ══════════ 02 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>الخدمات الثلاث</h2></div>
+
+    <div class="svc">
+      <div class="svc-top">
+        <h3>المرآة المصغّرة — الفحص المجاني</h3>
+        <span class="svc-job">Acquisition</span>
+      </div>
+      <div class="svc-body">
+        <ul>
+          <li>سؤالا شراء اثنان فقط، ومحرك واحد — بلا تسجيل، في أقل من 60 ثانية</li>
+          <li>الإجابة الحرفية كما خرجت من المحرك، واسم المنافس مظلَّلاً فيها</li>
+          <li>إنذار أمني واحد فقط — الأصدم من بين ما وجدناه</li>
+          <li>مخرج قابل للمشاركة كصورة، لأن التاجر سيُرسله لشريكه</li>
+        </ul>
+        <div class="quote">«متجرك غير مذكور. ذُكر بدلاً منك: متجر س. وشهادة موقعك تنتهي بعد 11 يوماً.»</div>
+        <p style="margin:0;font-size:.88rem;color:var(--muted)">
+          وظيفتها الوحيدة خلق الألم، لا حلّه. لا تعطِ فيها الأسئلة العشرة ولا التقرير الكامل —
+          من يحصل على كل شيء مجاناً لا يدفع أبداً.
+        </p>
+        <div class="svc-foot"><span>cost ≈ $0.03</span><span>·</span><span>no signup</span><span>·</span><span>rate-limited + cached 24h</span></div>
+      </div>
+    </div>
+
+    <div class="svc">
+      <div class="svc-top">
+        <h3>التقرير الكامل والإصلاح</h3>
+        <span class="svc-job">Conversion</span>
+      </div>
+      <div class="svc-body">
+        <ul>
+          <li>عشرة أسئلة شراء عبر أربعة محركات: ChatGPT · AI Overviews · AI Mode · Perplexity</li>
+          <li>كل إجابة حرفية، وكل منافس ذُكر، ومعدل ظهورك مقابل ظهورهم</li>
+          <li>الفحص الأمني الكامل: النطاق، الشهادة، DMARC، المفاتيح المكشوفة، الترويسات</li>
+          <li>السبب التقني وراء كل غياب — <strong>وكود جاهز للصق يُصلحه</strong></li>
+        </ul>
+        <div class="quote">التقرير يُعجب. الإصلاح هو ما يُدفع له. لا تبع تشخيصاً بلا دواء.</div>
+        <div class="svc-foot"><span>cost ≈ $0.18</span><span>·</span><span>email required</span><span>·</span><span>security needs verified ownership</span></div>
+      </div>
+    </div>
+
+    <div class="svc">
+      <div class="svc-top">
+        <h3>المراقبة والتنبيهات وحصة الصوت</h3>
+        <span class="svc-job">Retention</span>
+      </div>
+      <div class="svc-body">
+        <ul>
+          <li>إعادة فحص أسبوعية تلقائية لكل الأسئلة والمحركات</li>
+          <li>تنبيه فوري على واتساب عند أي تغيّر — الظهور أو الاختفاء</li>
+          <li>لوحة حصة الصوت: أنت مقابل ثلاثة منافسين، شهراً بشهر</li>
+          <li>مراقبة أمنية مستمرة: الشهادة والنطاق ينتهيان، والمفاتيح تُسرَّب فجأة</li>
+        </ul>
+        <div class="quote">📉 «اختفيت من إجابة ChatGPT على "أفضل عطور نسائية بجدة". حلّ محلك: متجر س.»</div>
+        <p style="margin:0;font-size:.88rem;color:var(--muted)">
+          هذه الرسالة وحدها هي مبرّر الاشتراك الشهري كله. تاجر يستلمها لا يفتح صفحة الإلغاء —
+          كل ما عداها في المنتج يخدم لحظة وصولها.
+        </p>
+        <div class="svc-foot"><span>cost ≈ $3.35/mo</span><span>·</span><span>149 SAR/mo</span><span>·</span><span>margin 92%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 03 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>ما لا نقدّمه</h2></div>
+    <p>الرفض هنا ليس تواضعاً — كل بند منها سوق مشبع لا نملك فيه أي ميزة، وسيبتلع وقتنا ويشوّش رسالتنا.</p>
+    <div class="stop">
+      <div><span class="x">✕</span><span><b>تقارير SEO تقليدية</b> — عشرات الأدوات أفضل منا وأرخص. نحن لسنا أداة SEO.</span></div>
+      <div><span class="x">✕</span><span><b>كتابة محتوى وإدارة سوشيال</b> — خدمة بالساعة لا تتوسّع، وتحوّلنا من منتج إلى وكالة.</span></div>
+      <div><span class="x">✕</span><span><b>تصميم وتطوير المتاجر</b> — نفس الفخ، ويجعل شركاءنا المحتملين (المطوّرين) منافسين.</span></div>
+      <div><span class="x">✕</span><span><b>تتبّع 240 دولة و17 محركاً</b> — Rankscale يفعلها بـ20$. لا نلاحقه على العرض، بل على العمق المحلي.</span></div>
+      <div><span class="x">✕</span><span><b>استشارات فردية بالساعة</b> — تستنزف المؤسس في الشهور التي يجب أن يبني فيها.</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════ 04 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>الأهداف التسويقية</h2></div>
+
+    <div class="star">
+      <div class="label">North star metric</div>
+      <div class="metric">عدد المتاجر المُراقَبة أسبوعياً</div>
+      <p>
+        الرقم الوحيد الذي يقيس ثلاثة أشياء معاً: قيمة سُلّمت فعلاً، وإيراد متكرر، واحتفاظ.
+        لا تتبع «عدد الفحوصات» — فهو يرتفع بحملة مؤثر ثم يسقط، ولا يعني أن أحداً دفع.
+      </p>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>الأفق</th><th>الهدف</th><th class="num">مشتركون</th><th class="num">إيراد شهري</th><th>البوابة</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">30 يوماً</td>
+            <td>30 متجراً مفحوصاً · 20 محادثة تاجر</td>
+            <td class="num">0</td><td class="num">0 ريال</td>
+            <td>5 تجار يسألون «متى أقدر أدفع؟»</td>
+          </tr>
+          <tr>
+            <td class="num">60 يوماً</td>
+            <td>أول عملاء دافعين — دفع يدوي</td>
+            <td class="num big">3</td><td class="num">447 ريال</td>
+            <td><span class="pill p-crit">حاسمة</span> لم تصل؟ المشكلة في السوق لا في المنتج</td>
+          </tr>
+          <tr>
+            <td class="num">90 يوماً</td>
+            <td>تجاوز نقطة التعادل · انسحاب أقل من 10%</td>
+            <td class="num big">20</td><td class="num">2,980 ريال</td>
+            <td><span class="pill p-ok">مربح</span> التعادل عند 19</td>
+          </tr>
+          <tr>
+            <td class="num">180 يوماً</td>
+            <td>3 مؤثرين نشطين · تطبيق سلة منشور</td>
+            <td class="num big">60</td><td class="num">8,940 ريال</td>
+            <td>قناة توزيع تعمل بلا مجهود المؤسس</td>
+          </tr>
+          <tr>
+            <td class="num">365 يوماً</td>
+            <td>المشروع يُعيّش مؤسسه</td>
+            <td class="num big">100+</td><td class="num">14,900 ريال</td>
+            <td>ربح صافٍ ‎~13,200 ريال شهرياً</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="caption" style="font-size:.85rem;color:var(--muted)">
+      لاحظ أن هدف الستين يوماً ثلاثة عملاء فقط — 447 ريالاً. المبلغ تافه، لكنه يُثبت أن الفرضية صحيحة،
+      وهذا أثمن من خمسين ألف ريال استثمار.
+    </p>
+  </section>
+
+  <!-- ══════════ 05 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>القمع بالأرقام</h2></div>
+    <p>قناتان بمعدلات تحويل مختلفة جذرياً. الترتيب بينهما هو أهم قرار تسويقي في السنة الأولى.</p>
+
+    <div class="funnels">
+      <div class="funnel">
+        <h4>أ) واتساب مباشر من المؤسس <span class="pill p-ok">ابدأ هنا</span></h4>
+        <div class="steps">
+          <div class="step"><span>رسالة بلقطة شاشة شخصية</span><span class="v">100</span></div>
+          <div class="step"><span>ردّ</span><span class="v">30</span></div>
+          <div class="step"><span>تقرير كامل</span><span class="v">12</span></div>
+          <div class="step"><span>عميل دافع</span><span class="v">3</span></div>
+        </div>
+        <p class="note">
+          تحويل <strong>3%</strong> من الرسائل. التكلفة 66 ريالاً ووقتك.
+          بطيئة لكنها الأعلى تحويلاً بستة أضعاف — ولا تتوسّع، وهذا مقبول تماماً في البداية.
+        </p>
+      </div>
+
+      <div class="funnel">
+        <h4>ب) القمع المجاني <span class="pill p-warn">لاحقاً</span></h4>
+        <div class="steps">
+          <div class="step"><span>فحص مجاني</span><span class="v">1000</span></div>
+          <div class="step"><span>إيميل مُدخَل</span><span class="v">300</span></div>
+          <div class="step"><span>تقرير كامل</span><span class="v">150</span></div>
+          <div class="step"><span>عميل دافع</span><span class="v">5</span></div>
+        </div>
+        <p class="note">
+          تحويل <strong>0.5%</strong> من الفحوصات. التكلفة 660 ريالاً، تسترد في شهر واحد.
+          تتوسّع بلا حدود — لكن لا تشغّلها قبل أن تُثبت القناة (أ) أن أحداً يدفع أصلاً.
+        </p>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>للوصول إلى 100 مشترك</th><th>المطلوب</th><th class="num">التكلفة</th></tr></thead>
+        <tbody>
+          <tr><td>40 عميلاً عبر القناة المباشرة</td><td class="num">1,333 رسالة واتساب</td><td class="num">‎~900 ريال</td></tr>
+          <tr><td>60 عميلاً عبر القمع</td><td class="num">12,000 فحص مجاني</td><td class="num">7,920 ريال</td></tr>
+          <tr><td><strong>الناتج عند اكتمال المئة</strong></td><td class="num">14,900 ريال/شهر</td><td class="num">ربح 13,200</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════ 06 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>القنوات بترتيب التشغيل</h2></div>
+
+    <div class="chan">
+      <div>
+        <span class="rank">1</span>
+        <span><b>واتساب مباشر — 30 متجراً في تخصص واحد</b><span class="desc">لقطة شاشة شخصية لكل تاجر. لا تفوّضها لأحد: هنا تتعلّم اعتراضاتهم الحقيقية.</span></span>
+        <span class="when">week 3</span>
+      </div>
+      <div>
+        <span class="rank">2</span>
+        <span><b>مجموعات تجار سلة وزد</b><span class="desc">تيليجرام وواتساب. شارك فحصاً مجانياً لمتجر مشهور، لا إعلاناً عن نفسك.</span></span>
+        <span class="when">week 5</span>
+      </div>
+      <div>
+        <span class="rank">3</span>
+        <span><b>ثلاثة مدرّبي تجارة إلكترونية</b><span class="desc">مدرّب بـ8,000 متابع أفضل من مؤثر عام بنصف مليون. حساب مجاني، والهدف قياس التحويل لا الربح.</span></span>
+        <span class="when">week 8</span>
+      </div>
+      <div>
+        <span class="rank">4</span>
+        <span><b>متجر تطبيقات سلة</b><span class="desc">أفضل قناة على المدى الطويل: توزيع مجاني دائم داخل المنصة، ولا يستطيع أي منافس عالمي دخولها.</span></span>
+        <span class="when">week 10</span>
+      </div>
+      <div>
+        <span class="rank">5</span>
+        <span><b>فيديو «أرسل رابط متجرك»</b><span class="desc">الديمو نفسه هو المحتوى. الفحص المباشر على الكاميرا يصنع تعليقات لا تنتهي، بلا ميزانية.</span></span>
+        <span class="when">ongoing</span>
+      </div>
+      <div class="no">
+        <span class="rank">✕</span>
+        <span><b>إعلانات مدفوعة</b><span class="desc">ليس قبل 50 مشتركاً. الإعلان يضخّم رسالة مُثبتة، ولا يخترع واحدة.</span></span>
+        <span class="when">not yet</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ 07 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>التسعير</h2></div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>العرض</th><th class="num">السعر</th><th>الدور</th></tr></thead>
+        <tbody>
+          <tr><td><strong>الفحص المجاني</strong></td><td class="num">0</td><td>خلق الألم — لا يُسلَّم فيه التقرير الكامل أبداً</td></tr>
+          <tr><td><strong>الاشتراك</strong></td><td class="num big">149 ريال/شهر</td><td>سعر واحد حتى المشترك العشرين. التدرّج يُبنى على سلوك مُلاحَظ لا مُتخيَّل</td></tr>
+          <tr><td><strong>إعداد بخدمة كاملة</strong></td><td class="num">990 ريال مرة واحدة</td><td>اختياري ويدوي بالكامل — بلا سطر كود، ويموّل شهرين تشغيل من خمسة عملاء</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="thesis">
+      <div class="label">Positioning</div>
+      <p>
+        <strong>«Profound الخليجي — بربع السعر، يتكلم عربي، ويُصلح متجرك على سلة بنفسه.»</strong>
+        Profound يبدأ من 499$ شهرياً — أي 1,870 ريالاً. مساحتنا هي 149 ريالاً،
+        وهي مساحة فارغة تماماً في السوق العربي، ولا يملك أي منافس عالمي حافزاً للنزول إليها.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ 08 ══════════ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>لوحة كل يوم اثنين</h2></div>
+    <p>ستة أرقام تُسجَّل صباح كل اثنين. رقم لا يتحرّك أسبوعين متتاليين يعني أن القناة التي تغذّيه لا تعمل.</p>
+
+    <div class="board">
+      <div class="tile"><span class="t">01</span><span class="k">فحوصات مجانية</span><span class="d">وتكلفتها بالريال</span></div>
+      <div class="tile"><span class="t">02</span><span class="k">إيميلات جديدة</span><span class="d">نسبة التحويل من الفحص</span></div>
+      <div class="tile"><span class="t">03</span><span class="k">تقارير كاملة</span><span class="d">لحظة إدراك القيمة</span></div>
+      <div class="tile"><span class="t">04</span><span class="k">محادثات تجار</span><span class="d">والاعتراض الأكثر تكراراً</span></div>
+      <div class="tile"><span class="t">05</span><span class="k">مشتركون: جدد / ملغون</span><span class="d">وسبب كل إلغاء بكلماته</span></div>
+      <div class="tile"><span class="t">06</span><span class="k">متاجر مُراقَبة</span><span class="d">النجم الشمالي</span></div>
+    </div>
+
+    <p style="font-size:.88rem;color:var(--muted)">
+      الرقم الرابع هو الأثمن ولا يظهر في أي لوحة تحليلات: <strong>الاعتراض المتكرر</strong>.
+      إذا سمعت «الذكاء الاصطناعي ما يجيبني زباين» ثلاث مرات في أسبوع، فرسالتك التسويقية
+      هي التي تحتاج تعديلاً — لا منتجك.
+    </p>
+  </section>
+
+  <hr class="end">
+  <p class="colophon">WakeelCheck · go-to-market guide · companion to the technical roadmap</p>
+
+</div>
+
+</body>
+</html>

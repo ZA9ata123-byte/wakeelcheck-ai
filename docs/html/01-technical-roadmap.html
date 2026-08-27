@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الخريطة التقنية — WakeelCheck</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}</style>
+</head>
+<body>
+<title>خريطة وكيل تشيك التقنية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ══════════ tokens: light is the base, both dark states redefine ══════════ */
+:root{
+  direction: rtl;
+
+  --paper:      #f4f6f7;
+  --surface:    #ffffff;
+  --surface-2:  #eceff1;
+  --rule:       #d6dde1;
+  --rule-soft:  #e6ebee;
+
+  --ink:        #16202b;
+  --ink-2:      #33434f;
+  --muted:      #5f7180;
+  --faint:      #8496a2;
+
+  --accent:     #0d6f79;
+  --accent-2:   #0a5860;
+  --accent-wash:#e2f0f1;
+  --brass:      #a4630f;
+  --brass-wash: #f6ecdd;
+
+  --ok:         #2c7048;
+  --warn:       #a9640d;
+  --crit:       #a8241d;
+  --ok-wash:    #e4f0e9;
+  --warn-wash:  #f8eeda;
+  --crit-wash:  #f7e5e3;
+
+  --shadow: 0 1px 2px rgba(22,32,43,.06), 0 6px 20px -12px rgba(22,32,43,.22);
+
+  --sans: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --measure: 68ch;
+  --pad: clamp(1.1rem, 4vw, 2.5rem);
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:      #0e161d;
+    --surface:    #161f28;
+    --surface-2:  #1d2831;
+    --rule:       #2c3a45;
+    --rule-soft:  #232f39;
+
+    --ink:        #e4ecf1;
+    --ink-2:      #c2ced7;
+    --muted:      #93a4b0;
+    --faint:      #6d7f8c;
+
+    --accent:     #2ca7b1;
+    --accent-2:   #4cc3cc;
+    --accent-wash:#123037;
+    --brass:      #d69436;
+    --brass-wash: #2e2415;
+
+    --ok:         #57b380;
+    --warn:       #d69436;
+    --crit:       #e0736a;
+    --ok-wash:    #14291f;
+    --warn-wash:  #2e2415;
+    --crit-wash:  #2e1a19;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:      #0e161d;
+  --surface:    #161f28;
+  --surface-2:  #1d2831;
+  --rule:       #2c3a45;
+  --rule-soft:  #232f39;
+
+  --ink:        #e4ecf1;
+  --ink-2:      #c2ced7;
+  --muted:      #93a4b0;
+  --faint:      #6d7f8c;
+
+  --accent:     #2ca7b1;
+  --accent-2:   #4cc3cc;
+  --accent-wash:#123037;
+  --brass:      #d69436;
+  --brass-wash: #2e2415;
+
+  --ok:         #57b380;
+  --warn:       #d69436;
+  --crit:       #e0736a;
+  --ok-wash:    #14291f;
+  --warn-wash:  #2e2415;
+  --crit-wash:  #2e1a19;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+/* ══════════ base ══════════ */
+*{ box-sizing: border-box; }
+
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap{
+  max-width: 60rem;
+  margin-inline: auto;
+  padding: var(--pad);
+  padding-block: clamp(1.5rem, 5vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.2rem, 5vw, 3.4rem);
+}
+
+p, li{ max-width: var(--measure); }
+
+h1,h2,h3,h4{ text-wrap: balance; margin: 0; line-height: 1.3; font-weight: 600; }
+
+a{ color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+code, .mono{ font-family: var(--mono); font-size: .86em; }
+code:not(pre code){
+  background: var(--surface-2);
+  border: 1px solid var(--rule-soft);
+  border-radius: 4px;
+  padding: .08em .38em;
+  direction: ltr;
+  display: inline-block;
+  unicode-bidi: isolate;
+}
+
+/* ══════════ masthead ══════════ */
+.masthead{
+  border-block-end: 2px solid var(--ink);
+  padding-block-end: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+.eyebrow{
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  direction: ltr;
+  text-align: start;
+}
+.masthead h1{
+  font-size: clamp(1.9rem, 5.6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+.standfirst{
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 56ch;
+}
+.meta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem .9rem;
+  font-family: var(--mono);
+  font-size: .74rem;
+  color: var(--faint);
+  direction: ltr;
+  justify-content: flex-end;
+}
+.meta span{ white-space: nowrap; }
+
+/* ══════════ section shell ══════════ */
+section{ display: flex; flex-direction: column; gap: 1.15rem; }
+
+.sec-head{
+  display: flex;
+  align-items: baseline;
+  gap: .8rem;
+  border-block-end: 1px solid var(--rule);
+  padding-block-end: .55rem;
+}
+.sec-num{
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--accent);
+  flex: none;
+  padding-block-start: .2rem;
+}
+.sec-head h2{
+  font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* ══════════ thesis callout ══════════ */
+.thesis{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 3px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.thesis .label{
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  direction: ltr;
+  text-align: start;
+}
+.thesis p{ margin: 0; font-size: 1.06rem; }
+.thesis strong{ font-weight: 600; color: var(--ink); }
+
+/* ══════════ diagram ══════════ */
+.figure{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+.scroll-x{ overflow-x: auto; }
+.figure svg{ display: block; min-width: 640px; width: 100%; height: auto; }
+figcaption, .caption{
+  font-size: .82rem;
+  color: var(--muted);
+  max-width: var(--measure);
+}
+
+/* ══════════ tables ══════════ */
+.tbl{ overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+table{ border-collapse: collapse; width: 100%; min-width: 34rem; font-size: .9rem; }
+thead th{
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-align: start;
+  padding: .7rem .85rem;
+  border-block-end: 1px solid var(--rule);
+  white-space: nowrap;
+}
+tbody td{
+  padding: .68rem .85rem;
+  border-block-end: 1px solid var(--rule-soft);
+  vertical-align: top;
+  color: var(--ink-2);
+}
+tbody tr:last-child td{ border-block-end: 0; }
+td strong{ color: var(--ink); font-weight: 600; }
+.num{ font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; direction: ltr; text-align: start; }
+
+/* ══════════ pills ══════════ */
+.pill{
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  padding: .12rem .5rem;
+  border-radius: 100px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.p-ok{   background: var(--ok-wash);   color: var(--ok);   border-color: var(--ok); }
+.p-warn{ background: var(--warn-wash); color: var(--warn); border-color: var(--warn); }
+.p-crit{ background: var(--crit-wash); color: var(--crit); border-color: var(--crit); }
+.p-acc{  background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+
+/* ══════════ service cards ══════════ */
+.grid{ display: grid; gap: .85rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.card{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .95rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+.card h4{
+  font-size: .96rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.card .path{
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--accent);
+  direction: ltr;
+  text-align: start;
+}
+.card p{ margin: 0; font-size: .87rem; color: var(--muted); max-width: none; }
+
+/* ══════════ code ══════════ */
+pre{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  direction: ltr;
+  text-align: start;
+  margin: 0;
+  font-size: .8rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+pre .c{ color: var(--faint); }
+pre .k{ color: var(--accent); font-weight: 500; }
+pre .t{ color: var(--brass); font-weight: 500; }
+
+/* ══════════ phases ══════════ */
+.phases{ display: flex; flex-direction: column; gap: .9rem; }
+.phase{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem 1.15rem;
+  display: grid;
+  gap: .1rem .95rem;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  box-shadow: var(--shadow);
+}
+.phase .tag{
+  grid-row: 1 / span 3;
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+  padding-block-start: .2rem;
+  font-variant-numeric: tabular-nums;
+}
+.phase h4{ font-size: 1.02rem; font-weight: 600; }
+.phase .when{
+  font-family: var(--mono);
+  font-size: .74rem;
+  color: var(--faint);
+  direction: ltr;
+  text-align: start;
+}
+.phase ul{ margin: .5rem 0 0; padding-inline-start: 1.1rem; font-size: .89rem; color: var(--ink-2); }
+.phase li{ margin-block-end: .18rem; }
+.phase .gate{
+  margin-block-start: .7rem;
+  padding: .5rem .75rem;
+  background: var(--accent-wash);
+  border-radius: 3px;
+  font-size: .84rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.phase.rev .gate{ background: var(--ok-wash); }
+
+/* ══════════ do-not list ══════════ */
+.stop{
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.stop div{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .8rem;
+  padding: .7rem 1rem;
+  border-block-end: 1px solid var(--rule-soft);
+  font-size: .89rem;
+  align-items: baseline;
+}
+.stop div:last-child{ border-block-end: 0; }
+.stop .x{ color: var(--crit); font-family: var(--mono); font-weight: 600; }
+.stop b{ color: var(--ink); font-weight: 600; }
+.stop span:last-child{ color: var(--muted); }
+
+/* ══════════ ask block ══════════ */
+.ask{
+  background: var(--brass-wash);
+  border: 1px solid var(--brass);
+  border-radius: 4px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+.ask h3{ font-size: 1.05rem; font-weight: 600; color: var(--ink); }
+.ask ol{ margin: 0; padding-inline-start: 1.3rem; font-size: .92rem; color: var(--ink-2); }
+.ask li{ margin-block-end: .3rem; }
+
+hr.end{
+  border: 0;
+  border-block-start: 1px solid var(--rule);
+  margin: 0;
+}
+.colophon{
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--faint);
+  direction: ltr;
+  text-align: start;
+}
+
+@media (prefers-reduced-motion: no-preference){
+  .card, .phase{ transition: border-color .18s ease; }
+  .card:hover, .phase:hover{ border-color: var(--accent); }
+}
+</style>
+
+<div class="wrap" dir="rtl">
+
+  <header class="masthead">
+    <div class="eyebrow">WakeelCheck · Technical Roadmap</div>
+    <h1>خريطة وكيل تشيك التقنية</h1>
+    <p class="standfirst">
+      معمار المنصة، الحزمة التقنية، نموذج البيانات، وإطار انتزاع الوحدات من منصتك القائمة —
+      مرتّبة بحيث يأتي أول ريال إيراد في الأسبوع الثامن، لا الثامن عشر.
+    </p>
+    <div class="meta">
+      <span>aitchek.online</span>
+      <span>·</span>
+      <span>branch: claude/idea-market-analysis-xro8si</span>
+      <span>·</span>
+      <span>2026-08</span>
+    </div>
+  </header>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>القرار المعماري الوحيد المهم</h2></div>
+
+    <div class="thesis">
+      <div class="label">Core principle</div>
+      <p>
+        <strong>افصل المسار السريع عن المسار البطيء.</strong>
+        واجهة المستخدم تردّ في أقل من 500 مللي ثانية دائماً. أما الفحص — الذي يستغرق 20 إلى 90 ثانية
+        لأنه ينتظر ChatGPT وGoogle وDNS — فيذهب إلى طابور، وينفّذه عامل مستقل على سيرفرك.
+      </p>
+    </div>
+
+    <p>
+      هذا القرار يحلّ ثلاث مشاكل دفعة واحدة: دوال Vercel تنتهي مهلتها قبل انتهاء الفحص؛ وسيرفر Contabo
+      الذي تدفع ثمنه اليوم بلا عمل يصبح هو محرّك المنتج؛ والفحص الدوري الشهري (قلب الاشتراك)
+      يحتاج أصلاً إلى جدولة لا تستطيع دالة بلا حالة أن توفّرها.
+    </p>
+    <p>
+      نتيجة عملية مباشرة: <strong>Vercel وContabo ليسا ازدواجية عندك — كلٌّ منهما يؤدي دوراً لا يؤديه الآخر.</strong>
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>المعمار</h2></div>
+
+    <figure class="figure">
+      <div class="scroll-x">
+        <svg viewBox="0 0 880 520" role="img" aria-labelledby="arch-title arch-desc">
+          <title id="arch-title">معمار منصة وكيل تشيك</title>
+          <desc id="arch-desc">خمس طبقات: التاجر، تطبيق Vercel، طبقة البيانات والطابور، عامل الفحص على Contabo، والخدمات الخارجية.</desc>
+
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--faint)"/>
+            </marker>
+            <marker id="ah-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <g font-family="IBM Plex Sans Arabic, sans-serif" font-size="13">
+
+            <!-- band labels (right side, RTL) -->
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--faint)" text-anchor="end" letter-spacing="1">
+              <text x="872" y="46">CLIENT</text>
+              <text x="872" y="146">EDGE · VERCEL</text>
+              <text x="872" y="256">STATE</text>
+              <text x="872" y="366">WORKER · CONTABO</text>
+              <text x="872" y="476">EXTERNAL</text>
+            </g>
+
+            <!-- 1 client -->
+            <rect x="300" y="20" width="240" height="46" rx="4" fill="var(--surface-2)" stroke="var(--rule)"/>
+            <text x="420" y="41" text-anchor="middle" fill="var(--ink)" font-weight="600">التاجر · المتصفح</text>
+            <text x="420" y="57" text-anchor="middle" fill="var(--muted)" font-size="11">فحص مجاني · لوحة التحكم · التقارير</text>
+
+            <!-- 2 vercel -->
+            <rect x="140" y="106" width="560" height="82" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="420" y="128" text-anchor="middle" fill="var(--ink)" font-weight="600">Next.js على Vercel — المسار السريع</text>
+            <g font-size="11">
+              <rect x="160" y="140" width="152" height="34" rx="3" fill="var(--accent-wash)" stroke="var(--rule-soft)"/>
+              <text x="236" y="162" text-anchor="middle" fill="var(--ink-2)">الواجهة RTL + التقارير</text>
+              <rect x="326" y="140" width="152" height="34" rx="3" fill="var(--accent-wash)" stroke="var(--rule-soft)"/>
+              <text x="402" y="162" text-anchor="middle" fill="var(--ink-2)">المصادقة + سلة OAuth</text>
+              <rect x="492" y="140" width="188" height="34" rx="3" fill="var(--accent-wash)" stroke="var(--rule-soft)"/>
+              <text x="586" y="162" text-anchor="middle" fill="var(--ink-2)">API: يُنشئ المهمة فقط</text>
+            </g>
+
+            <!-- 3 state -->
+            <rect x="140" y="216" width="264" height="76" rx="4" fill="var(--surface)" stroke="var(--rule)"/>
+            <text x="272" y="240" text-anchor="middle" fill="var(--ink)" font-weight="600">Postgres</text>
+            <text x="272" y="258" text-anchor="middle" fill="var(--muted)" font-size="11">المتاجر · الفحوصات · النتائج</text>
+            <text x="272" y="276" text-anchor="middle" fill="var(--muted)" font-size="11">الاشتراكات · التنبيهات</text>
+
+            <rect x="436" y="216" width="264" height="76" rx="4" fill="var(--surface)" stroke="var(--brass)"/>
+            <text x="568" y="240" text-anchor="middle" fill="var(--ink)" font-weight="600">Redis</text>
+            <text x="568" y="258" text-anchor="middle" fill="var(--muted)" font-size="11">طابور المهام · جدولة دورية</text>
+            <text x="568" y="276" text-anchor="middle" fill="var(--brass)" font-size="11" font-weight="600">كاش النتائج 24س · حدّ IP</text>
+
+            <!-- 4 worker -->
+            <rect x="80" y="320" width="680" height="92" rx="4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="420" y="342" text-anchor="middle" fill="var(--ink)" font-weight="600">عامل الفحص — Contabo VPS · Docker</text>
+            <g font-size="10.5">
+              <rect x="98"  y="354" width="122" height="42" rx="3" fill="var(--surface-2)" stroke="var(--rule-soft)"/>
+              <text x="159" y="371" text-anchor="middle" fill="var(--ink-2)">الجاهزية</text>
+              <text x="159" y="387" text-anchor="middle" fill="var(--faint)" font-size="9.5">64 قاعدة</text>
+
+              <rect x="230" y="354" width="122" height="42" rx="3" fill="var(--accent-wash)" stroke="var(--accent)"/>
+              <text x="291" y="371" text-anchor="middle" fill="var(--ink)" font-weight="600">المرآة</text>
+              <text x="291" y="387" text-anchor="middle" fill="var(--accent)" font-size="9.5">المنتج الأساسي</text>
+
+              <rect x="362" y="354" width="122" height="42" rx="3" fill="var(--surface-2)" stroke="var(--rule-soft)"/>
+              <text x="423" y="371" text-anchor="middle" fill="var(--ink-2)">الأمان</text>
+              <text x="423" y="387" text-anchor="middle" fill="var(--faint)" font-size="9.5">سلبي فقط</text>
+
+              <rect x="494" y="354" width="122" height="42" rx="3" fill="var(--surface-2)" stroke="var(--rule-soft)"/>
+              <text x="555" y="371" text-anchor="middle" fill="var(--ink-2)">المُصلِح</text>
+              <text x="555" y="387" text-anchor="middle" fill="var(--faint)" font-size="9.5">أكواد + سلة</text>
+
+              <rect x="626" y="354" width="122" height="42" rx="3" fill="var(--surface-2)" stroke="var(--rule-soft)"/>
+              <text x="687" y="371" text-anchor="middle" fill="var(--ink-2)">التنبيهات</text>
+              <text x="687" y="387" text-anchor="middle" fill="var(--faint)" font-size="9.5">مقارنة + إرسال</text>
+            </g>
+
+            <!-- 5 external -->
+            <g font-size="10.5">
+              <rect x="80"  y="440" width="126" height="40" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+              <text x="143" y="458" text-anchor="middle" fill="var(--ink-2)">DeepSeek</text>
+              <text x="143" y="472" text-anchor="middle" fill="var(--faint)" font-size="9">V4-Flash · 4%</text>
+
+              <rect x="216" y="440" width="126" height="40" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+              <text x="279" y="458" text-anchor="middle" fill="var(--ink-2)">DataForSEO</text>
+              <text x="279" y="472" text-anchor="middle" fill="var(--faint)" font-size="9">AI Overviews</text>
+
+              <rect x="352" y="440" width="126" height="40" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+              <text x="415" y="458" text-anchor="middle" fill="var(--ink-2)">OpenAI</text>
+              <text x="415" y="472" text-anchor="middle" fill="var(--faint)" font-size="9">ChatGPT</text>
+
+              <rect x="488" y="440" width="126" height="40" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+              <text x="551" y="458" text-anchor="middle" fill="var(--ink-2)">Salla / Zid</text>
+              <text x="551" y="472" text-anchor="middle" fill="var(--faint)" font-size="9">OAuth + API</text>
+
+              <rect x="624" y="440" width="126" height="40" rx="3" fill="var(--surface-2)" stroke="var(--rule)"/>
+              <text x="687" y="458" text-anchor="middle" fill="var(--ink-2)">Moyasar</text>
+              <text x="687" y="472" text-anchor="middle" fill="var(--faint)" font-size="9">مدى · Apple Pay</text>
+            </g>
+
+            <!-- arrows -->
+            <g stroke="var(--faint)" stroke-width="1.3" fill="none" marker-end="url(#ah)">
+              <path d="M420,66 L420,104"/>
+              <path d="M272,190 L272,214"/>
+              <path d="M568,190 L568,214"/>
+              <path d="M240,412 L240,438"/>
+              <path d="M420,412 L420,438"/>
+              <path d="M600,412 L600,438"/>
+            </g>
+            <g stroke="var(--accent)" stroke-width="1.5" fill="none" marker-end="url(#ah-a)">
+              <path d="M660,294 L660,318"/>
+              <path d="M140,360 L110,360 L110,254 L138,254" stroke-dasharray="4 3"/>
+            </g>
+            <text x="674" y="310" fill="var(--accent)" font-family="IBM Plex Mono, monospace" font-size="9.5">سحب المهمة</text>
+            <text x="104" y="308" fill="var(--accent)" font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="start">كتابة النتيجة</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        الأسهم الفيروزية هي دورة المهمة: العامل يسحب من الطابور، ينفّذ، ثم يكتب النتيجة في Postgres —
+        والواجهة تقرأها فوراً. المستخدم لا ينتظر اتصالاً مفتوحاً في أي لحظة.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>الحزمة التقنية</h2></div>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>الطبقة</th><th>الاختيار</th><th>لماذا هذا تحديداً</th><th>التكلفة</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>الإطار</strong></td>
+            <td class="mono">Next.js 15</td>
+            <td>يوحّد الواجهة والـAPI في مشروع واحد بدل <code>index.html</code> + Express منفصلين، ويدعم RTL بلا عناء.</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <td><strong>اللغة</strong></td>
+            <td class="mono">TypeScript</td>
+            <td>غير قابل للتفاوض. أربعة من الأخطاء السبعة الحرجة في محرّكك الحالي كان المترجم سيرفضها قبل النشر.</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <td><strong>قاعدة البيانات</strong></td>
+            <td class="mono">Postgres · Supabase</td>
+            <td>مصادقة وتخزين وRLS جاهزة في خدمة واحدة. الطبقة المجانية تكفي حتى المئة مشترك.</td>
+            <td class="num">$0 → $25</td>
+          </tr>
+          <tr>
+            <td><strong>ORM</strong></td>
+            <td class="mono">Drizzle</td>
+            <td>أخف من Prisma وأسرع بكثير في البيئة بلا خادم، وترحيلات SQL صريحة تفهمها بالعين.</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <td><strong>الطابور والكاش</strong></td>
+            <td class="mono">BullMQ + Redis</td>
+            <td>على سيرفر Contabo الذي تدفع ثمنه أصلاً. الكاش وحده يقتطع 40–60% من فاتورة الفحص المجاني.</td>
+            <td class="num">مشمول</td>
+          </tr>
+          <tr>
+            <td><strong>المصادقة</strong></td>
+            <td class="mono">Supabase Auth + Salla OAuth</td>
+            <td>OAuth سلة ليس رفاهية: هو <strong>إثبات الملكية القانوني</strong> الذي يجيز الفحص الأمني.</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <td><strong>الدفع</strong></td>
+            <td class="mono">Moyasar</td>
+            <td>يدعم مدى وApple Pay وفاتورة ضريبية سعودية. Stripe لا يخدم تاجراً سعودياً كما يجب.</td>
+            <td class="num">‎~2.75%</td>
+          </tr>
+          <tr>
+            <td><strong>الحماية</strong></td>
+            <td class="mono">Cloudflare Turnstile</td>
+            <td>حسابك مفتوح أصلاً. بلا هذا، حملة مؤثر واحدة تحرق 13,000 ريال في شهر.</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <td><strong>الرصد</strong></td>
+            <td class="mono">Sentry + Axiom</td>
+            <td>فحص يفشل صامتاً على متجر عميل = اشتراك ملغى لا تعرف سببه أبداً.</td>
+            <td class="num">$0 → $26</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="caption">
+      ملاحظة على الترحيل: لا تُعِد كتابة كل شيء دفعة واحدة. أنشئ مشروع Next.js، وانقل
+      <code>api/audit.js</code> كما هو داخل <code>packages/scanner</code> ثم أصلحه هناك بالاختبارات.
+      الواجهة الحالية تبقى تعمل حتى تجهز البديلة.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>المحرّكات الستة</h2></div>
+    <p>
+      كل محرّك حزمة مستقلة تأخذ نطاقاً وتُرجع نتيجة منظّمة. لا يعرف أيٌّ منها شيئاً عن HTTP
+      ولا عن قاعدة البيانات — وهذا ما يجعل اختبارها ممكناً على HTML ثابت بلا شبكة.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="path">packages/fetcher</div>
+        <h4>الجالب</h4>
+        <p>جلب سلبي بمهلة وحد أقصى للحجم، وحظر عناوين الشبكات الداخلية — يسدّ ثغرة SSRF المفتوحة اليوم. كل المحركات تمرّ من هنا.</p>
+      </div>
+      <div class="card">
+        <div class="path">packages/readiness</div>
+        <h4>الجاهزية <span class="pill p-warn">إصلاح</span></h4>
+        <p>القواعد الـ64 بعد إصلاحها: تحليل robots صحيح، فحص صفحات المنتج لا الرئيسية، أوزان مطبَّقة فعلياً، وحذف القواعد التي تنجح دائماً.</p>
+      </div>
+      <div class="card">
+        <div class="path">packages/visibility</div>
+        <h4>المرآة <span class="pill p-acc">القلب</span></h4>
+        <p>يستنتج تخصص المتجر، يولّد أسئلة شراء بلهجة محلية، يسأل المحركات الأربعة، ويستخرج: هل ذُكر المتجر؟ ومن ذُكر بدلاً منه؟</p>
+      </div>
+      <div class="card">
+        <div class="path">packages/security</div>
+        <h4>الأمان <span class="pill p-crit">طمس إجباري</span></h4>
+        <p>ثلاث درجات حسب إثبات الملكية. الأسرار المكتشفة تُطمس عند المصدر ولا تصل قاعدة البيانات أبداً — بأول 4 وآخر 4 خانات فقط.</p>
+      </div>
+      <div class="card">
+        <div class="path">packages/fixer</div>
+        <h4>المُصلِح</h4>
+        <p>يحوّل كل إخفاق إلى كود جاهز للصق، ولاحقاً إلى كتابة مباشرة عبر Salla API. هذا ما يُدفع له، لا التقرير.</p>
+      </div>
+      <div class="card">
+        <div class="path">packages/alerts</div>
+        <h4>التنبيهات <span class="pill p-ok">مضاد الانسحاب</span></h4>
+        <p>يقارن فحص اليوم بفحص الأمس ويرسل الفروق فقط: «اختفيت من إجابة… وحلّ محلك منافسك». هذا هو مبرّر الاشتراك الشهري بأكمله.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>نموذج البيانات</h2></div>
+    <p>الجداول التي تحمل المنتج فعلاً. كل ما عداها يمكن تأجيله.</p>
+
+<pre><span class="c">-- الملكية: عمود verified_at هو ما يجيز الفحص الأمني العميق</span>
+<span class="k">stores</span>            id, org_id, domain, platform, <span class="t">verified_at</span>, verify_method
+<span class="k">scans</span>             id, store_id, kind[readiness|visibility|security],
+                  status, started_at, finished_at, <span class="t">cost_micros</span>
+
+<span class="c">-- الجاهزية والأمان</span>
+<span class="k">rule_results</span>      scan_id, rule_key, passed, weight, evidence
+<span class="k">security_findings</span> store_id, severity, kind, <span class="t">evidence_redacted</span>,
+                  first_seen_at, resolved_at
+
+<span class="c">-- المرآة: هنا يعيش المنتج</span>
+<span class="k">questions</span>         id, store_id, text_ar, intent, locale
+<span class="k">engine_answers</span>    question_id, engine, answer_text, cited_urls[],
+                  <span class="t">store_mentioned</span>, <span class="t">competitors[]</span>, captured_at
+
+<span class="c">-- الاحتفاظ والإيراد</span>
+<span class="k">alerts</span>            store_id, kind, payload, sent_at, channel
+<span class="k">subscriptions</span>     org_id, plan, status, renews_at, moyasar_id
+<span class="k">affiliate_codes</span>   code, owner, rate, uses, mrr_attributed
+</pre>
+
+    <p class="caption">
+      العمود الحاسم هو <code>engine_answers.competitors[]</code> — منه تُبنى «حصة الصوت»، ومنه تُشتقّ
+      التنبيهات، وعليه تقوم كل رسالة تسويقية في المنتج.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>ماذا نأخذ من منصتك القائمة</h2></div>
+
+    <p>
+      لم أرَ الشيفرة بعد، لكن هذا الإطار يصلح لأي منصة SaaS. مرّر كل وحدة على أربعة أسئلة —
+      <strong>وحدة تسقط في السؤال الثاني أو الثالث تُعاد كتابتها أسرع مما تُنتزع.</strong>
+    </p>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th class="num">#</th><th>السؤال</th><th>إذا كان الجواب «لا»</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td>هل يحتاجها وكيل تشيك أصلاً؟</td><td>تجاهلها مهما كانت متقنة</td></tr>
+          <tr><td class="num">2</td><td>هل نفس الحزمة التقنية؟</td><td>لا تنسخ كوداً — انسخ <strong>مخطط الجداول والمنطق</strong> فقط</td></tr>
+          <tr><td class="num">3</td><td>هل تُنتزع بتعديل أقل من 20%؟</td><td>أعد كتابتها — الانتزاع من متشابك أبطأ</td></tr>
+          <tr><td class="num">4</td><td>هل تعمل في الإنتاج بمستخدمين حقيقيين؟</td><td>عاملها ككود جديد: اختبرها قبل الثقة</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead>
+          <tr><th>الوحدة</th><th>القرار</th><th>الوقت الموفَّر</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>طابور المهام والجدولة</strong></td><td><span class="pill p-ok">انتزعها أولاً</span> عمودك الفقري — الفحص الدوري كله يقوم عليها</td><td class="num">2–3 أسابيع</td></tr>
+          <tr><td><strong>الفوترة والاشتراكات + الضريبة</strong></td><td><span class="pill p-ok">انتزعها</span> أثقل ما يُبنى من الصفر، وأقلّه تغيّراً بين المنتجات</td><td class="num">3–4 أسابيع</td></tr>
+          <tr><td><strong>المصادقة والحسابات والفرق</strong></td><td><span class="pill p-ok">انتزعها</span> إن لم تكن متشابكة مع نموذج المنتج القديم</td><td class="num">3–4 أسابيع</td></tr>
+          <tr><td><strong>نظام التصميم RTL ومكتبة المكونات</strong></td><td><span class="pill p-ok">انتزعها</span> مكسب فوري وواضح — وهوية بصرية جاهزة</td><td class="num">2–3 أسابيع</td></tr>
+          <tr><td><strong>الإشعارات: إيميل وواتساب</strong></td><td><span class="pill p-ok">انتزعها</span> قناة التنبيهات = آلية الاحتفاظ</td><td class="num">2 أسبوع</td></tr>
+          <tr><td><strong>لوحة الإدارة + الأدوار</strong></td><td><span class="pill p-warn">انتزع المبسّط منها</span> لا تجرّ نظام صلاحيات معقّداً لمنتج بمستخدم واحد لكل متجر</td><td class="num">1–2 أسبوع</td></tr>
+          <tr><td><strong>السجلات وتتبع الأخطاء وCI/CD</strong></td><td><span class="pill p-ok">انسخ الإعدادات</span> نصوص جاهزة، بلا منطق مرتبط</td><td class="num">1–2 أسبوع</td></tr>
+          <tr><td><strong>منطق المنتج القديم وشاشاته</strong></td><td><span class="pill p-crit">اتركه</span> يجرّ معه افتراضات مجال مختلف تماماً</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="thesis">
+      <div class="label">The trap</div>
+      <p>
+        <strong>انتزع وحدات — لا تنسخ المنصة كاملة.</strong>
+        الإغراء الطبيعي أن تنسخ الـ100 ألف سطر وتبني وكيل تشيك داخلها، فتبدو البداية أسرع بأسبوعين.
+        لكنك تجرّ معها كل ديونها التقنية وافتراضات مجالها، وبعد ثلاثة أشهر تصبح كل ميزة جديدة
+        معركة مع كود لم يُكتب لك. <strong>مجموع ما يمكن توفيره واقعياً: 14 إلى 20 أسبوعاً — أي أربعة أشهر.</strong>
+        هذه أثمن ورقة تملكها، بشرط أن تُلعب بالانتزاع لا بالنسخ.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>المراحل</h2></div>
+    <p>
+      مرتّبة على قاعدة واحدة: <strong>أول ريال إيراد في الأسبوع الثامن.</strong>
+      كل ما لا يخدم هذا الهدف مؤجَّل إلى المرحلة الثالثة أو أبعد.
+    </p>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="tag">00</div>
+        <h4>الأساس الصلب</h4>
+        <div class="when">week 1–2 · no revenue</div>
+        <ul>
+          <li>مشروع Next.js + TypeScript، ونقل المحرّك إلى <code>packages/</code></li>
+          <li>إصلاح الأخطاء السبعة: robots، صفحات المنتج، الأوزان، أرقام PageSpeed الملفّقة</li>
+          <li>الجالب الآمن: حدّ حجم + مهلة + حظر الشبكات الداخلية</li>
+          <li>اختبارات على HTML ثابت لكل قاعدة — بلا شبكة</li>
+        </ul>
+        <div class="gate">البوابة: كل قاعدة لها اختباران — حالة ناجحة وحالة راسبة — وكلاهما يمرّ.</div>
+      </div>
+
+      <div class="phase">
+        <div class="tag">01</div>
+        <h4>المرآة والقمع</h4>
+        <div class="when">week 3–5 · first conversations</div>
+        <ul>
+          <li><code>packages/visibility</code>: توليد الأسئلة + استعلام المحركات + استخراج المنافسين</li>
+          <li>الطابور والعامل على Contabo — وهنا يبدأ سيرفرك بالعمل فعلاً</li>
+          <li>القمع المقيّد: سؤالان مجاناً بلا تسجيل، عشرة مقابل الإيميل</li>
+          <li>Turnstile + كاش 24 ساعة + حدّ لكل IP <span class="pill p-crit">قبل أي مؤثر</span></li>
+          <li>صفحة هبوط بالجملة الجديدة + تقرير قابل للمشاركة كصورة</li>
+        </ul>
+        <div class="gate">البوابة: 30 متجراً مفحوصاً، و20 محادثة تاجر على واتساب.</div>
+      </div>
+
+      <div class="phase rev">
+        <div class="tag">02</div>
+        <h4>أول إيراد</h4>
+        <div class="when">week 6–8 · first paying customers</div>
+        <ul>
+          <li>الحسابات + Salla OAuth (إثبات الملكية = الإجازة القانونية للأمان)</li>
+          <li>المراقبة الدورية الأسبوعية + محرك التنبيهات</li>
+          <li>لوحة «حصة الصوت»: أنت مقابل منافسيك، شهراً بشهر</li>
+          <li><strong>الفوترة يدوياً — تحويل بنكي وفاتورة PDF.</strong> لا تبنِ نظام دفع لثلاثة عملاء</li>
+        </ul>
+        <div class="gate">البوابة الحاسمة: 3 عملاء دافعين. لم تصل؟ المشكلة في السوق لا في الكود — توقّف وأعد التفكير.</div>
+      </div>
+
+      <div class="phase">
+        <div class="tag">03</div>
+        <h4>التوسّع</h4>
+        <div class="when">week 9–12 · scale</div>
+        <ul>
+          <li>محرّك الأمان بالدرجات الثلاث والطمس الإجباري</li>
+          <li>Moyasar آلياً — بعد العميل العاشر، لا قبله</li>
+          <li>تطبيق في متجر تطبيقات سلة: زر الإصلاح المباشر</li>
+          <li>أكواد المؤثرين وتتبّع العمولة</li>
+        </ul>
+        <div class="gate">الهدف: 20 مشتركاً · انسحاب أقل من 10% · مسار تفعيل بلا تدخّل يدوي.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>ما لا نبنيه الآن</h2></div>
+    <p>هذه القائمة توفّر وقتاً أكثر من كل ما سبق. كل بند هنا ظهر في خطتك الأصلية أو هو إغراء طبيعي — وكلها مؤجَّلة.</p>
+
+    <div class="stop">
+      <div><span class="x">✕</span><span><b>Dify</b> — طبقة تنسيق بواجهة رسومية تضيف حاويات وصيانة، مقابل ما يفعله استدعاء API مباشر في عشرين سطراً.</span></div>
+      <div><span class="x">✕</span><span><b>ترحيل كل شيء إلى Contabo</b> — السيرفر عامل فحص، لا مستضيف للمنصة. Vercel أسرع وأرخص للواجهة.</span></div>
+      <div><span class="x">✕</span><span><b>الباقات الأربع</b> — سعر واحد حتى المشترك العشرين. التسعير المتدرّج يُبنى على سلوك مُلاحَظ، لا مُتخيَّل.</span></div>
+      <div><span class="x">✕</span><span><b>الفوترة الآلية</b> — قبل عشرة عملاء، تحويل بنكي يدوي أسرع وأصدق ويعطيك محادثة مع كل عميل.</span></div>
+      <div><span class="x">✕</span><span><b>تعدّد اللغات</b> — عربي فقط. اللاتينية بعد تسعة أشهر، وأفريقيا بعد سنتين.</span></div>
+      <div><span class="x">✕</span><span><b>تطبيق جوال</b> — لا تاجر يفحص متجره من الجوال. الويب المتجاوب يكفي تماماً.</span></div>
+      <div><span class="x">✕</span><span><b>ملفات ACP</b> — تهديد استراتيجي حقيقي لكنه على مدى 12–18 شهراً. راقبه، ولا تبنِ له اليوم.</span></div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────── -->
+  <section>
+    <div class="sec-head"><span class="sec-num">09</span><h2>ما أحتاجه لأقيّم منصتك فعلياً</h2></div>
+
+    <div class="ask">
+      <h3>ستة أسئلة تحسم أي وحدة تُنتزع وأيها تُعاد كتابتها</h3>
+      <ol>
+        <li>ما لغة المنصة وإطارها؟ <span class="mono">Node · Laravel · Django · .NET</span> — إن لم تكن Node، فالمنقول هو المخطط والمنطق لا الكود.</li>
+        <li>هل تعمل في الإنتاج بمستخدمين حقيقيين اليوم، أم مشروع متوقف؟</li>
+        <li>هل هي متعددة المستأجرين (multi-tenant) أم مثيل واحد لعميل واحد؟</li>
+        <li>هل الوحدات مفصولة (حزم أو خدمات) أم كتلة واحدة متشابكة؟</li>
+        <li>هل بها تكامل دفع سعودي يعمل — ميسر أو تاب — مع فاتورة ضريبية؟</li>
+        <li>هل تملك حقوقها كاملة، أم فيها كود عميل سابق أو رخصة تقيّد إعادة الاستخدام؟</li>
+      </ol>
+      <p style="margin:0; font-size:.9rem; color:var(--ink-2)">
+        الأسرع من كل هذا: أضف المستودع إلى الجلسة وسأقرأه بنفسي، وأعطيك قائمة ملفات محدّدة
+        بالمسارات: هذه تُنتزع، وهذه تُعاد كتابتها، وهذه تُترك.
+      </p>
+    </div>
+  </section>
+
+  <hr class="end">
+  <p class="colophon">WakeelCheck · technical roadmap · aitchek.online</p>
+
+</div>
+
+</body>
+</html>

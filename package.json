@@ -1,26 +1,16 @@
 {
   "name": "wakeelcheck",
-  "version": "1.0.0",
-  "description": "وكيل تشيك — WakeelCheck | أول أداة عربية لفحص جاهزية المتاجر الإلكترونية لوكلاء الذكاء الاصطناعي",
-  "main": "server.js",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/fetcher",
+    "test": "tsx --test packages/*/test/*.test.ts",
+    "docs": "node scripts/build-docs.js"
   },
-  "keywords": [
-    "ai-agent",
-    "ecommerce",
-    "audit",
-    "pagespeed",
-    "llmstxt",
-    "schema"
-  ],
-  "author": "WakeelCheck Team",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
-    "cheerio": "^1.0.0-rc.12",
-    "node-fetch": "^2.7.0"
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0"
   }
 }

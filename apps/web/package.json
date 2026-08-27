@@ -16,7 +16,9 @@
     "@wakeelcheck/pipeline": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@wakeelcheck/engines": "workspace:*",
+    "@wakeelcheck/security": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

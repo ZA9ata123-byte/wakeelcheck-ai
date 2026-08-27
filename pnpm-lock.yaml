@@ -23,6 +23,9 @@ importers:
       '@wakeelcheck/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@wakeelcheck/engines':
+        specifier: workspace:*
+        version: link:../../packages/engines
       '@wakeelcheck/fetcher':
         specifier: workspace:*
         version: link:../../packages/fetcher
@@ -35,6 +38,9 @@ importers:
       '@wakeelcheck/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
+      '@wakeelcheck/security':
+        specifier: workspace:*
+        version: link:../../packages/security
       next:
         specifier: ^15.1.0
         version: 15.5.24(@types/node@22.20.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -62,6 +68,12 @@ importers:
       drizzle-orm:
         specifier: ^0.38.0
         version: 0.38.4(@types/react@19.2.18)(react@19.2.8)
+
+  packages/engines:
+    dependencies:
+      '@wakeelcheck/core':
+        specifier: workspace:*
+        version: link:../core
 
   packages/fetcher:
     dependencies:

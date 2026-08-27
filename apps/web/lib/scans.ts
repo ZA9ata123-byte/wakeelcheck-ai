@@ -15,6 +15,8 @@ import { safeFetch } from '@wakeelcheck/fetcher';
 import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } from '@wakeelcheck/llm';
 import { runScan, type PipelineDeps, type SecurityCollected } from '@wakeelcheck/pipeline';
 import { memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
+import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
+import { collectSecurity as collectReal } from '@wakeelcheck/security';
 
 const scans = new Map<string, ScanResult>();
 
@@ -90,10 +92,18 @@ function demoLlm(): LlmProvider {
 
 // ── التبعيات ─────────────────────────────────────────────────
 
-function buildDeps(llm: LlmProvider, demo: boolean): PipelineDeps {
+function buildDeps(llm: LlmProvider, demo: boolean, engines: EngineClient[]): PipelineDeps {
+  // فحص الأسرار يحتاج سكربتات الصفحة، ويلتقطها الجالب قبل أن يُطلب الأمان.
+  const lastHtml = { html: '', url: '' };
+
   return {
     async fetchPage(url: string): Promise<FetchResult> {
-      return safeFetch(url, { timeoutMs: 12_000, maxBytes: 2_000_000 });
+      const page = await safeFetch(url, { timeoutMs: 12_000, maxBytes: 2_000_000 });
+      if (lastHtml.html === '') {
+        lastHtml.html = page.body;
+        lastHtml.url = page.finalUrl;
+      }
+      return page;
     },
 
     async fetchText(url: string): Promise<string | null> {
@@ -105,25 +115,23 @@ function buildDeps(llm: LlmProvider, demo: boolean): PipelineDeps {
       }
     },
 
-    async askEngine(engine: Engine, _question: string, _locale: string) {
-      if (demo) {
-        return { text: DEMO_ANSWER('المنتج', null), citedUrls: [], costMicros: 0 };
+    async askEngine(engine: Engine, question: string, locale: string) {
+      const client = engines.find((e) => e.engine === engine);
+
+      if (client === undefined) {
+        if (demo) return { text: DEMO_ANSWER('المنتج', null), citedUrls: [], costMicros: 0 };
+        // محرّك غير مُعدّ: نصرّح بذلك بدل اختراع إجابة — القاعدة 06.
+        throw new Error(`engine ${engine} is not configured`);
       }
-      // المحرّكات الحقيقية تُوصَّل هنا: OpenAI للـChatGPT، وDataForSEO
-      // لسطوح Google. حتى ذلك الحين نصرّح بعدم التوفّر بدل اختراع إجابة.
-      throw new Error(`engine ${engine} is not connected yet`);
+
+      return client.ask(question, locale);
     },
 
-    async collectSecurity(_domain: string): Promise<SecurityCollected> {
-      // المحوّلات الحقيقية (RDAP، TLS، DNS) تُوصَّل هنا. حتى ذلك الحين
-      // لا ندّعي شيئاً: لا بيانات يعني لا نتائج، لا نتائج مخترعة.
-      return {
-        domainInfo: { expiresAt: null },
-        cert: { expiresAt: null, protocol: null },
-        mail: { spf: null, dmarc: null },
-        jsAssets: [],
-        danglingCnames: [],
-      };
+    async collectSecurity(domain: string): Promise<SecurityCollected> {
+      // RDAP و TLS و DNS — كلها عامة ومجانية، ولا يحتاج أيّ منها مفتاحاً.
+      // كل مصدر يسقط وحده، والغائب يعود فارغاً فلا يُنتج التقييم نتيجة
+      // عمّا لا يعرفه.
+      return collectReal(domain, lastHtml.html, lastHtml.url);
     },
 
     llm,
@@ -146,7 +154,14 @@ export interface StartedScan {
  */
 export function startScan(url: string, kind: ScanKind): StartedScan {
   const { llm, demo } = buildLlm();
-  const deps = buildDeps(llm, demo);
+
+  const engines = buildEngines({
+    openaiApiKey: process.env['OPENAI_API_KEY'] ?? null,
+    dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
+    dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
+  });
+
+  const deps = buildDeps(llm, demo, engines);
   const scanId = randomUUID();
 
   putScan({

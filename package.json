@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/fetcher && tsc --noEmit -p packages/readiness && tsc --noEmit -p packages/security && tsc --noEmit -p packages/llm && tsc --noEmit -p packages/visibility && tsc --noEmit -p packages/limits && tsc --noEmit -p packages/pipeline && tsc --noEmit -p packages/db",
+    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/fetcher && tsc --noEmit -p packages/readiness && tsc --noEmit -p packages/security && tsc --noEmit -p packages/llm && tsc --noEmit -p packages/visibility && tsc --noEmit -p packages/limits && tsc --noEmit -p packages/pipeline && tsc --noEmit -p packages/db && tsc --noEmit -p packages/engines",
     "test": "tsx --test packages/*/test/*.test.ts",
     "docs": "node scripts/build-docs.js"
   },

@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
     "@wakeelcheck/core": "workspace:*",
     "@wakeelcheck/fetcher": "workspace:*"
   },
-  "scripts": { "typecheck": "tsc --noEmit", "test": "node --test test/" }
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/"
+  }
 }

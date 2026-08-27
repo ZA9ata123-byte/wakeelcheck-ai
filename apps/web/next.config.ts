@@ -4,6 +4,7 @@ const config: NextConfig = {
   // الحزم مصادر TypeScript مباشرةً — لا خطوة بناء وسيطة.
   transpilePackages: [
     '@wakeelcheck/core',
+    '@wakeelcheck/engines',
     '@wakeelcheck/fetcher',
     '@wakeelcheck/limits',
     '@wakeelcheck/llm',

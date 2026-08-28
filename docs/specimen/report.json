@@ -1,0 +1,549 @@
+{
+  "generatedAt": "2026-08-28T09:14:00.000Z",
+  "note": "المدخل ثابت. النتائج (القواعد، الشدّات، حصة الصوت) محسوبة بخط الأنابيب الحقيقي. نصوص إجابات المحرّكات ثابتة لأنها تحتاج مفتاحاً.",
+  "costMicros": 173600,
+  "warnings": [],
+  "result": {
+    "id": "spec-0001",
+    "kind": "full",
+    "status": "done",
+    "profile": {
+      "domain": "nourabaya.sa",
+      "platform": "custom",
+      "category": "عبايات نسائية",
+      "city": "الرياض",
+      "locale": "ar",
+      "currency": null,
+      "productUrls": [
+        "https://nourabaya.sa/products/abaya-classic",
+        "https://nourabaya.sa/products/abaya-summer"
+      ]
+    },
+    "questions": [
+      {
+        "id": "q1",
+        "text": "وش أفضل متجر عبايات في الرياض؟",
+        "intent": "discovery"
+      },
+      {
+        "id": "q2",
+        "text": "أرخص عباية مع توصيل سريع في الرياض؟",
+        "intent": "price"
+      }
+    ],
+    "answers": [
+      {
+        "questionId": "q1",
+        "engine": "chatgpt",
+        "answerText": "من أبرز خيارات العبايات في الرياض متجر بيت الأناقة، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك لمسة رقي معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر أناقتي يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 1
+          },
+          {
+            "name": "لمسة رقي",
+            "domain": null,
+            "position": 2
+          },
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 3
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q1",
+        "engine": "ai_overviews",
+        "answerText": "لو تبغى سعر أرخص مع توصيل سريع، أناقتي عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 1
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q1",
+        "engine": "ai_mode",
+        "answerText": "من أبرز خيارات العبايات في الرياض متجر بيت الأناقة، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك لمسة رقي معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر أناقتي يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 1
+          },
+          {
+            "name": "لمسة رقي",
+            "domain": null,
+            "position": 2
+          },
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 3
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q1",
+        "engine": "perplexity",
+        "answerText": "لو تبغى سعر أرخص مع توصيل سريع، أناقتي عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 1
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q2",
+        "engine": "chatgpt",
+        "answerText": "من أبرز خيارات العبايات في الرياض متجر بيت الأناقة، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك لمسة رقي معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر أناقتي يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 1
+          },
+          {
+            "name": "لمسة رقي",
+            "domain": null,
+            "position": 2
+          },
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 3
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q2",
+        "engine": "ai_overviews",
+        "answerText": "لو تبغى سعر أرخص مع توصيل سريع، أناقتي عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 1
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q2",
+        "engine": "ai_mode",
+        "answerText": "من أبرز خيارات العبايات في الرياض متجر بيت الأناقة، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك لمسة رقي معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر أناقتي يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 1
+          },
+          {
+            "name": "لمسة رقي",
+            "domain": null,
+            "position": 2
+          },
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 3
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      },
+      {
+        "questionId": "q2",
+        "engine": "perplexity",
+        "answerText": "لو تبغى سعر أرخص مع توصيل سريع، أناقتي عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.",
+        "citedUrls": [
+          "https://baitalabaya.sa",
+          "https://anaqati.sa"
+        ],
+        "storeMentioned": false,
+        "competitors": [
+          {
+            "name": "أناقتي",
+            "domain": "anaqati.sa",
+            "position": 1
+          }
+        ],
+        "capturedAt": "2026-08-28T09:14:00.000Z",
+        "costMicros": 21700
+      }
+    ],
+    "security": [
+      {
+        "kind": "exposed_secret",
+        "severity": "critical",
+        "title": {
+          "ar": "مفتاح سرّي مكشوف في ملفات متجرك",
+          "en": "A secret key is exposed in your store files"
+        },
+        "detail": {
+          "ar": "هذا الملف يُحمَّل لدى كل زائر — أي شخص يستطيع نسخ المفتاح الآن. أبطِله فوراً.",
+          "en": "This file is served to every visitor. Revoke the key now."
+        },
+        "evidence": "stripe_secret at https://nourabaya.sa/assets/app.bundle.js:1 → sk_live••••••••••••WxYz"
+      },
+      {
+        "kind": "domain_expiry",
+        "severity": "high",
+        "title": {
+          "ar": "نطاقك ينتهي بعد 21 يوماً",
+          "en": "Your domain expires in 21 days"
+        },
+        "detail": {
+          "ar": "إذا لم تُجدّده، يختفي متجرك ويستطيع أي شخص شراء اسمك.",
+          "en": "If you do not renew, your store goes offline and the name becomes available."
+        },
+        "evidence": "RDAP expiry 2026-09-19 (21d)",
+        "expiresAt": "2026-09-19T00:00:00.000Z"
+      },
+      {
+        "kind": "tls_expiry",
+        "severity": "high",
+        "title": {
+          "ar": "شهادة الأمان تنتهي بعد 8 يوماً",
+          "en": "TLS certificate expires in 8 days"
+        },
+        "detail": {
+          "ar": "متصفح كل زبون سيعرض تحذير «موقع غير آمن» ويمنعه من الشراء.",
+          "en": "Every visitor will see a \"not secure\" warning before they can buy."
+        },
+        "evidence": "notAfter 2026-09-06 (8d)",
+        "expiresAt": "2026-09-06T00:00:00.000Z"
+      },
+      {
+        "kind": "dangling_cname",
+        "severity": "high",
+        "title": {
+          "ar": "نطاق فرعي مهجور: blog.nourabaya.sa",
+          "en": "Dangling subdomain: blog.nourabaya.sa"
+        },
+        "detail": {
+          "ar": "يشير إلى خدمة لم تعد موجودة — يستطيع شخص آخر السيطرة عليه باسمك.",
+          "en": "It points at a service that no longer exists, so someone else can claim it."
+        },
+        "evidence": "CNAME for blog.nourabaya.sa does not resolve"
+      },
+      {
+        "kind": "no_dmarc",
+        "severity": "high",
+        "title": {
+          "ar": "نطاقك غير محمي من الانتحال",
+          "en": "Your domain is open to spoofing"
+        },
+        "detail": {
+          "ar": "أي شخص يستطيع إرسال بريد باسم متجرك إلى زبائنك.",
+          "en": "Anyone can send email that appears to come from your store."
+        },
+        "evidence": "no _dmarc TXT record"
+      },
+      {
+        "kind": "no_spf",
+        "severity": "medium",
+        "title": {
+          "ar": "سجل SPF مفقود",
+          "en": "SPF record is missing"
+        },
+        "detail": {
+          "ar": "بلا SPF تُصنَّف رسائلك كمزعجة، وتسهل انتحال نطاقك.",
+          "en": "Without SPF your mail lands in spam and your domain is easier to spoof."
+        },
+        "evidence": "no v=spf1 TXT record"
+      },
+      {
+        "kind": "cookie_flags",
+        "severity": "medium",
+        "title": {
+          "ar": "كوكيز بلا أعلام حماية",
+          "en": "Cookies missing protection flags"
+        },
+        "detail": {
+          "ar": "تسهّل اختطاف جلسة الزبون أثناء الشراء.",
+          "en": "Makes it easier to hijack a customer session mid-purchase."
+        },
+        "evidence": "missing: Secure, HttpOnly, SameSite"
+      },
+      {
+        "kind": "missing_headers",
+        "severity": "medium",
+        "title": {
+          "ar": "4 من ترويسات الحماية مفقودة",
+          "en": "4 security headers are missing"
+        },
+        "detail": {
+          "ar": "ترويسات قياسية تُضاف من إعدادات الخادم وتغلق ثغرات شائعة.",
+          "en": "Standard headers set at the server level that close common gaps."
+        },
+        "evidence": "HSTS, CSP, X-Content-Type-Options, Referrer-Policy"
+      }
+    ],
+    "rules": [
+      {
+        "key": "robots.file",
+        "weight": 6,
+        "passed": true,
+        "detail": {
+          "ar": "ملف robots.txt موجود ومقروء",
+          "en": "robots.txt is present"
+        },
+        "evidence": "2 group(s)"
+      },
+      {
+        "key": "robots.gptbot",
+        "weight": 10,
+        "passed": false,
+        "detail": {
+          "ar": "ChatGPT محظور في robots.txt — لن يرى متجرك إطلاقاً",
+          "en": "ChatGPT is blocked in robots.txt"
+        },
+        "evidence": "User-agent: GPTBot → blocked",
+        "fixSnippet": "User-agent: GPTBot\nAllow: /"
+      },
+      {
+        "key": "robots.oai_searchbot",
+        "weight": 9,
+        "passed": true,
+        "detail": {
+          "ar": "ChatGPT Search غير محظور — لكن متجرك لا يذكره صراحةً",
+          "en": "ChatGPT Search is not blocked, though never named"
+        },
+        "evidence": "User-agent: OAI-SearchBot → allowed by default"
+      },
+      {
+        "key": "robots.perplexitybot",
+        "weight": 8,
+        "passed": true,
+        "detail": {
+          "ar": "Perplexity غير محظور — لكن متجرك لا يذكره صراحةً",
+          "en": "Perplexity is not blocked, though never named"
+        },
+        "evidence": "User-agent: PerplexityBot → allowed by default"
+      },
+      {
+        "key": "robots.google_extended",
+        "weight": 9,
+        "passed": true,
+        "detail": {
+          "ar": "Gemini غير محظور — لكن متجرك لا يذكره صراحةً",
+          "en": "Gemini is not blocked, though never named"
+        },
+        "evidence": "User-agent: Google-Extended → allowed by default"
+      },
+      {
+        "key": "robots.claudebot",
+        "weight": 7,
+        "passed": true,
+        "detail": {
+          "ar": "Claude غير محظور — لكن متجرك لا يذكره صراحةً",
+          "en": "Claude is not blocked, though never named"
+        },
+        "evidence": "User-agent: ClaudeBot → allowed by default"
+      },
+      {
+        "key": "robots.sitemap_listed",
+        "weight": 5,
+        "passed": true,
+        "detail": {
+          "ar": "خريطة الموقع مذكورة في robots.txt",
+          "en": "Sitemap declared in robots.txt"
+        },
+        "evidence": "https://nourabaya.sa/sitemap.xml"
+      },
+      {
+        "key": "schema.product",
+        "weight": 10,
+        "passed": false,
+        "detail": {
+          "ar": "مخطط المنتج مفقود في صفحات المنتجات",
+          "en": "Product schema missing from product pages"
+        },
+        "evidence": "0/2 of 2 product page(s) carry @type product"
+      },
+      {
+        "key": "schema.offer",
+        "weight": 10,
+        "passed": true,
+        "detail": {
+          "ar": "مخطط العرض والسعر موجود في صفحات منتجاتك",
+          "en": "Offer schema found on product pages"
+        },
+        "evidence": "1/2 of 2 product page(s) carry @type offer"
+      },
+      {
+        "key": "schema.rating",
+        "weight": 7,
+        "passed": false,
+        "detail": {
+          "ar": "مخطط التقييمات مفقود في صفحات المنتجات",
+          "en": "AggregateRating schema missing from product pages"
+        },
+        "evidence": "0/2 of 2 product page(s) carry @type aggregaterating"
+      },
+      {
+        "key": "schema.brand",
+        "weight": 5,
+        "passed": false,
+        "detail": {
+          "ar": "مخطط العلامة مفقود في صفحات المنتجات",
+          "en": "Brand schema missing from product pages"
+        },
+        "evidence": "0/2 of 2 product page(s) carry @type brand"
+      },
+      {
+        "key": "schema.organization",
+        "weight": 7,
+        "passed": false,
+        "detail": {
+          "ar": "هوية المتجر غير معرّف",
+          "en": "Organization schema missing"
+        },
+        "evidence": "@type organization not found on 3 page(s)"
+      },
+      {
+        "key": "schema.breadcrumb",
+        "weight": 5,
+        "passed": false,
+        "detail": {
+          "ar": "مسار التصفح غير معرّف",
+          "en": "BreadcrumbList schema missing"
+        },
+        "evidence": "@type breadcrumblist not found on 3 page(s)"
+      },
+      {
+        "key": "consistency.price",
+        "weight": 9,
+        "passed": false,
+        "detail": {
+          "ar": "تناقض في السعر بين الطبقات في 1 صفحة — الوكلاء يستبعدون المتاجر المتناقضة",
+          "en": "Price disagrees across layers on 1 page(s)"
+        },
+        "evidence": "2 product page(s) — schema=299.00 og=349.00 microdata=—"
+      },
+      {
+        "key": "consistency.availability",
+        "weight": 7,
+        "passed": true,
+        "detail": {
+          "ar": "حالة التوفر معلنة برمجياً",
+          "en": "Availability is declared"
+        },
+        "evidence": "1/2 of 2 product page(s) declare availability"
+      },
+      {
+        "key": "consistency.currency",
+        "weight": 6,
+        "passed": true,
+        "detail": {
+          "ar": "العملة معلنة برمجياً",
+          "en": "Currency is declared"
+        },
+        "evidence": "2/2 of 2 product page(s) declare currency"
+      },
+      {
+        "key": "machine.sitemap",
+        "weight": 6,
+        "passed": true,
+        "detail": {
+          "ar": "خريطة الموقع متاحة",
+          "en": "sitemap.xml is reachable"
+        },
+        "evidence": "HEAD https://nourabaya.sa/sitemap.xml → 200"
+      },
+      {
+        "key": "machine.llms_txt",
+        "weight": 3,
+        "passed": false,
+        "detail": {
+          "ar": "ملف llms.txt مفقود أو شبه فارغ",
+          "en": "llms.txt missing or thin"
+        },
+        "evidence": "GET /llms.txt → not found"
+      },
+      {
+        "key": "semantic.single_h1",
+        "weight": 5,
+        "passed": true,
+        "detail": {
+          "ar": "كل صفحة تحمل عنواناً رئيسياً واحداً",
+          "en": "Every page has exactly one H1"
+        },
+        "evidence": "2 product page(s) — h1 counts: 1, 1"
+      },
+      {
+        "key": "semantic.image_alt",
+        "weight": 5,
+        "passed": false,
+        "detail": {
+          "ar": "50% من الصور تحمل نصاً بديلاً — الوكيل يقرأ الصور عبره",
+          "en": "50% of images carry alt text"
+        },
+        "evidence": "1/2 images on 2 product page(s)"
+      }
+    ],
+    "shareOfVoice": {
+      "store": 0,
+      "top": {
+        "name": "أناقتي",
+        "domain": "anaqati.sa",
+        "position": 1
+      },
+      "total": 8
+    }
+  }
+}

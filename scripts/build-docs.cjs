@@ -81,7 +81,18 @@ function main() {
   const sources = fs
     .readdirSync(HTML_DIR)
     .filter((f) => f.endsWith('.html') && !SKIP.has(f))
-    .sort();
+    .sort()
+    .map((f) => ({ src: path.join(HTML_DIR, f), out: path.join(OUT_DIR, path.basename(f, '.html') + '.pdf'), name: f }));
+
+  // نموذج التقرير مولَّد ويعيش بجانب مصدره لا في docs/html.
+  const specimen = path.join(OUT_DIR, 'specimen', 'report.html');
+  if (fs.existsSync(specimen)) {
+    sources.push({
+      src: specimen,
+      out: path.join(OUT_DIR, 'specimen', 'report.pdf'),
+      name: 'specimen-report.html',
+    });
+  }
 
   if (sources.length === 0) {
     console.error(`لا توجد مصادر HTML في ${HTML_DIR}`);
@@ -89,14 +100,10 @@ function main() {
   }
 
   for (const file of sources) {
-    const slug = path.basename(file, '.html');
-    const tmpFile = path.join(tmpDir, file);
-    const pdfPath = path.join(OUT_DIR, `${slug}.pdf`);
+    const tmpFile = path.join(tmpDir, file.name);
+    const pdfPath = file.out;
 
-    fs.writeFileSync(
-      tmpFile,
-      prepareForPrint(fs.readFileSync(path.join(HTML_DIR, file), 'utf8'))
-    );
+    fs.writeFileSync(tmpFile, prepareForPrint(fs.readFileSync(file.src, 'utf8')));
 
     execFileSync(
       chrome,
@@ -116,7 +123,7 @@ function main() {
     );
 
     const kb = (fs.statSync(pdfPath).size / 1024).toFixed(0);
-    console.log(`✅ docs/${slug}.pdf — ${kb} KB`);
+    console.log(`✅ ${path.relative(ROOT, pdfPath)} — ${kb} KB`);
   }
 
   fs.rmSync(tmpDir, { recursive: true, force: true });

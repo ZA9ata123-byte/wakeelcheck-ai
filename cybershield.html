@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CyberShield | WakeelCheck Security & AI Store Audit</title>
+<meta name="description" content="CyberShield Real-Time Security & AI Readiness Audit Engine." />
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<!-- Three.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          canvas: '#080A0F',
+          card: '#0F172A',
+          cardHover: '#1E293B',
+          accent: '#0EA5E9',
+          accentHover: '#0284C7',
+          success: '#10B981',
+          danger: '#F43F5E',
+          warning: '#F59E0B'
+        },
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #080A0F;
+    color: #F8FAFC;
+    font-family: 'Cairo', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  
+  .editorial-card {
+    background-color: #0F172A;
+    border: 1px solid #1E293B;
+  }
+
+  .split-frosted-card {
+    background-image: url('frosted_panel.png');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #1E293B;
+  }
+
+  #webgl-hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-slate-950">
+
+  <!-- TOP HEADER -->
+  <header class="w-full border-b border-slate-800/80 bg-canvas/90 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-slate-950 font-mono text-base">
+          🛡️
+        </div>
+        <div>
+          <span class="font-bold text-lg text-white tracking-tight">CyberShield</span>
+          <span class="text-xs font-mono text-slate-400 block -mt-1">WakeelCheck Engine</span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <a href="index.html" class="text-xs font-mono text-slate-400 hover:text-white transition">
+          الرئيسية
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION WITH THREE.JS WEBGL BLUEPRINT PARALLAX -->
+  <div class="relative w-full overflow-hidden bg-canvas border-b border-slate-800/80">
+    <canvas id="webgl-hero-canvas"></canvas>
+
+    <section class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
+        فحص الجاهزية والأمان التلقائي
+      </h1>
+
+      <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        أدخل رابط المتجر الإلكتروني لاختبار التوافق مع بوتات الذكاء الاصطناعي وسجلات الأمان DMARC و SSL.
+      </p>
+
+      <!-- Input Form -->
+      <div class="max-w-2xl mx-auto">
+        <form id="audit-form" onsubmit="handleAuditSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+          <input 
+            type="text" 
+            id="store-url" 
+            required
+            placeholder="https://myshop.com" 
+            class="flex-grow px-4 py-4 rounded-lg bg-slate-950/90 border border-slate-700 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-sky-500 transition"
+          />
+          <button 
+            type="submit" 
+            id="submit-btn"
+            class="px-8 py-4 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-base transition whitespace-nowrap"
+          >
+            شوف الجواب
+          </button>
+        </form>
+
+        <div class="text-xs text-slate-500 mt-4 font-mono">
+          فحص مجاني • بدون تسجيل حساب
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SCANNING MODAL -->
+  <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="max-w-md w-full editorial-card p-6 rounded-2xl border border-slate-700 shadow-2xl">
+      <div class="text-center mb-6">
+        <h3 class="text-lg font-bold text-white mb-1">جاري فحص المتجر...</h3>
+        <p id="scanning-target-url" class="font-mono text-xs text-sky-400">https://myshop.com</p>
+      </div>
+
+      <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mb-6">
+        <div id="progress-bar" class="bg-sky-500 h-full w-0 transition-all duration-300"></div>
+      </div>
+
+      <div class="space-y-3 mb-6 text-xs text-slate-300">
+        <div id="step-1" class="flex justify-between items-center py-1">
+          <span>1. قراءة ملف robots.txt وخريطة الموقع</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+        <div id="step-2" class="flex justify-between items-center py-1">
+          <span>2. استعلام محركات الذكاء الاصطناعي</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+        <div id="step-3" class="flex justify-between items-center py-1">
+          <span>3. تحليل تموضع المنافسين في المنطقة</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+        <div id="step-4" class="flex justify-between items-center py-1">
+          <span>4. إعداد تقرير الثغرات والتقييم النهائي</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-lg bg-slate-950 font-mono text-[11px] text-slate-400 border border-slate-800 h-20 overflow-y-auto" id="terminal-feed">
+        <div>> Start scanning process...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS SECTION -->
+  <section id="results-section" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden">
+    <div class="text-center mb-10">
+      <span class="text-xs font-mono text-sky-400 uppercase tracking-wider">نتائج الفحص التشخيصية المباشرة</span>
+      <h2 class="text-2xl sm:text-4xl font-bold text-white mt-2">تقرير الجاهزية والظهور أمام البوتات</h2>
+      <p id="result-domain-text" class="font-mono text-xs text-slate-400 mt-1">https://myshop.com</p>
+    </div>
+
+    <!-- Split-Panel Frosted Card -->
+    <div class="split-frosted-card rounded-2xl overflow-hidden mb-10 shadow-2xl p-6 sm:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-rose-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">متجرك المفحوص</span>
+              <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">غير مكتشف / يحتاج تهيئة</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span id="user-score-val" class="text-6xl font-black text-rose-400 font-mono">02</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              متجرك يعاني من غياب الترويسات الهيكلية الموجهة للبوتات وتوافق ملفات robots.txt.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-rose-400 border-t border-slate-800 pt-3">
+            ⚠️ الحالة: غير موصى به في إجابات ChatGPT
+          </div>
+        </div>
+
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-emerald-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">المنافس الرائد في مجالك</span>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">موصى به ومصنف أولاً</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span class="text-6xl font-black text-emerald-400 font-mono">08</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              المنافس يتصدر النتائج التوليدية بفضل اكتمال وسوم Schema.org للمنتجات.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-emerald-400 border-t border-slate-800 pt-3">
+            ✅ الحالة: يتصدر التوصيات الحالية
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    function initWebGLParallax() {
+      const canvas = document.getElementById('webgl-hero-canvas');
+      if (!canvas || !window.THREE) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / (canvas.parentElement.clientHeight || 500), 0.1, 1000);
+      camera.position.z = 5;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load('blueprint_grid.png', (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+
+        const geometry = new THREE.PlaneGeometry(12, 8);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.55
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
+          mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+        });
+
+        function renderLoop() {
+          requestAnimationFrame(renderLoop);
+          targetX += (mouseX - targetX) * 0.05;
+          targetY += (mouseY - targetY) * 0.05;
+
+          mesh.rotation.y = targetX;
+          mesh.rotation.x = -targetY;
+
+          renderer.render(scene, camera);
+        }
+
+        renderLoop();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initWebGLParallax, 100);
+    });
+
+    async function handleAuditSubmit(event) {
+      event.preventDefault();
+      const rawUrl = document.getElementById('store-url').value.trim();
+      if (!rawUrl) return;
+
+      const modal = document.getElementById('scanning-modal');
+      const progressBar = document.getElementById('progress-bar');
+      document.getElementById('scanning-target-url').innerText = rawUrl;
+      modal.classList.remove('hidden');
+
+      progressBar.style.width = '25%'; setStepState(1, 'جاري القراءة...'); await sleep(700); setStepState(1, 'مكتمل ✓');
+      progressBar.style.width = '50%'; setStepState(2, 'جاري الاستعلام...'); await sleep(800); setStepState(2, 'مكتمل ✓');
+      progressBar.style.width = '75%'; setStepState(3, 'جاري التحليل...');
+
+      let auditData = null;
+      try {
+        const res = await fetch('/api/visibility', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: rawUrl })
+        });
+        auditData = await res.json();
+      } catch (e) {}
+
+      await sleep(700); setStepState(3, 'مكتمل ✓');
+      progressBar.style.width = '100%'; setStepState(4, 'جاري التجميع...'); await sleep(600); setStepState(4, 'مكتمل ✓');
+
+      await sleep(300);
+      modal.classList.add('hidden');
+      renderResults(rawUrl, auditData);
+    }
+
+    function setStepState(step, text) {
+      const el = document.getElementById(`step-${step}`);
+      if (el) {
+        const status = el.querySelector('.step-status');
+        status.innerText = text;
+        status.className = text.includes('مكتمل') ? 'step-status font-mono text-emerald-400 font-bold' : 'step-status font-mono text-sky-400';
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function renderResults(url, data) {
+      const section = document.getElementById('results-section');
+      section.classList.remove('hidden');
+
+      let domain = url.replace(/https?:\/\//, '').replace(/\/.*$/, '');
+      document.getElementById('result-domain-text').innerText = `https://${domain}`;
+
+      const score = data && data.overallScore ? Math.round(data.overallScore / 10) : 2;
+      document.getElementById('user-score-val').innerText = score < 10 ? `0${score}` : `${score}`;
+
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

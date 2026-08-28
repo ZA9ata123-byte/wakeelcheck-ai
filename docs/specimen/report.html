@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>نموذج تقرير وكيل تشيك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--ground:#e9e8e4;--sheet:#fff;--sheet-2:#f4f3f0;--rule:#d5d3cc;--rule-soft:#e2e0da;--ink:#171412;--ink-2:#3b3733;--muted:#6d6862;--faint:#9a948c;--rival:#d8452c;--rival-mark:#fbe3dd;--rival-deep:#a8321f;--present:#1a6f52;--present-mark:#dcefe6;--caution:#9a6a10;--caution-mark:#f7ecd6;--lift:0 1px 2px rgb(23 20 18/5%),0 10px 28px -16px rgb(23 20 18/28%);--face:'Readex Pro','Segoe UI',Tahoma,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme='light']){--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}}
+:root[data-theme='dark']{--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;direction:rtl;background:var(--ground);color:var(--ink);font-family:var(--face);font-weight:300;font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.22;font-weight:600;letter-spacing:-0.02em;text-wrap:balance}
+p{margin:0}
+.lt{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.page{max-width:58rem;margin-inline:auto;padding-inline:clamp(1.1rem,4vw,2.5rem);padding-block:clamp(2rem,5vw,3.5rem) 4rem}
+
+.banner{background:var(--caution-mark);border:1px solid var(--caution);border-radius:4px;padding:0.9rem 1.15rem;margin-block-end:2.25rem;font-size:0.87rem;color:var(--ink-2)}
+.banner b{color:var(--caution);font-weight:600}
+
+.top{padding-block-end:1.75rem;border-block-end:1px solid var(--rule)}
+.top .kicker{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.24em;color:var(--faint);margin-block-end:1.5rem}
+.top h1{font-size:clamp(1.7rem,4.4vw,2.6rem);font-weight:200;letter-spacing:-0.035em;margin-block-end:0.65rem}
+.top h1 .dom{font-weight:500}
+.top .meta{font-family:var(--mono);font-size:0.72rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:0.4rem 1.4rem}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-block-start:1.75rem}
+.tile{background:var(--sheet);padding:0.95rem 1.05rem 1.1rem;display:flex;flex-direction:column;gap:0.1rem}
+.tile .k{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.13em;color:var(--faint);text-transform:uppercase}
+.tile .v{font-family:var(--mono);font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.32}
+.tile .n{font-size:0.76rem;color:var(--muted);line-height:1.5}
+.tile[data-tone='bad'] .v{color:var(--rival)}
+.tile[data-tone='good'] .v{color:var(--present)}
+.tile[data-tone='warn'] .v{color:var(--caution)}
+
+section{padding-block:clamp(2rem,4.5vw,3rem);border-block-end:1px solid var(--rule)}
+section:last-of-type{border-block-end:none}
+.eyebrow{font-family:var(--mono);font-size:0.63rem;letter-spacing:0.2em;color:var(--faint);text-transform:uppercase;margin-block-end:0.8rem}
+section>h2{font-size:clamp(1.3rem,2.8vw,1.7rem);margin-block-end:0.7rem}
+section>.lede{color:var(--ink-2);max-width:56ch;margin-block-end:1.6rem}
+
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--lift)}
+.answer-sheet{margin-block-end:1.15rem}
+.sheet-hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.7rem;padding:0.8rem 1.2rem;border-block-end:1px solid var(--rule);background:var(--sheet-2);border-radius:4px 4px 0 0;font-family:var(--mono);font-size:0.67rem;letter-spacing:0.08em;color:var(--muted)}
+.sheet-hd .who{color:var(--ink);font-weight:700}
+.sheet-hd .q{font-family:var(--face);letter-spacing:0;font-size:0.83rem}
+.sheet-hd .when{margin-inline-start:auto;color:var(--faint)}
+
+.answer{padding:1.4rem 1.2rem;font-size:1.02rem;line-height:2.05}
+mark.rival{background-image:linear-gradient(var(--rival-mark),var(--rival-mark));background-repeat:no-repeat;background-position:right center;background-size:100% 100%;color:var(--rival-deep);font-weight:500;padding:0.06em 0.38em;border-radius:3px;border-block-end:2px solid var(--rival)}
+
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1px;background:var(--rule);border-block-start:1px solid var(--rule)}
+.vt{background:var(--sheet);padding:0.85rem 1.2rem;display:flex;flex-direction:column;gap:0.12rem}
+.vt .lab{font-family:var(--mono);font-size:0.61rem;letter-spacing:0.13em;color:var(--faint);text-transform:uppercase}
+.vt .val{font-family:var(--mono);font-size:1.45rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.35}
+.vt .val.names{font-family:var(--face);font-size:0.98rem;font-weight:500;color:var(--rival-deep);line-height:1.6}
+.vt[data-tone='bad'] .val{color:var(--rival)}
+.vt[data-tone='good'] .val{color:var(--present)}
+.vt .sub{font-size:0.79rem;color:var(--muted)}
+
+.finding{background:var(--sheet);border:1px solid var(--rule);border-inline-start-width:4px;border-radius:4px;padding:1rem 1.15rem;margin-block-end:0.7rem;display:flex;flex-direction:column;gap:0.4rem}
+.finding[data-sev='critical']{border-inline-start-color:var(--rival)}
+.finding[data-sev='high']{border-inline-start-color:var(--rival)}
+.finding[data-sev='medium']{border-inline-start-color:var(--caution)}
+.finding[data-sev='low']{border-inline-start-color:var(--rule)}
+.f-hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.65rem}
+.f-hd h4{font-size:1rem;font-weight:500}
+.f-hd .sev{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;padding:0.16rem 0.5rem;border-radius:3px}
+.finding[data-sev='critical'] .sev,.finding[data-sev='high'] .sev{background:var(--rival-mark);color:var(--rival-deep)}
+.finding[data-sev='medium'] .sev{background:var(--caution-mark);color:var(--caution)}
+.finding[data-sev='low'] .sev{background:var(--sheet-2);color:var(--muted)}
+.f-hd .kind{margin-inline-start:auto;font-size:0.64rem;color:var(--faint)}
+.f-d{font-size:0.9rem;color:var(--ink-2)}
+.f-e{font-size:0.72rem;color:var(--muted);background:var(--sheet-2);border:1px solid var(--rule);border-radius:3px;padding:0.4rem 0.6rem;overflow-x:auto;white-space:pre}
+
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;min-width:44rem}
+th{text-align:right;font-family:var(--mono);font-size:0.59rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:0.65rem 0.9rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);white-space:nowrap}
+td{padding:0.6rem 0.9rem;border-block-end:1px solid var(--rule-soft);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-block-end:none}
+td.st{white-space:nowrap}
+td.key{font-size:0.75rem;color:var(--ink);white-space:nowrap}
+td.ev{font-size:0.71rem;color:var(--muted);max-width:18rem}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:left;direction:ltr;unicode-bidi:isolate}
+.chip{display:inline-block;font-family:var(--mono);font-size:0.59rem;letter-spacing:0.09em;padding:0.16rem 0.5rem;border-radius:3px;font-weight:500;white-space:nowrap}
+.chip[data-s='pass']{background:var(--present-mark);color:var(--present)}
+.chip[data-s='fail']{background:var(--rival-mark);color:var(--rival-deep)}
+
+.fix{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;margin-block-end:0.7rem;overflow:hidden}
+.fix .fh{padding:0.7rem 1.1rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);font-size:0.88rem;display:flex;flex-wrap:wrap;gap:0.6rem;align-items:baseline}
+.fix .fh .lt{font-size:0.7rem;color:var(--faint)}
+.fix pre{margin:0;padding:0.95rem 1.1rem;font-family:var(--mono);font-size:0.73rem;line-height:1.75;direction:ltr;unicode-bidi:isolate;overflow-x:auto;color:var(--ink-2)}
+
+.foot{margin-block-start:2.5rem;padding-block-start:1.4rem;border-block-start:1px solid var(--rule);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.07em;color:var(--faint);display:flex;flex-wrap:wrap;gap:0.4rem 1.3rem}
+
+@media print{.finding,.fix,.answer-sheet,.tile{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner">
+  <b>نموذج.</b> المدخل ثابت (متجر مُختلق). القواعد والشدّات وحصة الصوت
+  <b>محسوبة بخطّ الأنابيب الحقيقي</b> — نفس الكود الذي سيعمل في الإنتاج. نصوص
+  إجابات المحرّكات وحدها ثابتة، لأنها تحتاج مفتاحاً. تولّد بـ
+  <span class="lt">scripts/make-specimen.ts</span>.
+</div>
+
+<header class="top">
+  <div class="kicker">وكيل تشيك · تقرير الظهور أمام وكلاء الذكاء الاصطناعي</div>
+  <h1>كيف يظهر <span class="dom lt">nourabaya.sa</span> أمام وكلاء الذكاء الاصطناعي</h1>
+  <div class="meta">
+    <span>عبايات نسائية · الرياض</span>
+    <span class="lt">custom</span>
+    <span class="lt">2026-08-28 09:14</span>
+    <span class="lt">scan spec-0001</span>
+  </div>
+
+  <div class="tiles">
+    <div class="tile" data-tone="bad">
+      <span class="k">حصّتك من الصوت</span>
+      <span class="v">0%</span>
+      <span class="n">0 من 8 إجابة</span>
+    </div>
+    <div class="tile" data-tone="warn">
+      <span class="k">جاهزية الوكلاء</span>
+      <span class="v">56%</span>
+      <span class="n">11 من 20 قاعدة</span>
+    </div>
+    <div class="tile" data-tone="bad">
+      <span class="k">أعلى منافس</span>
+      <span class="v" style="font-size:1.05rem">أناقتي</span>
+      <span class="n">الأكثر ذكراً بدلاً منك</span>
+    </div>
+    <div class="tile" data-tone="bad">
+      <span class="k">إنذارات أمنية</span>
+      <span class="v">8</span>
+      <span class="n">حرج أعلاها</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="eyebrow">01 · الدليل</div>
+  <h2>ما قاله المحرّك حرفياً</h2>
+  <p class="lede">
+    النص كما ورد، بلا تنظيف ولا اقتصاص — هو الدليل، وتعديله يُبطله. الأسماء
+    المعلَّمة تحقّق البرنامج من ورودها حرفياً في النص قبل وضع العلامة.
+  </p>
+  
+    <article class="sheet answer-sheet">
+      <div class="sheet-hd">
+        <span class="who lt">ChatGPT</span>
+        <span class="q">وش أفضل متجر عبايات في الرياض؟</span>
+        <span class="when lt">2026-08-28 09:14</span>
+      </div>
+
+      <p class="answer">من أبرز خيارات العبايات في الرياض متجر <mark class="rival">بيت الأناقة</mark>، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك <mark class="rival">لمسة رقي</mark> معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر <mark class="rival">أناقتي</mark> يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.</p>
+
+      <div class="verdict">
+        <div class="vt" data-tone="bad">
+          <span class="lab">متجرك <span class="lt">nourabaya.sa</span></span>
+          <span class="val lt">0 / 1</span>
+          <span class="sub">غير مذكور</span>
+        </div>
+        <div class="vt">
+          <span class="lab">من ذُكر بدلاً منك</span>
+          <span class="val names">بيت الأناقة، لمسة رقي، أناقتي</span>
+          <span class="sub">3 اسم في هذه الإجابة</span>
+        </div>
+      </div>
+    </article>
+    <article class="sheet answer-sheet">
+      <div class="sheet-hd">
+        <span class="who lt">Google AI Overviews</span>
+        <span class="q">وش أفضل متجر عبايات في الرياض؟</span>
+        <span class="when lt">2026-08-28 09:14</span>
+      </div>
+
+      <p class="answer">لو تبغى سعر أرخص مع توصيل سريع، <mark class="rival">أناقتي</mark> عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.</p>
+
+      <div class="verdict">
+        <div class="vt" data-tone="bad">
+          <span class="lab">متجرك <span class="lt">nourabaya.sa</span></span>
+          <span class="val lt">0 / 1</span>
+          <span class="sub">غير مذكور</span>
+        </div>
+        <div class="vt">
+          <span class="lab">من ذُكر بدلاً منك</span>
+          <span class="val names">أناقتي</span>
+          <span class="sub">1 اسم في هذه الإجابة</span>
+        </div>
+      </div>
+    </article>
+    <article class="sheet answer-sheet">
+      <div class="sheet-hd">
+        <span class="who lt">Google AI Mode</span>
+        <span class="q">وش أفضل متجر عبايات في الرياض؟</span>
+        <span class="when lt">2026-08-28 09:14</span>
+      </div>
+
+      <p class="answer">من أبرز خيارات العبايات في الرياض متجر <mark class="rival">بيت الأناقة</mark>، يتميّز بتشكيلة واسعة وتوصيل خلال 24 ساعة داخل المدينة. كذلك <mark class="rival">لمسة رقي</mark> معروف بجودة الأقمشة وسياسة إرجاع واضحة خلال 14 يوماً، ومتجر <mark class="rival">أناقتي</mark> يوفّر مقاسات متعددة وصفحات منتجات فيها الأسعار والتوفر بشكل مفصّل.</p>
+
+      <div class="verdict">
+        <div class="vt" data-tone="bad">
+          <span class="lab">متجرك <span class="lt">nourabaya.sa</span></span>
+          <span class="val lt">0 / 1</span>
+          <span class="sub">غير مذكور</span>
+        </div>
+        <div class="vt">
+          <span class="lab">من ذُكر بدلاً منك</span>
+          <span class="val names">بيت الأناقة، لمسة رقي، أناقتي</span>
+          <span class="sub">3 اسم في هذه الإجابة</span>
+        </div>
+      </div>
+    </article>
+    <article class="sheet answer-sheet">
+      <div class="sheet-hd">
+        <span class="who lt">Perplexity</span>
+        <span class="q">وش أفضل متجر عبايات في الرياض؟</span>
+        <span class="when lt">2026-08-28 09:14</span>
+      </div>
+
+      <p class="answer">لو تبغى سعر أرخص مع توصيل سريع، <mark class="rival">أناقتي</mark> عادةً أرخص وتبدأ عباياته من 189 ريال مع توصيل يومين. وبيت الأناقة أغلى شوي بس توصيله أسرع داخل الرياض.</p>
+
+      <div class="verdict">
+        <div class="vt" data-tone="bad">
+          <span class="lab">متجرك <span class="lt">nourabaya.sa</span></span>
+          <span class="val lt">0 / 1</span>
+          <span class="sub">غير مذكور</span>
+        </div>
+        <div class="vt">
+          <span class="lab">من ذُكر بدلاً منك</span>
+          <span class="val names">أناقتي</span>
+          <span class="sub">1 اسم في هذه الإجابة</span>
+        </div>
+      </div>
+    </article>
+  <p class="lede" style="margin:0">وبقية الإجابات — 4 إجابة أخرى في التقرير الكامل.</p>
+</section>
+
+<section>
+  <div class="eyebrow">02 · الأمن</div>
+  <h2>8 إنذار — كلها من مصادر عامة</h2>
+  <p class="lede">
+    فحص سلبي بالكامل: RDAP وTLS وDNS وملفات JS التي يحمّلها كل زائر. لا محاولة
+    دخول ولا اختبار اختراق. قيمة أي سرّ تُطمَس عند المصدر ولا تدخل التقرير كاملة.
+  </p>
+  
+    <div class="finding" data-sev="critical">
+      <div class="f-hd">
+        <span class="sev">حرج</span>
+        <h4>مفتاح سرّي مكشوف في ملفات متجرك</h4>
+        <span class="kind lt">exposed_secret</span>
+      </div>
+      <p class="f-d">هذا الملف يُحمَّل لدى كل زائر — أي شخص يستطيع نسخ المفتاح الآن. أبطِله فوراً.</p>
+      <p class="f-e lt">stripe_secret at https://nourabaya.sa/assets/app.bundle.js:1 → sk_live••••••••••••WxYz</p>
+    </div>
+    <div class="finding" data-sev="high">
+      <div class="f-hd">
+        <span class="sev">عالٍ</span>
+        <h4>نطاقك ينتهي بعد 21 يوماً</h4>
+        <span class="kind lt">domain_expiry</span>
+      </div>
+      <p class="f-d">إذا لم تُجدّده، يختفي متجرك ويستطيع أي شخص شراء اسمك.</p>
+      <p class="f-e lt">RDAP expiry 2026-09-19 (21d)</p>
+    </div>
+    <div class="finding" data-sev="high">
+      <div class="f-hd">
+        <span class="sev">عالٍ</span>
+        <h4>شهادة الأمان تنتهي بعد 8 يوماً</h4>
+        <span class="kind lt">tls_expiry</span>
+      </div>
+      <p class="f-d">متصفح كل زبون سيعرض تحذير «موقع غير آمن» ويمنعه من الشراء.</p>
+      <p class="f-e lt">notAfter 2026-09-06 (8d)</p>
+    </div>
+    <div class="finding" data-sev="high">
+      <div class="f-hd">
+        <span class="sev">عالٍ</span>
+        <h4>نطاق فرعي مهجور: blog.nourabaya.sa</h4>
+        <span class="kind lt">dangling_cname</span>
+      </div>
+      <p class="f-d">يشير إلى خدمة لم تعد موجودة — يستطيع شخص آخر السيطرة عليه باسمك.</p>
+      <p class="f-e lt">CNAME for blog.nourabaya.sa does not resolve</p>
+    </div>
+    <div class="finding" data-sev="high">
+      <div class="f-hd">
+        <span class="sev">عالٍ</span>
+        <h4>نطاقك غير محمي من الانتحال</h4>
+        <span class="kind lt">no_dmarc</span>
+      </div>
+      <p class="f-d">أي شخص يستطيع إرسال بريد باسم متجرك إلى زبائنك.</p>
+      <p class="f-e lt">no _dmarc TXT record</p>
+    </div>
+    <div class="finding" data-sev="medium">
+      <div class="f-hd">
+        <span class="sev">متوسط</span>
+        <h4>سجل SPF مفقود</h4>
+        <span class="kind lt">no_spf</span>
+      </div>
+      <p class="f-d">بلا SPF تُصنَّف رسائلك كمزعجة، وتسهل انتحال نطاقك.</p>
+      <p class="f-e lt">no v=spf1 TXT record</p>
+    </div>
+    <div class="finding" data-sev="medium">
+      <div class="f-hd">
+        <span class="sev">متوسط</span>
+        <h4>كوكيز بلا أعلام حماية</h4>
+        <span class="kind lt">cookie_flags</span>
+      </div>
+      <p class="f-d">تسهّل اختطاف جلسة الزبون أثناء الشراء.</p>
+      <p class="f-e lt">missing: Secure, HttpOnly, SameSite</p>
+    </div>
+    <div class="finding" data-sev="medium">
+      <div class="f-hd">
+        <span class="sev">متوسط</span>
+        <h4>4 من ترويسات الحماية مفقودة</h4>
+        <span class="kind lt">missing_headers</span>
+      </div>
+      <p class="f-d">ترويسات قياسية تُضاف من إعدادات الخادم وتغلق ثغرات شائعة.</p>
+      <p class="f-e lt">HSTS, CSP, X-Content-Type-Options, Referrer-Policy</p>
+    </div>
+</section>
+
+<section>
+  <div class="eyebrow">03 · الجاهزية</div>
+  <h2>11 من 20 قاعدة ناجحة — 56%</h2>
+  <p class="lede">
+    النتيجة موزونة: <span class="lt">Σ(الوزن × نجح) ÷ Σالوزن</span>. الدليل في
+    العمود الأخير هو ما قِيس فعلاً، لا وصف له.
+  </p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>الحالة</th><th>القاعدة</th><th>التفصيل</th><th>الدليل</th><th>الوزن</th></tr></thead>
+      <tbody>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.file</td>
+      <td class="det">ملف robots.txt موجود ومقروء</td>
+      <td class="ev lt">2 group(s)</td>
+      <td class="num">6</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">robots.gptbot</td>
+      <td class="det">ChatGPT محظور في robots.txt — لن يرى متجرك إطلاقاً</td>
+      <td class="ev lt">User-agent: GPTBot → blocked</td>
+      <td class="num">10</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.oai_searchbot</td>
+      <td class="det">ChatGPT Search غير محظور — لكن متجرك لا يذكره صراحةً</td>
+      <td class="ev lt">User-agent: OAI-SearchBot → allowed by default</td>
+      <td class="num">9</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.perplexitybot</td>
+      <td class="det">Perplexity غير محظور — لكن متجرك لا يذكره صراحةً</td>
+      <td class="ev lt">User-agent: PerplexityBot → allowed by default</td>
+      <td class="num">8</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.google_extended</td>
+      <td class="det">Gemini غير محظور — لكن متجرك لا يذكره صراحةً</td>
+      <td class="ev lt">User-agent: Google-Extended → allowed by default</td>
+      <td class="num">9</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.claudebot</td>
+      <td class="det">Claude غير محظور — لكن متجرك لا يذكره صراحةً</td>
+      <td class="ev lt">User-agent: ClaudeBot → allowed by default</td>
+      <td class="num">7</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">robots.sitemap_listed</td>
+      <td class="det">خريطة الموقع مذكورة في robots.txt</td>
+      <td class="ev lt">https://nourabaya.sa/sitemap.xml</td>
+      <td class="num">5</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">schema.product</td>
+      <td class="det">مخطط المنتج مفقود في صفحات المنتجات</td>
+      <td class="ev lt">0/2 of 2 product page(s) carry @type product</td>
+      <td class="num">10</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">schema.offer</td>
+      <td class="det">مخطط العرض والسعر موجود في صفحات منتجاتك</td>
+      <td class="ev lt">1/2 of 2 product page(s) carry @type offer</td>
+      <td class="num">10</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">schema.rating</td>
+      <td class="det">مخطط التقييمات مفقود في صفحات المنتجات</td>
+      <td class="ev lt">0/2 of 2 product page(s) carry @type aggregaterating</td>
+      <td class="num">7</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">schema.brand</td>
+      <td class="det">مخطط العلامة مفقود في صفحات المنتجات</td>
+      <td class="ev lt">0/2 of 2 product page(s) carry @type brand</td>
+      <td class="num">5</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">schema.organization</td>
+      <td class="det">هوية المتجر غير معرّف</td>
+      <td class="ev lt">@type organization not found on 3 page(s)</td>
+      <td class="num">7</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">schema.breadcrumb</td>
+      <td class="det">مسار التصفح غير معرّف</td>
+      <td class="ev lt">@type breadcrumblist not found on 3 page(s)</td>
+      <td class="num">5</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">consistency.price</td>
+      <td class="det">تناقض في السعر بين الطبقات في 1 صفحة — الوكلاء يستبعدون المتاجر المتناقضة</td>
+      <td class="ev lt">2 product page(s) — schema=299.00 og=349.00 microdata=—</td>
+      <td class="num">9</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">consistency.availability</td>
+      <td class="det">حالة التوفر معلنة برمجياً</td>
+      <td class="ev lt">1/2 of 2 product page(s) declare availability</td>
+      <td class="num">7</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">consistency.currency</td>
+      <td class="det">العملة معلنة برمجياً</td>
+      <td class="ev lt">2/2 of 2 product page(s) declare currency</td>
+      <td class="num">6</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">machine.sitemap</td>
+      <td class="det">خريطة الموقع متاحة</td>
+      <td class="ev lt">HEAD https://nourabaya.sa/sitemap.xml → 200</td>
+      <td class="num">6</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">machine.llms_txt</td>
+      <td class="det">ملف llms.txt مفقود أو شبه فارغ</td>
+      <td class="ev lt">GET /llms.txt → not found</td>
+      <td class="num">3</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="pass">ناجح</span></td>
+      <td class="key lt">semantic.single_h1</td>
+      <td class="det">كل صفحة تحمل عنواناً رئيسياً واحداً</td>
+      <td class="ev lt">2 product page(s) — h1 counts: 1, 1</td>
+      <td class="num">5</td>
+    </tr>
+    <tr>
+      <td class="st"><span class="chip" data-s="fail">راسب</span></td>
+      <td class="key lt">semantic.image_alt</td>
+      <td class="det">50% من الصور تحمل نصاً بديلاً — الوكيل يقرأ الصور عبره</td>
+      <td class="ev lt">1/2 images on 2 product page(s)</td>
+      <td class="num">5</td>
+    </tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">04 · الإصلاح</div>
+  <h2>كود جاهز للصق</h2>
+  <p class="lede">
+    كل قاعدة راسبة لها إصلاح حقيقي تُرفَق به. قاعدة بلا إصلاح تُنتج ضجيجاً في
+    التقرير ولا تُنتج قيمة للتاجر.
+  </p>
+  <div class="fix">
+    <div class="fh"><span>ChatGPT محظور في robots.txt — لن يرى متجرك إطلاقاً</span><span class="lt">robots.gptbot</span></div>
+    <pre>User-agent: GPTBot
+Allow: /</pre>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>مولّد من <span class="lt">docs/specimen/report.json</span></span>
+  <span>التكلفة <span class="lt">$0.1736</span></span>
+  <span>القواعد <span class="lt">packages/readiness</span></span>
+  <span>الأمن <span class="lt">packages/security</span></span>
+</footer>
+
+</div>
+</body>
+</html>

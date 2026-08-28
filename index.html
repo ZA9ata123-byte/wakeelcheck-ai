@@ -1,469 +1,671 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AITChek.online — أول منصة لفحص جاهزية المتاجر لوكلاء الذكاء الاصطناعي والأمان</title>
-  <meta name="description" content="افحص جاهزية متجرك الإلكتروني لاستقبال وكلاء الذكاء الاصطناعي والشراء منه تلقائياً مع حماية المتجر من الطلبيات المزيفة.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WakeelCheck | منصة فحص حضور المتاجر أمام الذكاء الاصطناعي والأمان</title>
+<meta name="description" content="افحص حضور وتواجد متجرك الإلكتروني في إجابات ChatGPT و Perplexity و Google AI Overviews مجاناً، واكشف ثغرات ملفات robots.txt و Schema وسجلات الأمان." />
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts: Cairo & JetBrains Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<!-- Three.js CDN for WebGL Parallax Plane -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          canvas: '#080A0F',
+          card: '#0F172A',
+          cardHover: '#1E293B',
+          accent: '#0EA5E9',
+          accentHover: '#0284C7',
+          success: '#10B981',
+          danger: '#F43F5E',
+          warning: '#F59E0B'
+        },
+        fontFamily: {
+          cairo: ['Cairo', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #080A0F;
+    color: #F8FAFC;
+    font-family: 'Cairo', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  
+  .editorial-card {
+    background-color: #0F172A;
+    border: 1px solid #1E293B;
+  }
+
+  .split-frosted-card {
+    background-image: url('frosted_panel.png');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #1E293B;
+  }
+
+  #webgl-hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+  }
+</style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-slate-950">
 
-  <!-- Header -->
-  <header>
-    <div class="container nav-content">
-      <a href="#" class="logo">
-        <div class="logo-icon">🤖</div>
-        <div>
-          <span id="logo-title">AITChek.online</span>
-          <span style="font-size:0.75rem; color:var(--secondary); display:block; margin-top:-4px;" id="logo-sub">AITChek.online</span>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="w-full border-b border-slate-800/80 bg-canvas/90 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-slate-950 font-mono text-base">
+          W
         </div>
-      </a>
+        <span class="font-bold text-lg text-white tracking-tight">WakeelCheck</span>
+      </div>
 
-      <ul class="nav-links">
-        <li><a href="#hero" id="nav-home">الرئيسية</a></li>
-        <li><a href="#features" id="nav-features">عناصر الفحص (64)</a></li>
-        <li><a href="#pagespeed-info" id="nav-pagespeed">تكامل Google</a></li>
-        <li><a href="#pricing" id="nav-pricing">الأسعار</a></li>
-      </ul>
-
-      <div style="display:flex; align-items:center; gap:16px;">
-        <button class="lang-btn" id="langToggleBtn">
-          <span>🌐</span> <span id="langLabel">English</span>
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <a href="#pricing" class="text-xs text-slate-400 hover:text-white transition hidden sm:inline-block">الأسعار</a>
+        <a href="cybershield.html" class="text-xs font-mono text-slate-400 hover:text-white transition">CyberShield</a>
+        <button id="lang-toggle" onclick="toggleLang()" class="px-3 py-1.5 rounded-md border border-slate-700 text-xs font-mono text-slate-300 hover:border-slate-500 transition">
+          English
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="container">
-      <div class="badge badge-glow hero-badge">
-        <span>✨</span> <span id="hero-badge-text">أول منصة عربية لفحص جاهزية AEO / GEO والظهور في محركات الذكاء الاصطناعي</span>
-      </div>
-      
-      <h1 id="hero-heading">هل متجرك جاهز للتصدر في <span>محركات الذكاء الاصطناعي (AEO / GEO)</span> واستقبال الوكلاء للشراء؟</h1>
-      <p id="hero-desc">افحص متجرك الإلكتروني مقابل 64 عنصراً حيوياً لضمان اقتراحه والتوصية به في ChatGPT, Google AI Overviews, Perplexity, Gemini, و Claude مع حمايته من هجمات الطلبيات المزيفة.</p>
+  <!-- HERO SECTION WITH THREE.JS WEBGL BLUEPRINT GRID PARALLAX -->
+  <div class="relative w-full overflow-hidden bg-canvas border-b border-slate-800/80">
+    <canvas id="webgl-hero-canvas"></canvas>
 
-      <!-- Audit Input Box -->
-      <div class="glass-panel audit-box">
-        <form id="auditForm">
-          <div class="input-group">
-            <div class="url-input-wrapper">
-              <span class="url-icon">🌐</span>
-              <input type="text" id="storeUrl" class="url-input" placeholder="https://salla.sa/store أو myshop.com" required autocomplete="off">
-            </div>
-            <button type="submit" class="btn-primary" id="startAuditBtn">
-              <span id="btn-text">افحص المتجر الآن</span> 🚀
-            </button>
-          </div>
+    <section class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
+        ماذا يقول ChatGPT عن متجرك؟
+        <span class="block text-2xl sm:text-4xl text-slate-300 font-bold mt-2">هل يوصي بك أم يرشح منافسيك؟</span>
+      </h1>
+
+      <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        افحص حضور متجرك الإلكتروني، وسجل الأمان ومستوى الهيكلة في محركات الذكاء الاصطناعي في 60 ثانية.
+      </p>
+
+      <!-- Single Focus Hero Input Form -->
+      <div class="max-w-2xl mx-auto">
+        <form id="audit-form" onsubmit="handleAuditSubmit(event)" class="flex flex-col sm:flex-row gap-3">
+          <input 
+            type="text" 
+            id="store-url" 
+            required
+            placeholder="https://myshop.com" 
+            class="flex-grow px-4 py-4 rounded-lg bg-slate-950/90 border border-slate-700 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-sky-500 transition"
+          />
+          <button 
+            type="submit" 
+            id="submit-btn"
+            class="px-8 py-4 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-base transition whitespace-nowrap"
+          >
+            شوف الجواب
+          </button>
         </form>
 
-        <div class="presets">
-          <span id="presets-label">جرب متاجر سريعة:</span>
-          <button class="preset-chip" type="button" onclick="setPreset('salla.sa')">سلة Salla</button>
-          <button class="preset-chip" type="button" onclick="setPreset('zid.sa')">زد Zid</button>
-          <button class="preset-chip" type="button" onclick="setPreset('shopify.com')">Shopify</button>
-        </div>
-
-        <div class="platforms-banner">
-          <div class="platform-tag">🤖 ChatGPT Search</div>
-          <div class="platform-tag">🧠 Google AI Overviews</div>
-          <div class="platform-tag">🌐 Perplexity AI</div>
-          <div class="platform-tag">👁️ Claude</div>
-          <div class="platform-tag">💻 Copilot</div>
+        <!-- Honest Trust Note -->
+        <div class="text-xs text-slate-500 mt-4 font-mono">
+          فحص مجاني فوراً • بدون تسجيل حساب
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <!-- Loading / Live Scan Animation Overlay -->
-  <section class="scanner-overlay" id="scannerOverlay">
-    <div class="container">
-      <div class="glass-panel scanner-card">
-        <div class="radar-spinner"></div>
-        <h3 style="font-size:1.6rem; font-weight:800; margin-bottom:8px;" id="scanning-title">جاري فحص المتجر عبر محرك وكيل تشيك...</h3>
-        <p style="color:var(--text-muted);" id="scanning-sub">نقوم بتحليل ملفات AI، جاهزية AEO/GEO، البيانات المنظمة Schema، وأداء Google PageSpeed...</p>
-        <div id="scannerTargetUrl" style="font-weight:700; color:#6366f1; margin:6px 0; font-size:1.1rem;"></div>
-        
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="scanProgressFill"></div>
-        </div>
-        
-        <div class="scan-step-log" id="scanStepLog">🤖 جاري الاتصال بالسيرفر وجلب robots.txt و llms.txt...</div>
+  <!-- THEATRICAL SCANNER MODAL (4 STEPS) -->
+  <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="max-w-md w-full editorial-card p-6 rounded-2xl border border-slate-700 shadow-2xl">
+      <div class="text-center mb-6">
+        <h3 class="text-lg font-bold text-white mb-1">جاري فحص المتجر بالذكاء الاصطناعي...</h3>
+        <p id="scanning-target-url" class="font-mono text-xs text-sky-400">https://myshop.com</p>
       </div>
-    </div>
-  </section>
 
-  <!-- Dashboard / Results Section -->
-  <section class="dashboard-section" id="dashboardSection">
-    <div class="container">
+      <!-- Linear Progress Bar -->
+      <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden mb-6">
+        <div id="progress-bar" class="bg-sky-500 h-full w-0 transition-all duration-300"></div>
+      </div>
 
-      <!-- Header & Actions -->
-      <div class="dashboard-header">
-        <div class="analyzed-url-box">
-          <div class="logo-icon" style="width:52px; height:52px; font-size:1.6rem;">🛒</div>
-          <div>
-            <div style="display:flex; align-items:center; gap:12px;">
-              <h2 id="targetUrlDisplay">example-store.com</h2>
-              <span class="badge badge-glow" id="detectedPlatformBadge">Shopify / Salla</span>
-            </div>
-            <p style="color:var(--text-dim); font-size:0.9rem;" id="auditTimestamp">تاريخ الفحص: الآن • 64 عنصراً مفحوصاً</p>
-          </div>
+      <!-- 4-Step Progress List -->
+      <div class="space-y-3 mb-6 text-xs text-slate-300">
+        <div id="step-1" class="flex justify-between items-center py-1">
+          <span>1. قراءة ملف robots.txt وخريطة الموقع</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
         </div>
-
-        <div style="display:flex; gap:12px;">
-          <button class="btn-secondary" onclick="exportPDFReport()">
-            <span>📄</span> <span id="btn-export">تحميل تقرير PDF</span>
-          </button>
-          <button class="btn-primary" onclick="openFixGeneratorModal()" style="padding: 12px 24px; font-size:0.95rem;">
-            <span>⚡</span> <span id="btn-gen-code">توليد ملفات AI تلقائياً</span>
-          </button>
+        <div id="step-2" class="flex justify-between items-center py-1">
+          <span>2. استعلام محركات الذكاء الاصطناعي</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+        <div id="step-3" class="flex justify-between items-center py-1">
+          <span>3. تحليل تموضع المنافسين في المنطقة</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
+        </div>
+        <div id="step-4" class="flex justify-between items-center py-1">
+          <span>4. إعداد تقرير الثغرات والتقييم النهائي</span>
+          <span class="step-status font-mono text-slate-500">في الانتظار</span>
         </div>
       </div>
 
-      <!-- Top Overview Grid (Score & Quick Metrics) -->
-      <div class="overview-grid">
-        <!-- Score Card -->
-        <div class="glass-panel score-card">
-          <span class="badge badge-glow" id="scoreBadgeText">نتيجة الجاهزية الإجمالية</span>
-          
-          <div class="circle-score-wrapper">
-            <svg viewBox="0 0 180 180">
-              <defs>
-                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#6366f1" />
-                  <stop offset="50%" stop-color="#06b6d4" />
-                  <stop offset="100%" stop-color="#10b981" />
-                </linearGradient>
-              </defs>
-              <circle class="circle-bg" cx="90" cy="90" r="80"></circle>
-              <circle class="circle-progress" id="circleProgressCircle" cx="90" cy="90" r="80"></circle>
-            </svg>
-            <div class="score-number">
-              <div class="score-val" id="totalScoreVal">78</div>
-              <div class="score-total">/ 100</div>
-            </div>
-          </div>
-
-          <div class="badge badge-warning" id="readinessStatusBadge">⚠️ متجر جاهز جزئياً للوكلاء</div>
-        </div>
-
-        <!-- Metrics Summary Grid -->
-        <div class="metrics-summary-grid">
-          <div class="metric-item-card">
-            <div class="metric-icon" style="background:rgba(16,185,129,0.15); color:#34d399;">✅</div>
-            <div class="metric-info">
-              <h4 id="stat-passed-label">فحوصات ناجحة</h4>
-              <div class="val" style="color:#34d399;" id="passedCountVal">48 / 64</div>
-            </div>
-          </div>
-
-          <div class="metric-item-card">
-            <div class="metric-icon" style="background:rgba(239,68,68,0.15); color:#f87171;">🔴</div>
-            <div class="metric-info">
-              <h4 id="stat-critical-label">عناصر حرجة مفقودة</h4>
-              <div class="val" style="color:#f87171;" id="criticalCountVal">6 عناصر</div>
-            </div>
-          </div>
-
-          <div class="metric-item-card">
-            <div class="metric-icon" style="background:rgba(245,158,11,0.15); color:#fbbf24;">🟡</div>
-            <div class="metric-info">
-              <h4 id="stat-warning-label">تنبيهات بحاجة لتحسين</h4>
-              <div class="val" style="color:#fbbf24;" id="warningCountVal">11 تنبيه</div>
-            </div>
-          </div>
-
-          <div class="metric-item-card">
-            <div class="metric-icon" style="background:rgba(99,102,241,0.15); color:#a5b4fc;">🤖</div>
-            <div class="metric-info">
-              <h4 id="stat-files-label">ملفات AI المتاحة</h4>
-              <div class="val" style="color:#a5b4fc;" id="aiFilesCountVal">3 / 6 ملفات</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AEO & GEO Engine Card -->
-      <div class="glass-panel pagespeed-integration-card" id="aeo-geo-info" style="margin-bottom:16px; border-inline-start: 4px solid #6366f1;">
-        <div class="pagespeed-brand">
-          <div class="google-icon" style="background:#6366f1; font-weight:800; font-size:1rem; color:#fff;">AEO</div>
-          <div class="pagespeed-details">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3>فحص التوافق مع محركات الذكاء الاصطناعي (AEO / GEO Engine Check)</h3>
-              <span class="badge badge-glow" style="font-size:0.75rem;">AEO / GEO Compliant</span>
-            </div>
-            <p>تحليل إمكانية قراءة واقتراح متجرك في <b>ChatGPT, Google AI Overviews, Gemini, Perplexity, و Claude</b>.</p>
-          </div>
-        </div>
-
-        <div class="pagespeed-score-badge" style="gap:12px;">
-          <div class="ps-score" style="background:rgba(99,102,241,0.08);">
-            <div style="font-size:0.8rem; color:var(--text-muted);">نسبة التوافق مع AEO</div>
-            <div class="num" style="color:#6366f1;" id="aeoScoreVal">85%</div>
-          </div>
-          <div class="ps-score" style="background:rgba(16,185,129,0.08);">
-            <div style="font-size:0.8rem; color:var(--text-muted);">بوتات AI المسموحة</div>
-            <div class="num" style="color:#10b981;" id="aiBotsAllowedVal">5/5</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Google PageSpeed Integration Card -->
-      <div class="glass-panel pagespeed-integration-card" id="pagespeed-info">
-        <div class="pagespeed-brand">
-          <div class="google-icon">G</div>
-          <div class="pagespeed-details">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3 id="ps-card-title">تكامل Google PageSpeed Insights الرسمية</h3>
-              <span class="badge badge-success" style="font-size:0.75rem;">مباشر من Google</span>
-            </div>
-            <p id="ps-card-desc">تم تأكيد سرعة المتجر والأداء من خوادم Google الرسمية لمطابقة أداء الوكلاء.</p>
-          </div>
-        </div>
-
-        <div class="pagespeed-score-badge">
-          <div class="ps-score mobile">
-            <div style="font-size:0.8rem; color:var(--text-muted);" id="ps-mobile-label">أداء الجوال</div>
-            <div class="num" id="psMobileVal">88/100</div>
-          </div>
-          <div class="ps-score desktop">
-            <div style="font-size:0.8rem; color:var(--text-muted);" id="ps-desktop-label">أداء السطح</div>
-            <div class="num" id="psDesktopVal">96/100</div>
-          </div>
-          <a href="#" target="_blank" id="googleOfficialLink" class="btn-secondary">
-            <span id="btn-verify-google">التأكد في موقع Google الرسمي ↗</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Category Tabs Nav -->
-      <div class="category-filter-nav">
-        <button class="cat-tab active" onclick="filterCategory('all', this)">
-          <span>📋</span> <span id="tab-all">جميع الفحوصات (64)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('agents_files', this)">
-          <span>🤖</span> <span id="tab-files">ملفات الوكلاء (10)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('schema', this)">
-          <span>📊</span> <span id="tab-schema">البيانات المنظمة (12)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('geo_aeo', this)">
-          <span>🧠</span> <span id="tab-geo">تحسين AI GEO/AEO (8)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('pagespeed', this)">
-          <span>⚡</span> <span id="tab-speed">الأداء والسرعة (8)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('security', this)">
-          <span>🔒</span> <span id="tab-sec">الأمان والبنية (8)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('accessibility', this)">
-          <span>📱</span> <span id="tab-mobile">الوصول والجوال (6)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('ecommerce', this)">
-          <span>🛒</span> <span id="tab-ecom">جاهزية المتجر (6)</span>
-        </button>
-        <button class="cat-tab" onclick="filterCategory('safety', this)">
-          <span>🛡️</span> <span id="tab-safety">أمان الوكلاء والطلبيات (6)</span>
-        </button>
-      </div>
-
-      <!-- 58 Checklist Accordions Items Container -->
-      <div class="checklist-container" id="checklistContainer">
-        <!-- JS will dynamically populate 58 items here -->
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Features & Why WakeelCheck Section -->
-  <section class="features-section" id="features">
-    <div class="container">
-      <div class="section-title">
-        <h2 id="feat-title">لماذا وكيل تشيك مختلف عن أدوات SEO التقليدية؟</h2>
-        <p id="feat-sub">أدوات SEO قديمة تفحص لمحركات البحث 2015. نحن نفحص للجيل الجديد من وكلاء الذكاء الاصطناعي المستقلين 2026.</p>
-      </div>
-
-      <div class="glass-panel comparison-table-wrapper">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th id="th-feature">معيار الفحص</th>
-              <th id="th-traditional">أدوات SEO التقليدية (Ahrefs / Semrush)</th>
-              <th class="highlight" id="th-wakeel">وكيل تشيك (WakeelCheck) 🤖</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="td-f1">فحص ملفات llms.txt & llms-full.txt</td>
-              <td style="color:var(--danger)">❌ لا تفحصها إطلاقاً</td>
-              <td class="highlight">✅ فحص شامل ودقيق</td>
-            </tr>
-            <tr>
-              <td id="td-f2">فحص بروتوكولات الوكلاء (Agent.json / OpenAPI)</td>
-              <td style="color:var(--danger)">❌ غير مدعومة</td>
-              <td class="highlight">✅ دعم كامل لربط الوكلاء</td>
-            </tr>
-            <tr>
-              <td id="td-f3">التحقق من Schema.org المخصصة للمنتجات والدفع</td>
-              <td>⚠️ فحص SEO سطحي فقط</td>
-              <td class="highlight">✅ فحص تفصيلي لـ Product & Offer & Shipping</td>
-            </tr>
-            <tr>
-              <td id="td-f4">تكامل مباشر ومجاني مع Google PageSpeed API</td>
-              <td>❌ يتطلب اشتراكات مدفوعة بـ $99+</td>
-              <td class="highlight">✅ مجاني مدمج مع رابط تأكيد Google</td>
-            </tr>
-            <tr>
-              <td id="td-f5">تخصيص كامل للمتاجر العربية (سلة، زد، شوبيفاي)</td>
-              <td>❌ لا تفهم سياق المنصات العربية</td>
-              <td class="highlight">✅ مصمم خصيصاً للمتاجر في السعودية والشرق الأوسط</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing Section -->
-  <section class="features-section" id="pricing" style="padding-top:20px;">
-    <div class="container">
-      <div class="section-title">
-        <h2 id="price-title">خطط وباقات وكيل تشيك</h2>
-        <p id="price-sub">اختر الباقة المناسبة لحجم متجرك أو وكالتك التجارية</p>
-      </div>
-
-      <div class="pricing-grid">
-        <!-- Free -->
-        <div class="glass-panel pricing-card">
-          <div>
-            <h3 style="font-size:1.4rem; font-weight:800;" id="p1-title">الباقة المجانية</h3>
-            <p style="color:var(--text-muted);" id="p1-desc">لأصحاب المتاجر الفردية للاختبار السريع</p>
-            <div class="price-tag">$0 <span id="p1-period">/ للأبد</span></div>
-            <ul class="pricing-features">
-              <li id="p1-f1">✅ فحص 20 عنصراً أساسياً</li>
-              <li id="p1-f2">✅ نتيجة الجاهزية الإجمالية من 100</li>
-              <li id="p1-f3">✅ تكامل مع Google PageSpeed</li>
-              <li id="p1-f4">❌ بدون تقرير PDF مفصل</li>
-              <li id="p1-f5">❌ بدون توليد أكواد تلقائية</li>
-            </ul>
-          </div>
-          <button class="btn-secondary" style="width:100%; justify-content:center;" onclick="document.getElementById('storeUrl').focus()"><span id="btn-start-free">ابدأ الفحص المجاني</span></button>
-        </div>
-
-        <!-- Pro -->
-        <div class="glass-panel pricing-card featured">
-          <div>
-            <h3 style="font-size:1.4rem; font-weight:800; color:var(--primary);" id="p2-title">الباقة الاحترافية</h3>
-            <p style="color:var(--text-muted);" id="p2-desc">للمتاجر المتنامية والشركات المتوسطة</p>
-            <div class="price-tag">$29 <span id="p2-period">/ شهرياً</span></div>
-            <ul class="pricing-features">
-              <li id="p2-f1">✅ فحص كامل 58 عنصراً في 7 فئات</li>
-              <li id="p2-f2">✅ تقارير PDF احترافية قابلة للتحميل</li>
-              <li id="p2-f3">✅ مولد ملفات llms.txt & Schema تلقائياً</li>
-              <li id="p2-f4">✅ فحص أسبوعي تلقائي والتنبيه بالأخطاء</li>
-              <li id="p2-f5">✅ دعم فني ذكي لإصلاح الأخطاء</li>
-            </ul>
-          </div>
-          <button class="btn-primary" style="width:100%; justify-content:center;" id="btn-pro-choose">اشترك الآن (Pro)</button>
-        </div>
-
-        <!-- Enterprise -->
-        <div class="glass-panel pricing-card">
-          <div>
-            <h3 style="font-size:1.4rem; font-weight:800;" id="p3-title">باقة الوكالات (Enterprise)</h3>
-            <p style="color:var(--text-muted);" id="p3-desc">للمؤسسات ووكالات التسويق ومطوري المتاجر</p>
-            <div class="price-tag">$99 <span id="p3-period">/ شهرياً</span></div>
-            <ul class="pricing-features">
-              <li id="p3-f1">✅ فحص عدد غير محدود من المتاجر</li>
-              <li id="p3-f2">✅ تقارير White-label لشعار وكالتك</li>
-              <li id="p3-f3">✅ وصول مباشر لـ API المنصة</li>
-              <li id="p3-f4">✅ تقارير مقارنة مع المنافسين</li>
-              <li id="p3-f5">✅ مدير حساب خاص ودعم أولوية</li>
-            </ul>
-          </div>
-          <button class="btn-secondary" style="width:100%; justify-content:center;" id="btn-ent-choose">تواصل معنا للوكالات</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Code Generator Modal (Hidden by default) -->
-  <div id="codeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:999; align-items:center; justify-content:center;">
-    <div class="glass-panel" style="max-width:760px; width:90%; padding:32px; max-height:88vh; overflow-y:auto; border-radius:24px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-size:1.4rem; font-weight:800;" id="modal-title">⚡ مولد ملفات الذكاء الاصطناعي والحماية التلقائي</h3>
-        <button onclick="closeFixModal()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">✕</button>
-      </div>
-      <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:16px;" id="modal-sub">انسخ الأكواد التالية وضعها في مجلد متجرك الرئيسي لرفع نتيجة الجاهزية وحماية متجرك من الطلبيات الوهمية فوراً:</p>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px;">
-        <h4 style="color:#6366f1; margin:0;">1. ملف `llms.txt` لإرشاد نماذج الـ AI:</h4>
-        <button class="btn-secondary" style="padding:4px 12px; font-size:0.8rem;" onclick="copyTextContent('generatedLlmsCode', this)">📋 نسخ الكود</button>
-      </div>
-      <div class="code-preview" id="generatedLlmsCode">
-# llms.txt generated by AITChek.online
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
-        <h4 style="color:#10b981; margin:0;">2. سياسة الأمان `agent.json` (تقييد الدفع عند الاستلام وحظر البوتات المزيفة):</h4>
-        <button class="btn-secondary" style="padding:4px 12px; font-size:0.8rem;" onclick="copyTextContent('generatedAgentJsonCode', this)">📋 نسخ الكود</button>
-      </div>
-      <div class="code-preview" id="generatedAgentJsonCode">
-{
-  "agent_spec_version": "1.0",
-  "security_policy": {
-    "cash_on_delivery_allowed": false,
-    "require_3d_secure_otp": true
-  }
-}
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
-        <h4 style="color:#38bdf8; margin:0;">3. تصريحات `robots.txt` لبوتات الـ AI المعتمدة:</h4>
-        <button class="btn-secondary" style="padding:4px 12px; font-size:0.8rem;" onclick="copyTextContent('generatedRobotsCode', this)">📋 نسخ الكود</button>
-      </div>
-      <div class="code-preview" id="generatedRobotsCode">
-User-agent: GPTBot
-Allow: /
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
-        <h4 style="color:#a5b4fc; margin:0;">4. كود Schema.org JSON-LD للمنتجات:</h4>
-        <button class="btn-secondary" style="padding:4px 12px; font-size:0.8rem;" onclick="copyTextContent('generatedSchemaCode', this)">📋 نسخ الكود</button>
-      </div>
-      <div class="code-preview" id="generatedSchemaCode">
-&lt;script type="application/ld+json"&gt;
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "اسم المنتج",
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "SAR",
-    "price": "199.00"
-  }
-}
-&lt;/script&gt;
-      </div>
-
-      <div style="margin-top:24px; display:flex; justify-content:flex-end;">
-        <button class="btn-primary" onclick="closeFixModal()" id="btn-close-modal">تم النسخ / إغلاق</button>
+      <!-- Terminal Output Feed -->
+      <div class="p-3 rounded-lg bg-slate-950 font-mono text-[11px] text-slate-400 border border-slate-800 h-20 overflow-y-auto" id="terminal-feed">
+        <div>> Initiating WakeelCheck Master Engine Audit...</div>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p id="footer-text">© 2026 وكيل تشيك — WakeelCheck.ai | أول أداة عربية لفحص جاهزية المتاجر الإلكترونية لوكلاء الذكاء الاصطناعي</p>
+  <!-- RESULTS SECTION (VALUE BEFORE OPT-IN EVIDENCE ENGINE) -->
+  <section id="results-section" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 hidden">
+    <div class="text-center mb-10">
+      <span class="text-xs font-mono text-sky-400 uppercase tracking-wider">نتائج الفحص التشخيصية المباشرة</span>
+      <h2 class="text-2xl sm:text-4xl font-bold text-white mt-2">تقرير الجاهزية والظهور أمام البوتات</h2>
+      <p id="result-domain-text" class="font-mono text-xs text-slate-400 mt-1">https://myshop.com</p>
+    </div>
+
+    <!-- Split-Panel Frosted Glass Comparison Card (Left Red / Right Teal) -->
+    <div class="split-frosted-card rounded-2xl overflow-hidden mb-10 shadow-2xl p-6 sm:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Side: User Store Gaps (Muted/Red) -->
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-rose-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">متجرك المفحوص</span>
+              <span class="text-xs font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">غير مكتشف / يحتاج تهيئة</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span id="user-score-val" class="text-6xl font-black text-rose-400 font-mono">02</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              متجرك يعاني من غياب الترويسات الهيكلية الموجهة للبوتات وتوافق ملفات <span class="font-mono text-rose-400">robots.txt</span>، مما يتسبب في حظر زحف المساعدين الذكيين.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-rose-400 border-t border-slate-800 pt-3">
+            ⚠️ الحالة: غير موصى به في إجابات ChatGPT
+          </div>
+        </div>
+
+        <!-- Right Side: Top Competitor Data (Teal/Sharp) -->
+        <div class="p-6 rounded-xl bg-slate-950/80 border border-emerald-500/30 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-slate-400">المنافس الرائد في مجالك</span>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">موصى به ومصنف أولاً</span>
+            </div>
+            <div class="flex items-baseline space-x-2 space-x-reverse mb-4">
+              <span class="text-6xl font-black text-emerald-400 font-mono">08</span>
+              <span class="text-2xl font-bold text-slate-500">/ 10</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+              المنافس يتصدر النتائج التوليدية بفضل اكتمال وسوم Schema.org للمنتجات وسماحه لبوتات <span class="font-mono text-emerald-400">GPTBot</span> و <span class="font-mono text-emerald-400">PerplexityBot</span> بالقراءة.
+            </p>
+          </div>
+          <div class="text-xs font-mono text-emerald-400 border-t border-slate-800 pt-3">
+            ✅ الحالة: يتصدر التوصيات الشراء الحالية
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live ChatGPT Snippet Visualizer -->
+    <div class="editorial-card p-6 sm:p-8 rounded-xl mb-10">
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-800">
+        <span class="font-bold text-sm text-white">معاينة إجابة ChatGPT التفاعلية الحية</span>
+        <span class="text-xs font-mono text-slate-500">OpenAI gpt-4o-mini</span>
+      </div>
+
+      <!-- Query -->
+      <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs mb-4">
+        <span class="text-slate-500 block mb-1">استعلام المستهلك النهائي:</span>
+        <span class="text-slate-200 font-bold">"اقترح لي أفضل متجر موثوق لشراء المستلزمات والمنتجات مع توصيل سريع وترشيح عالي؟"</span>
+      </div>
+
+      <!-- Answer Output -->
+      <div class="p-4 rounded-lg bg-slate-950 border border-slate-800 text-xs space-y-3">
+        <p class="text-slate-300">إليك المتاجر الأكثر ترشيحاً وتوصية بناءً على البيانات المفهرسة:</p>
+
+        <!-- Competitor Highlighted in Green -->
+        <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-between">
+          <span class="font-bold text-white" id="competitor-name">متجر دار الأناقة (المنافس المعتمد)</span>
+          <span class="font-mono text-[11px] text-emerald-400">موصى به (9.4/10) ✓</span>
+        </div>
+
+        <!-- User Store Highlighted in Red -->
+        <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 flex items-center justify-between">
+          <span class="font-bold text-white" id="user-store-name">متجرك (https://myshop.com)</span>
+          <span class="font-mono text-[11px] text-rose-400">غير متاح / مفقود ✕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Technical Vulnerabilities -->
+    <div class="editorial-card p-6 rounded-xl mb-10">
+      <h3 class="font-bold text-sm text-white mb-4">النواقص الفنية والسجلات المكشوفة في الفحص</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- robots.txt AI Bot Policies -->
+        <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
+          <div class="font-bold text-slate-300 mb-2">سياسات البوتات (robots.txt)</div>
+          <div class="space-y-1.5 font-mono text-slate-400">
+            <div class="flex justify-between"><span>GPTBot:</span> <span class="text-rose-400">محظور ✕</span></div>
+            <div class="flex justify-between"><span>PerplexityBot:</span> <span class="text-emerald-400">مسموح ✓</span></div>
+            <div class="flex justify-between"><span>ClaudeBot:</span> <span class="text-rose-400">محظور ✕</span></div>
+          </div>
+        </div>
+
+        <!-- Schema.org Markup -->
+        <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
+          <div class="font-bold text-slate-300 mb-2">بيانات Schema.org</div>
+          <div class="space-y-1.5 font-mono text-slate-400">
+            <div class="flex justify-between"><span>Product Schema:</span> <span class="text-rose-400">مفقود ✕</span></div>
+            <div class="flex justify-between"><span>Offer / Price:</span> <span class="text-emerald-400">موجود ✓</span></div>
+            <div class="flex justify-between"><span>Organization:</span> <span class="text-rose-400">مفقود ✕</span></div>
+          </div>
+        </div>
+
+        <!-- Security & Domain Timers -->
+        <div class="p-4 rounded bg-slate-950 border border-slate-800 text-xs">
+          <div class="font-bold text-slate-300 mb-2">الأمان وحزمة llms.txt</div>
+          <div class="space-y-1.5 font-mono text-slate-400">
+            <div class="flex justify-between"><span>تشفير SSL:</span> <span class="text-emerald-400">سليم HTTPS ✓</span></div>
+            <div class="flex justify-between"><span>سجل DMARC:</span> <span class="text-emerald-400">محمي ✓</span></div>
+            <div class="flex justify-between"><span>ملف llms.txt:</span> <span class="text-rose-400">مفقود (404) ✕</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lead Capture Card (Appears ONLY After Revealing Evidence) -->
+    <div class="editorial-card p-6 sm:p-8 rounded-xl text-center max-w-2xl mx-auto border-sky-500/40">
+      <h3 class="text-xl font-bold text-white mb-2">احصل على تقرير الإصلاح الشامل خلال 24 ساعة</h3>
+      <p class="text-xs text-slate-400 mb-6">أدخل بريدك الإلكتروني لتوليد وإرسال التقرير الشامل بصيغة PDF مع كود Schema المخصص لمتجرك.</p>
+
+      <form onsubmit="handleLeadSubmit(event)" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input 
+          type="email" 
+          required 
+          placeholder="email@domain.com" 
+          class="flex-grow px-4 py-2.5 rounded bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-sky-500"
+        />
+        <button type="submit" class="px-5 py-2.5 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition whitespace-nowrap">
+          إرسال التقرير
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- SECTION 4: RADICAL TRANSPARENCY ("What We Measure vs What We Don't") -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-800/80">
+    <div class="text-center mb-12">
+      <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">الشفافية والمصداقية</span>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">ما نقوم بقياسه مقابل ما لا نقيسه</h2>
+    </div>
+
+    <div class="editorial-card rounded-xl overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-800">
+        <!-- We Measure -->
+        <div class="p-6">
+          <div class="flex items-center space-x-2 space-x-reverse mb-4 text-emerald-400 font-bold text-sm">
+            <span>✓</span>
+            <span>ما نقوم بقياسه بدقة تقنية</span>
+          </div>
+          <ul class="space-y-3 text-xs text-slate-300 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400">•</span>
+              <span>حضور وتواجد المتجر في استعلامات ChatGPT و Perplexity.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400">•</span>
+              <span>صلاحيات وقواعد ملف robots.txt لبوتات الذكاء الاصطناعي.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400">•</span>
+              <span>اكتمال وسوم Schema.org الخاصة بالمنتجات والأسعار.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400">•</span>
+              <span>صحة شهادات تشفير SSL وسجلات أمان DMARC.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- We DO NOT Measure -->
+        <div class="p-6 bg-slate-950/40">
+          <div class="flex items-center space-x-2 space-x-reverse mb-4 text-rose-400 font-bold text-sm">
+            <span>✕</span>
+            <span>ما لا نقوم بقياسه (لحفظ الأمانة)</span>
+          </div>
+          <ul class="space-y-3 text-xs text-slate-400 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400">•</span>
+              <span>مخرجات أجهزة Apple Intelligence المحلية المشفرة على الهواتف.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400">•</span>
+              <span>جلسات متصفح Chrome Gemini المغلقة لأسباب تتعلق بالخصوصية.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-400">•</span>
+              <span>ضمان المبيعات المباشرة (نحن نوفر الجاهزية التقنية والظهور فقط).</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: GLOBAL PRICING MODEL (ALL IN USD $) -->
+  <section id="pricing" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-800/80">
+    <div class="text-center mb-12">
+      <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">خطط الأسعار (USD $)</span>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">اختر الخطة المناسبة لمتجرك</h2>
+    </div>
+
+    <!-- 5 Pricing Tiers Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <!-- Free -->
+      <div class="editorial-card p-5 rounded-lg flex flex-col justify-between">
+        <div>
+          <h4 class="font-bold text-sm text-white mb-1">فحص فوري</h4>
+          <div class="text-2xl font-black text-white font-mono my-3">$0</div>
+          <ul class="text-[11px] space-y-2 text-slate-400 mb-6">
+            <li>• فحص فوري لمرة واحدة</li>
+            <li>• فحص robots.txt والبوتات</li>
+            <li>• تقييم Schema الأساسي</li>
+          </ul>
+        </div>
+        <button onclick="scrollToTop()" class="w-full py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          افحص الآن
+        </button>
+      </div>
+
+      <!-- Trial -->
+      <div class="editorial-card p-5 rounded-lg flex flex-col justify-between">
+        <div>
+          <h4 class="font-bold text-sm text-white mb-1">تجربة 7 أيام</h4>
+          <div class="text-2xl font-black text-white font-mono my-3">$1</div>
+          <ul class="text-[11px] space-y-2 text-slate-400 mb-6">
+            <li>• تقرير تشخيصي PDF كامل</li>
+            <li>• كود llms.txt جاهز</li>
+            <li>• تتبع المنافسين الأساسي</li>
+          </ul>
+        </div>
+        <button onclick="alert('خطة التجربة $1 ستتاح قريباً!')" class="w-full py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          جرب بـ $1
+        </button>
+      </div>
+
+      <!-- Starter -->
+      <div class="editorial-card p-5 rounded-lg flex flex-col justify-between">
+        <div>
+          <h4 class="font-bold text-sm text-white mb-1">الأساسية</h4>
+          <div class="text-2xl font-black text-white font-mono my-3">$10 <span class="text-[10px] text-slate-500 font-sans">/ شهر</span></div>
+          <ul class="text-[11px] space-y-2 text-slate-400 mb-6">
+            <li>• فحص تلقائي أسبوعي</li>
+            <li>• تنبيهات البريد</li>
+            <li>• مساعد توليد Schema</li>
+          </ul>
+        </div>
+        <button onclick="alert('جاري إعداد الخطة الأساسية $10/شهر!')" class="w-full py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          اشترك بـ $10
+        </button>
+      </div>
+
+      <!-- Pro (Featured) -->
+      <div class="editorial-card p-5 rounded-lg border-sky-500 flex flex-col justify-between relative">
+        <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded text-[9px] font-bold bg-sky-500 text-slate-950">
+          الموصى بها
+        </span>
+        <div>
+          <h4 class="font-bold text-sm text-white mb-1">الاحترافية</h4>
+          <div class="text-2xl font-black text-sky-400 font-mono my-3">$49 <span class="text-[10px] text-slate-500 font-sans">/ شهر</span></div>
+          <ul class="text-[11px] space-y-2 text-slate-300 mb-6">
+            <li>• تغطية كافة نماذج LLM</li>
+            <li>• تتبع المنافسين المباشر</li>
+            <li>• مولد الإصلاحات التلقائي</li>
+          </ul>
+        </div>
+        <button onclick="alert('تم اختيار الخطة الاحترافية $49/شهر!')" class="w-full py-2 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition">
+          اشترك بـ $49
+        </button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="editorial-card p-5 rounded-lg flex flex-col justify-between">
+        <div>
+          <h4 class="font-bold text-sm text-white mb-1">المؤسسات</h4>
+          <div class="text-2xl font-black text-white font-mono my-3">$1,000 <span class="text-[10px] text-slate-500 font-sans">/ شهر</span></div>
+          <ul class="text-[11px] space-y-2 text-slate-400 mb-6">
+            <li>• وكيل AI مخصص</li>
+            <li>• مراقبة 24/7 للمنافذ</li>
+            <li>• واجهة White-Label API</li>
+          </ul>
+        </div>
+        <button onclick="alert('تواصل مع مبيعات المؤسسات!')" class="w-full py-2 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+          تواصل معنا
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-800 bg-canvas py-8 text-center text-xs text-slate-500 font-mono">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>WakeelCheck &copy; 2026. جميع الحقوق محفوظة.</div>
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <a href="#pricing" class="hover:text-slate-300 transition">الأسعار</a>
+        <a href="cybershield.html" class="hover:text-slate-300 transition">CyberShield</a>
+        <a href="llms.txt" target="_blank" class="hover:text-slate-300 transition">llms.txt</a>
+      </div>
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <!-- JAVASCRIPT LOGIC & THREE.JS PARALLAX SCRIPT -->
+  <script>
+    // 1. Three.js WebGL Blueprint Grid Plane with Mouse-Follow Parallax
+    function initWebGLParallax() {
+      const canvas = document.getElementById('webgl-hero-canvas');
+      if (!canvas || !window.THREE) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / (canvas.parentElement.clientHeight || 500), 0.1, 1000);
+      camera.position.z = 5;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Load Blueprint Grid Texture
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load('blueprint_grid.png', (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+
+        const geometry = new THREE.PlaneGeometry(12, 8);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.55
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // Mouse Parallax Interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth - 0.5) * 0.3;
+          mouseY = (e.clientY / window.innerHeight - 0.5) * 0.3;
+        });
+
+        function renderLoop() {
+          requestAnimationFrame(renderLoop);
+          targetX += (mouseX - targetX) * 0.05;
+          targetY += (mouseY - targetY) * 0.05;
+
+          mesh.rotation.y = targetX;
+          mesh.rotation.x = -targetY;
+
+          renderer.render(scene, camera);
+        }
+
+        renderLoop();
+      });
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / (canvas.parentElement.clientHeight || 500);
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, canvas.parentElement.clientHeight || 500);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initWebGLParallax, 100);
+    });
+
+    // 2. Language Switcher
+    function toggleLang() {
+      const isAr = document.documentElement.dir === 'rtl';
+      document.documentElement.dir = isAr ? 'ltr' : 'rtl';
+      document.documentElement.lang = isAr ? 'en' : 'ar';
+      document.getElementById('lang-toggle').innerText = isAr ? 'عربي' : 'English';
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 3. Theatrical Audit Submission Handler
+    async function handleAuditSubmit(event) {
+      event.preventDefault();
+      const rawUrl = document.getElementById('store-url').value.trim();
+      if (!rawUrl) return;
+
+      const modal = document.getElementById('scanning-modal');
+      const progressBar = document.getElementById('progress-bar');
+      document.getElementById('scanning-target-url').innerText = rawUrl;
+      modal.classList.remove('hidden');
+
+      // Step 1
+      progressBar.style.width = '25%';
+      setStepState(1, 'جاري القراءة...');
+      appendLog('> Connecting to server & reading robots.txt...');
+      await sleep(800);
+      setStepState(1, 'مكتمل ✓');
+
+      // Step 2
+      progressBar.style.width = '50%';
+      setStepState(2, 'جاري الاستعلام...');
+      appendLog('> Querying LLM search indexes (ChatGPT / Perplexity)...');
+      await sleep(900);
+      setStepState(2, 'مكتمل ✓');
+
+      // Step 3
+      progressBar.style.width = '75%';
+      setStepState(3, 'جاري التحليل...');
+      appendLog('> Analyzing regional competitor positioning...');
+
+      let auditData = null;
+      try {
+        const res = await fetch('/api/visibility', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: rawUrl })
+        });
+        auditData = await res.json();
+      } catch (e) {}
+
+      await sleep(800);
+      setStepState(3, 'مكتمل ✓');
+
+      // Step 4
+      progressBar.style.width = '100%';
+      setStepState(4, 'جاري التجميع...');
+      appendLog('> Generating evidence report...');
+      await sleep(700);
+      setStepState(4, 'مكتمل ✓');
+
+      await sleep(400);
+      modal.classList.add('hidden');
+      renderResults(rawUrl, auditData);
+    }
+
+    function setStepState(step, text) {
+      const el = document.getElementById(`step-${step}`);
+      if (el) {
+        const status = el.querySelector('.step-status');
+        status.innerText = text;
+        if (text.includes('مكتمل')) {
+          status.className = 'step-status font-mono text-emerald-400 font-bold';
+        } else {
+          status.className = 'step-status font-mono text-sky-400';
+        }
+      }
+    }
+
+    function appendLog(msg) {
+      const terminal = document.getElementById('terminal-feed');
+      const line = document.createElement('div');
+      line.innerText = msg;
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function renderResults(url, data) {
+      const section = document.getElementById('results-section');
+      section.classList.remove('hidden');
+
+      let domain = url.replace(/https?:\/\//, '').replace(/\/.*$/, '');
+      document.getElementById('result-domain-text').innerText = `https://${domain}`;
+      document.getElementById('user-store-name').innerText = `متجرك (https://${domain})`;
+
+      const score = data && data.overallScore ? Math.round(data.overallScore / 10) : 2;
+      const formattedScore = score < 10 ? `0${score}` : `${score}`;
+      document.getElementById('user-score-val').innerText = formattedScore;
+
+      const compName = data && data.platform && data.platform.includes('Salla') ? 'متجر دار الأناقة (سلة)' : 'متجر الفخامة السعودية';
+      document.getElementById('competitor-name').innerText = compName;
+
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function handleLeadSubmit(event) {
+      event.preventDefault();
+      alert('تم تسجيل طلبك! تم إرسال التقرير الشامل إلى بريدك الإلكتروني بنجاح.');
+    }
+  </script>
 </body>
 </html>

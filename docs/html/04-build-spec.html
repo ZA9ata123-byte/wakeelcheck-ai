@@ -123,6 +123,12 @@ hr.end{border:0;border-block-start:1px solid var(--rule);margin:0}
     </p>
     <div class="meta"><span>pnpm workspaces</span><span>·</span><span>TypeScript strict</span><span>·</span><span>Next.js 15 + Node worker</span></div>
   </header>
+  <div style="background:var(--caution-mark,#f7ecd6);border:1px solid var(--caution,#9a6a10);border-radius:4px;padding:0.9rem 1.15rem;margin-block:1.5rem 0;font-size:0.9rem;line-height:1.7">
+    <b style="color:var(--caution,#9a6a10)">هذه المواصفة خُطّة، والكود نُفِّذ.</b>
+    الشجرة والعقود أدناه هي ما صُمّم قبل الكتابة. ما اختلف فعلاً مسرود في
+    قسم <b>«المنفَّذ مقابل المخطَّط»</b> في آخر الوثيقة — اقرأه قبل أن تبني على أي مسار هنا.
+  </div>
+
 
   <!-- 01 -->
   <section>
@@ -512,6 +518,84 @@ LEMONSQUEEZY_API_KEY=    <span class="c"># أوروبا + الأفلييت</span
       <div><span class="x">07</span><span><b>الفحص الأمني العميق خلف <code>verified_at</code>.</b> بلا ملكية مُثبتة: الطبقة السلبية فقط.</span></div>
       <div><span class="x">08</span><span><b><code>strict: true</code> ولا <code>any</code>.</b> أربعة من الأخطاء السبعة الحرجة كان المترجم سيرفضها.</span></div>
     </div>
+  </section>
+
+
+  <section>
+    <div class="eyebrow">المنفَّذ مقابل المخطَّط</div>
+    <h2>ما اختلف — وحُجّته</h2>
+    <p class="lede">
+      كل سطر هنا فرق حقيقي بين هذه الوثيقة والكود القائم على الفرع. المصدر هو
+      الكود لا الوثيقة؛ هذا الجدول يمنع أن يبني أحد على مسار لم يعد موجوداً.
+    </p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-block-start:1rem">
+      <thead>
+        <tr>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">في المواصفة</th>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">في الكود</th>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">السبب</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/layout.tsx</code> واحد</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/(ar)/layout.tsx</code> و<code>app/(en)/layout.tsx</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">Next لا يمرّر معلومات المسار إلى تخطيط جذري واحد، فكان <code>/en</code> يُقدَّم بـ<code>dir="rtl"</code>. لغة الصفحة واتجاهها يحتاجان مجموعتَي مسارات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ستة مكوّنات (<code>Probe</code>، <code>ScanSteps</code>، <code>ExhibitCard</code>، …)</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>Scanner.tsx</code> و<code>Landing.tsx</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الحالات الأربع تعيش في شاشة واحدة وتتشارك الحالة؛ تقسيمها إلى ستة مكوّنات كان يعني تمرير الحالة نفسها ستّ مرات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>styles/tokens.css</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/globals.css</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">مسار App Router المعتاد. المحتوى نفسه: كل لون رمز، ومعرَّف في الوضعين.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>llm/oxalpha.ts</code> و<code>llm/deepseek.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>llm/providers.ts</code> و<code>llm/fallback.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">المزوّدان يتشاركان الشكل نفسه؛ ما يستحق ملفاً مستقلاً هو سلسلة الاحتياط لا كل مزوّد.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">—</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/engines</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ChatGPT وأسطح Google. كل محرّك = محلّل خالص مُصدَّر ومُختبَر + غلاف شبكة رقيق، فتغيّر شكل ردّ لا يُسقط الفحص.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">—</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/limits</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الكاش وحدّ الزائر وسقف الميزانية. القاعدة 04 تحتاج مكاناً واحداً يُختبَر، لا شرطاً متناثراً في المسارات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>apps/worker/src/pipeline.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/pipeline</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">وضعُه في حزمة يجعله قابلاً للاختبار بلا خادم، ويجعل نقلَه إلى العامل لاحقاً تغييرَ مُستدعٍ لا إعادةَ كتابة.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>apps/worker/</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><b>غير مبني بعد</b></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الفحص يجري حالياً داخل عملية الويب. يكفي للعرض ولا يكفي للحمل — مطلوب فوق عشر فحوصات متزامنة.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">قواعد الجاهزية</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><b>20</b> قاعدة فعّالة في <code>ACTIVE_RULES</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">النطاق مقصود: قاعدة بلا إصلاح حقيقي تُنتج ضجيجاً في التقرير ولا تُنتج قيمة للتاجر.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>perplexity</code> ضمن الخطة الكاملة</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">مذكور في <code>PLANS.full</code> بلا عميل</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ينتج تحذيراً لا فشلاً. مهمّة مفتوحة — انظر <code>docs/07-launch-path</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lede" style="margin-block-start:1.4rem">
+      نموذج تقرير مولّد من خطّ الأنابيب نفسه في
+      <code>docs/specimen/report.html</code>، ومصدره <code>docs/specimen/report.json</code>.
+      استعمله مرجعاً لشكل المخرَج بدل بناء بيانات وهمية.
+    </p>
   </section>
 
   <hr class="end">

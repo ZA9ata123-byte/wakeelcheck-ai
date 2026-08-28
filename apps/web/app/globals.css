@@ -1,0 +1,728 @@
+/**
+ * رموز التصميم — من نظام العلامة (docs/03-visual-system).
+ *
+ * لا يُكتب لون في مكوّن. كل لون يأتي من رمز هنا، وكل رمز مُعرَّف في
+ * الوضعين. القاعدة تمنع الخطأ الكلاسيكي: لون مُعرَّف داخل media query
+ * وحدها لا يُطبَّق إطلاقاً في الحالة غير الموسومة.
+ */
+
+:root {
+  --ground: #e9e8e4;
+  --sheet: #ffffff;
+  --sheet-2: #f4f3f0;
+  --rule: #d5d3cc;
+  --rule-soft: #e2e0da;
+
+  --ink: #171412;
+  --ink-2: #3b3733;
+  --muted: #6d6862;
+  --faint: #9a948c;
+
+  /* العلامتان — قلب الهوية. اللون هنا معنى لا زينة. */
+  --rival: #d8452c;
+  --rival-mark: #fbe3dd;
+  --rival-deep: #a8321f;
+
+  --present: #1a6f52;
+  --present-mark: #dcefe6;
+
+  --caution: #9a6a10;
+  --caution-mark: #f7ecd6;
+
+  --lift: 0 1px 2px rgb(23 20 18 / 5%), 0 10px 28px -16px rgb(23 20 18 / 28%);
+  --lift-lg: 0 2px 5px rgb(23 20 18 / 7%), 0 26px 56px -28px rgb(23 20 18 / 42%);
+
+  --face: 'Readex Pro', 'Segoe UI', Tahoma, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --pad: clamp(1.1rem, 4vw, 2.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ground: #12100f;
+    --sheet: #1b1917;
+    --sheet-2: #232120;
+    --rule: #35322f;
+    --rule-soft: #2a2825;
+
+    --ink: #f1efec;
+    --ink-2: #cfcbc6;
+    --muted: #9b958e;
+    --faint: #726c65;
+
+    --rival: #ff7259;
+    --rival-mark: #38190f;
+    --rival-deep: #ff9581;
+
+    --present: #4fbc91;
+    --present-mark: #10281f;
+
+    --caution: #d59f3c;
+    --caution-mark: #2e2312;
+
+    --lift: 0 1px 2px rgb(0 0 0 / 50%), 0 10px 28px -16px rgb(0 0 0 / 90%);
+    --lift-lg: 0 2px 5px rgb(0 0 0 / 55%), 0 26px 56px -28px rgb(0 0 0 / 100%);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  direction: rtl;
+}
+
+html[lang='en'] {
+  direction: ltr;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--face);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+.shell {
+  max-width: 62rem;
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.mono {
+  font-family: var(--mono);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ── شريط علوي شبه فارغ عن قصد ─────────────────────────────── */
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 1.1rem;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.logo .dot {
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: var(--rival);
+  flex: none;
+}
+
+.bar a {
+  font-size: 0.88rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 400;
+  border-block-end: 1px solid var(--rule);
+  padding-block-end: 1px;
+}
+
+.bar a:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* ── البطل: العنوان ثم الحقل. لا شيء غيرهما ─────────────────── */
+
+.hero {
+  padding-block: clamp(2.2rem, 7vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6.4vw, 3.85rem);
+  max-width: 19ch;
+}
+
+.hero h1 .hit {
+  color: var(--rival);
+  white-space: nowrap;
+}
+
+.hero .sub {
+  margin-block-start: 1.1rem;
+  font-size: clamp(1rem, 2.3vw, 1.2rem);
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.probe {
+  margin-block-start: clamp(1.6rem, 4vw, 2.4rem);
+  max-width: 40rem;
+}
+
+.probe-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  background: var(--sheet);
+  border: 1px solid var(--ink);
+  border-radius: 10px;
+  padding: 0.45rem;
+  box-shadow: var(--lift);
+}
+
+.probe input {
+  flex: 1 1 13rem;
+  min-inline-size: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--ink);
+  padding: 0.8rem 0.9rem;
+  direction: ltr;
+  text-align: left;
+}
+
+.probe input::placeholder {
+  color: var(--faint);
+}
+
+.probe input:focus {
+  outline: none;
+}
+
+.go {
+  flex: 0 0 auto;
+  background: var(--ink);
+  color: var(--ground);
+  border: 0;
+  border-radius: 7px;
+  font-family: var(--face);
+  font-weight: 500;
+  font-size: 0.98rem;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+}
+
+.go:hover:not(:disabled) {
+  background: var(--rival);
+}
+
+.go:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.go:focus-visible,
+.probe input:focus-visible {
+  outline: 2px solid var(--rival);
+  outline-offset: 3px;
+}
+
+.micro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin-block-start: 0.75rem;
+  padding-inline-start: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+.micro span::before {
+  content: '· ';
+  color: var(--rule);
+}
+
+.micro span:first-child::before {
+  content: '';
+}
+
+.stage {
+  margin-block-start: 1.6rem;
+  max-width: 46rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* ── الحالة 02: خطوات الفحص ─────────────────────────────────── */
+
+.steps {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  box-shadow: var(--lift);
+}
+
+.stp {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  font-size: 0.93rem;
+  color: var(--faint);
+  transition: color 0.3s ease;
+}
+
+.stp .mk {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+.stp[data-state='on'] {
+  color: var(--ink);
+}
+
+.stp[data-state='on'] .mk {
+  color: var(--rival);
+  animation: blink 1s ease-in-out infinite;
+}
+
+.stp[data-state='done'] {
+  color: var(--muted);
+}
+
+.stp[data-state='done'] .mk {
+  color: var(--present);
+}
+
+/* ── الحالة 03: بطاقة الدليل ────────────────────────────────── */
+
+.exhibit {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--lift-lg);
+}
+
+.ex-head {
+  padding: 0.85rem 1.2rem;
+  background: var(--sheet-2);
+  border-block-end: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.8rem;
+}
+
+.engine {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: 0.1rem 0.6rem;
+  direction: ltr;
+}
+
+.ex-head .q {
+  font-size: 0.92rem;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.ex-body {
+  padding: 1.3rem 1.4rem;
+  font-size: 1.02rem;
+  line-height: 2;
+  color: var(--ink-2);
+}
+
+/* العلامة على النص — هي العلامة التجارية كلها */
+mark.rival {
+  background-image: linear-gradient(var(--rival-mark), var(--rival-mark));
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 100% 100%;
+  color: var(--rival-deep);
+  font-weight: 500;
+  padding: 0.06em 0.38em;
+  border-radius: 3px;
+  border-block-end: 2px solid var(--rival);
+  animation: ink 0.5s cubic-bezier(0.25, 0.8, 0.35, 1) both;
+}
+
+html[lang='en'] mark.rival {
+  background-position: left center;
+}
+
+.verdict {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border-block-start: 1px solid var(--rule);
+}
+
+.vt {
+  background: var(--sheet);
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.vt .lab {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.vt .val {
+  font-family: var(--mono);
+  font-size: 1.7rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.vt[data-tone='bad'] .val {
+  color: var(--rival);
+}
+
+.vt[data-tone='good'] .val {
+  color: var(--present);
+}
+
+.vt .sub {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+/* ── التحذير الأمني الواحد ──────────────────────────────────── */
+
+.alarm {
+  background: var(--caution-mark);
+  border: 1px solid var(--caution);
+  border-radius: 10px;
+  padding: 0.95rem 1.2rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.alarm .glyph {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--caution);
+}
+
+.alarm b {
+  display: block;
+  font-weight: 500;
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+
+.alarm p {
+  font-size: 0.88rem;
+  color: var(--ink-2);
+  margin-block-start: 0.15rem;
+}
+
+/* ── الحالة 04: البوّابة ────────────────────────────────────── */
+
+.gate {
+  background: var(--ink);
+  color: var(--ground);
+  border-radius: 10px;
+  padding: 1.3rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.gate h3 {
+  font-size: 1.12rem;
+  color: var(--ground);
+}
+
+.gate ul {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  font-size: 0.9rem;
+  opacity: 0.78;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.gate-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.gate input {
+  flex: 1 1 12rem;
+  min-inline-size: 0;
+  border: 1px solid rgb(255 255 255 / 22%);
+  background: rgb(255 255 255 / 7%);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  color: var(--ground);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  direction: ltr;
+  text-align: left;
+}
+
+.gate input::placeholder {
+  color: rgb(255 255 255 / 40%);
+}
+
+.gate input:focus-visible {
+  outline: 2px solid var(--rival);
+  outline-offset: 1px;
+}
+
+.gate button {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 8px;
+  background: var(--rival);
+  color: #fff;
+  font-family: var(--face);
+  font-weight: 600;
+  font-size: 0.94rem;
+  padding: 0.7rem 1.3rem;
+  cursor: pointer;
+}
+
+.gate .fine {
+  font-size: 0.76rem;
+  opacity: 0.55;
+}
+
+.notice {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--caution);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+/* ── أقسام أسفل الصفحة ──────────────────────────────────────── */
+
+.blk {
+  padding-block: clamp(2.6rem, 7vw, 4.5rem);
+  border-block-start: 1px solid var(--rule);
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rival);
+  direction: ltr;
+  text-align: start;
+  margin-block-end: 0.7rem;
+}
+
+.blk h2 {
+  font-size: clamp(1.4rem, 3.6vw, 2.05rem);
+  max-width: 22ch;
+}
+
+.blk .lede {
+  margin-block-start: 0.8rem;
+  color: var(--muted);
+  max-width: 52ch;
+  font-size: 1.02rem;
+}
+
+.split {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  margin-block-start: 2rem;
+}
+
+.hcol {
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.2rem 1.3rem;
+}
+
+.hcol h3 {
+  font-size: 1rem;
+  margin-block-end: 0.8rem;
+}
+
+.hcol[data-tone='yes'] h3 {
+  color: var(--present);
+}
+
+.hcol[data-tone='no'] h3 {
+  color: var(--rival);
+}
+
+.hcol ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hcol li {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  padding-block-end: 0.5rem;
+  border-block-end: 1px solid var(--rule-soft);
+}
+
+.hcol li:last-child {
+  border-block-end: 0;
+  padding-block-end: 0;
+}
+
+.hcol .why {
+  margin-block-start: 0.9rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.pricebox {
+  margin-block-start: 2rem;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  display: grid;
+  gap: 1.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  box-shadow: var(--lift);
+}
+
+.tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tier .t-name {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.tier .t-price {
+  font-size: 2.1rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tier .t-price small {
+  font-size: 0.92rem;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.tier ul {
+  margin: 0;
+  padding-inline-start: 1.05rem;
+  font-size: 0.89rem;
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.tier[data-main='true'] {
+  border-inline-start: 3px solid var(--rival);
+  padding-inline-start: 1.3rem;
+}
+
+.foot {
+  padding-block: 1.5rem 2.5rem;
+  font-size: 0.8rem;
+  color: var(--faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-block-start: 1px solid var(--rule);
+}
+
+/* ── الحركة: لحظة واحدة ─────────────────────────────────────── */
+
+@keyframes ink {
+  from {
+    background-size: 0% 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  mark.rival {
+    background-size: 100% 100%;
+  }
+}

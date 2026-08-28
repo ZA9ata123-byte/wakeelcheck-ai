@@ -1,0 +1,11 @@
+# Local and generated files that must never be uploaded to Vercel.
+.git
+node_modules
+**/node_modules
+**/.next
+*.crdownload
+
+# Local reference copies; canonical documents live under docs/.
+*.pdf
+pdf/
+صور/

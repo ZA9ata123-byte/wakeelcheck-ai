@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>علامة وكيل تشيك — الاتجاه البصري</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+</head>
+<body>
+
+
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     رموز التصميم — منقولة حرفياً من apps/web/app/globals.css
+     المصمم والمبرمج يقرآن نفس القيم. لا لون خارج هذه القائمة.
+     ═══════════════════════════════════════════════════════════ */
+
+  :root {
+    --ground: #e9e8e4;
+    --sheet: #ffffff;
+    --sheet-2: #f4f3f0;
+    --rule: #d5d3cc;
+    --rule-soft: #e2e0da;
+
+    --ink: #171412;
+    --ink-2: #3b3733;
+    --muted: #6d6862;
+    --faint: #9a948c;
+
+    --rival: #d8452c;
+    --rival-mark: #fbe3dd;
+    --rival-deep: #a8321f;
+
+    --present: #1a6f52;
+    --present-mark: #dcefe6;
+
+    --caution: #9a6a10;
+    --caution-mark: #f7ecd6;
+
+    --lift: 0 1px 2px rgb(23 20 18 / 5%), 0 10px 28px -16px rgb(23 20 18 / 28%);
+    --lift-lg: 0 2px 5px rgb(23 20 18 / 7%), 0 26px 56px -28px rgb(23 20 18 / 42%);
+
+    --face: 'Readex Pro', 'Segoe UI', Tahoma, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #12100f;
+      --sheet: #1b1917;
+      --sheet-2: #232120;
+      --rule: #35322f;
+      --rule-soft: #2a2825;
+
+      --ink: #f1efec;
+      --ink-2: #cfcbc6;
+      --muted: #9b958e;
+      --faint: #726c65;
+
+      --rival: #ff7259;
+      --rival-mark: #38190f;
+      --rival-deep: #ff9581;
+
+      --present: #4fbc91;
+      --present-mark: #10281f;
+
+      --caution: #d59f3c;
+      --caution-mark: #2e2312;
+
+      --lift: 0 1px 2px rgb(0 0 0 / 50%), 0 10px 28px -16px rgb(0 0 0 / 90%);
+      --lift-lg: 0 2px 5px rgb(0 0 0 / 55%), 0 26px 56px -28px rgb(0 0 0 / 100%);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #12100f;
+    --sheet: #1b1917;
+    --sheet-2: #232120;
+    --rule: #35322f;
+    --rule-soft: #2a2825;
+
+    --ink: #f1efec;
+    --ink-2: #cfcbc6;
+    --muted: #9b958e;
+    --faint: #726c65;
+
+    --rival: #ff7259;
+    --rival-mark: #38190f;
+    --rival-deep: #ff9581;
+
+    --present: #4fbc91;
+    --present-mark: #10281f;
+
+    --caution: #d59f3c;
+    --caution-mark: #2e2312;
+
+    --lift: 0 1px 2px rgb(0 0 0 / 50%), 0 10px 28px -16px rgb(0 0 0 / 90%);
+    --lift-lg: 0 2px 5px rgb(0 0 0 / 55%), 0 26px 56px -28px rgb(0 0 0 / 100%);
+  }
+
+  /* ── الأساس ─────────────────────────────────────────────── */
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    direction: rtl;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--face);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p { margin: 0; }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--rival);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .lt {
+    font-family: var(--mono);
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  /* ── الشبكة: النص، وحاشية بجانبه ────────────────────────── */
+
+  .page {
+    max-width: 74rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.1rem, 4vw, 3rem);
+    padding-block: clamp(2.5rem, 7vw, 6rem) 5rem;
+  }
+
+  .band {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 13rem;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+    padding-block: clamp(2.75rem, 6vw, 5rem);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .band:first-of-type { border-block-start: none; }
+
+  /* الحاشية: سبب القرار يعيش بجانب القرار، لا تحته */
+  .note {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.85;
+    color: var(--muted);
+    border-inline-start: 2px solid var(--rule);
+    padding-inline-start: 0.9rem;
+  }
+
+  .note b {
+    display: block;
+    color: var(--ink-2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-block-end: 0.4rem;
+  }
+
+  @media (max-width: 60rem) {
+    .band { grid-template-columns: minmax(0, 1fr); }
+    .note { border-inline-start: none; border-block-start: 2px solid var(--rule); padding-inline-start: 0; padding-block-start: 0.9rem; }
+  }
+
+  /* ── العناوين ───────────────────────────────────────────── */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--faint);
+    text-transform: uppercase;
+    margin-block-end: 1rem;
+  }
+
+  .band h2 {
+    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+    margin-block-end: 0.9rem;
+  }
+
+  .lede {
+    font-size: 1.03rem;
+    color: var(--ink-2);
+    max-width: 40ch;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: 1.6rem; }
+
+  /* ── الافتتاح ───────────────────────────────────────────── */
+
+  .open { padding-block-end: clamp(2rem, 5vw, 3.5rem); }
+
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: var(--faint);
+    margin-block-end: 2.5rem;
+  }
+
+  .open h1 {
+    font-size: clamp(2rem, 5.6vw, 3.6rem);
+    font-weight: 200;
+    letter-spacing: -0.035em;
+    max-width: 17ch;
+    margin-block-end: 1.4rem;
+  }
+
+  .open h1 em {
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .open .lede { font-size: clamp(1rem, 2vw, 1.15rem); max-width: 46ch; }
+
+  /* ── العلامة — قلب الهوية ───────────────────────────────── */
+
+  mark.rival {
+    background-image: linear-gradient(var(--rival-mark), var(--rival-mark));
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 100% 100%;
+    color: var(--rival-deep);
+    font-weight: 500;
+    padding: 0.06em 0.38em;
+    border-radius: 3px;
+    border-block-end: 2px solid var(--rival);
+  }
+
+  .inking mark.rival {
+    animation: ink 0.55s cubic-bezier(0.25, 0.8, 0.35, 1) both;
+  }
+
+  .inking mark.rival:nth-of-type(2) { animation-delay: 0.16s; }
+  .inking mark.rival:nth-of-type(3) { animation-delay: 0.32s; }
+
+  @keyframes ink {
+    from { background-size: 0% 100%; }
+    to   { background-size: 100% 100%; }
+  }
+
+  /* ── الورقة: الحاوية الوحيدة ────────────────────────────── */
+
+  .sheet {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    box-shadow: var(--lift);
+  }
+
+  .sheet-hd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    border-block-end: 1px solid var(--rule);
+    background: var(--sheet-2);
+    border-radius: 4px 4px 0 0;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .sheet-hd .who { color: var(--ink); font-weight: 700; }
+  .sheet-hd .when { margin-inline-start: auto; color: var(--faint); }
+
+  .answer {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.06rem;
+    line-height: 2.05;
+    color: var(--ink);
+  }
+
+  .verdict {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .vt {
+    background: var(--sheet);
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .vt .lab {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    color: var(--faint);
+    text-transform: uppercase;
+  }
+
+  .vt .val {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .vt[data-tone='bad'] .val { color: var(--rival); }
+  .vt[data-tone='good'] .val { color: var(--present); }
+  .vt .sub { font-size: 0.8rem; color: var(--muted); }
+
+  /* ── زر التشغيل ─────────────────────────────────────────── */
+
+  .replay {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.5rem 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.18s, color 0.18s;
+  }
+
+  .replay:hover { border-color: var(--rival); color: var(--rival); }
+
+  /* ── اللون ──────────────────────────────────────────────── */
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .sw { background: var(--sheet); padding: 0; }
+
+  .sw .chip { height: 4.25rem; border-block-end: 1px solid var(--rule); }
+  .sw .meta { padding: 0.7rem 0.85rem 0.9rem; }
+
+  .sw .name { font-size: 0.87rem; font-weight: 500; color: var(--ink); }
+  .sw .hex {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    color: var(--faint);
+    letter-spacing: 0.04em;
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: block;
+  }
+  .sw .use { font-size: 0.76rem; color: var(--muted); margin-block-start: 0.35rem; line-height: 1.55; }
+
+  /* ── الخط ───────────────────────────────────────────────── */
+
+  .scale {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .row {
+    background: var(--sheet);
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 9rem;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .row .spec {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+    direction: ltr;
+    unicode-bidi: isolate;
+    text-align: left;
+  }
+
+  .s-display { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 200; letter-spacing: -0.035em; }
+  .s-title   { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; }
+  .s-body    { font-size: 1rem; font-weight: 300; }
+  .s-label   { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+  .s-data    { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 34rem) {
+    .row { grid-template-columns: minmax(0, 1fr); }
+    .row .spec { text-align: right; direction: rtl; }
+  }
+
+  /* ── المقارنة: هكا لا / هكا إيه ─────────────────────────── */
+
+  .versus {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .card > .tag {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tag[data-kind='no']  { color: var(--rival); }
+  .tag[data-kind='yes'] { color: var(--present); }
+
+  .tag::before {
+    content: '';
+    width: 1.5rem;
+    height: 2px;
+    background: currentColor;
+  }
+
+  /* المحاكاة السيئة تحمل ألوانها الحرفية عمداً: هي تصوّر تصميماً
+     آخر، لا تصميمنا. لهذا لا تأخذ من الرموز. */
+  .mock {
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 13.5rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+  }
+
+  .mock-bad {
+    background: linear-gradient(140deg, #6d5cf0 0%, #4b7bec 55%, #38b6ff 100%);
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem 1.1rem;
+    gap: 0.7rem;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  .mock-bad .badge {
+    background: rgb(255 255 255 / 18%);
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 999px;
+    padding: 0.28rem 0.85rem;
+    font-size: 0.68rem;
+  }
+
+  .mock-bad .big { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+  .mock-bad .sub { font-size: 0.8rem; opacity: 0.86; }
+
+  .mock-bad .pill {
+    background: #ffffff;
+    color: #4b7bec;
+    border-radius: 999px;
+    padding: 0.5rem 1.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .mock-bad .tiles { display: flex; gap: 0.5rem; margin-block-start: 0.3rem; }
+
+  .mock-bad .tile {
+    background: rgb(255 255 255 / 14%);
+    border: 1px solid rgb(255 255 255 / 22%);
+    border-radius: 10px;
+    width: 3.1rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+  }
+
+  .mock-good {
+    background: var(--sheet);
+    padding: 1.25rem 1.15rem;
+    gap: 0.85rem;
+  }
+
+  .mock-good .kicker {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    color: var(--faint);
+  }
+
+  .mock-good .line { font-size: 0.95rem; line-height: 1.95; color: var(--ink); }
+
+  .mock-good .foot {
+    margin-block-start: auto;
+    padding-block-start: 0.85rem;
+    border-block-start: 1px solid var(--rule);
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+
+  .mock-good .foot b {
+    font-size: 1.15rem;
+    color: var(--rival);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card .why { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── قوائم ──────────────────────────────────────────────── */
+
+  .rules { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+
+  .rule-row {
+    background: var(--sheet);
+    padding: 0.95rem 1.2rem;
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+  }
+
+  .rule-row .x { color: var(--rival); font-family: var(--mono); font-weight: 700; line-height: 1.75; }
+  .rule-row .txt { font-size: 0.93rem; color: var(--ink-2); }
+  .rule-row .txt b { color: var(--ink); font-weight: 500; }
+
+  /* ── تدفّق الشاشة ───────────────────────────────────────── */
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    counter-reset: step;
+  }
+
+  .step {
+    background: var(--sheet);
+    padding: 1.1rem 1.15rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .step .n {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    color: var(--faint);
+  }
+
+  .step .h { font-size: 0.98rem; font-weight: 500; color: var(--ink); }
+  .step .d { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── الختام ─────────────────────────────────────────────── */
+
+  .close {
+    margin-block-start: 3.5rem;
+    padding-block-start: 2rem;
+    border-block-start: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    mark.rival { background-size: 100% 100%; }
+  }
+</style>
+
+<div class="page">
+
+  <!-- ═══ الافتتاح ═══════════════════════════════════════ -->
+
+  <header class="open">
+    <div class="wordmark">وكيل تشيك · اتجاه بصري للمصمم</div>
+
+    <h1>الموقع كامل مبني على <em>لحظة واحدة</em>.</h1>
+
+    <p class="lede">
+      التاجر كايشوف الجملة الحرفية اللي جاوب بيها ChatGPT على زبون ديالو — وفيها
+      اسم منافس معلّم بالأحمر، واسمو هو ماكاينش. كل قرار بصري فهاد الصفحة خدّام
+      هاد اللحظة، ولا كايختافى قدامها.
+    </p>
+  </header>
+
+  <!-- ═══ العلامة ════════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">al-alama · the mark</div>
+        <h2>العلامة على النص هي العلامة التجارية</h2>
+        <p class="lede">
+          ماعندناش شعار كايشتغل. عندنا فعل بصري واحد: خط أحمر تحت اسم منافس داخل
+          جملة حقيقية. هادي هي اللي كايتفكرها التاجر، وهادي اللي كايصوّرها ويصيفطها
+          لشريكو.
+        </p>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-hd">
+          <span class="who lt">ChatGPT</span>
+          <span>«وش أفضل متجر عبايات في الرياض؟»</span>
+          <span class="when lt">28 Aug</span>
+        </div>
+
+        <p class="answer" id="answer">
+          من أبرز الخيارات في الرياض متجر <mark class="rival">بيت الأناقة</mark> — تشكيلة
+          واسعة وتوصيل خلال 24 ساعة. كذلك <mark class="rival">لمسة رقي</mark> معروف بجودة
+          المنتجات وسياسة إرجاع واضحة، و<mark class="rival">أناقتي</mark> يوفّر مقاسات
+          متعددة وأسعاراً مفصّلة.
+        </p>
+
+        <div class="verdict">
+          <div class="vt" data-tone="bad">
+            <span class="lab">متجرك <span class="lt">nourabaya.sa</span></span>
+            <span class="val lt">0 / 1</span>
+            <span class="sub">غير مذكور</span>
+          </div>
+          <div class="vt">
+            <span class="lab">أول منافس</span>
+            <span class="val" style="font-size:1.05rem">بيت الأناقة</span>
+            <span class="sub">ذُكر أولاً</span>
+          </div>
+          <div class="vt" data-tone="bad">
+            <span class="lab">حصّتك من الصوت</span>
+            <span class="val lt">0%</span>
+            <span class="sub">من 3 أسماء</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="replay" id="replay" type="button">شغّل العلامة ↻</button>
+    </div>
+
+    <aside class="note">
+      <b>للمصمم</b>
+      العلامة كتنرسم من اليمين لليسار فالعربية، ومن اليسار لليمين فالإنجليزية —
+      كتبع اتجاه القراية.<br><br>
+      ماكاتنحطش على أي اسم. غير على اسم تحقّق البرنامج أنه <em>موجود حرفياً</em>
+      فالإجابة. علامة على اسم مخترَع كتهدّ الثقة كاملة.
+    </aside>
+  </section>
+
+  <!-- ═══ ماشي هكا ═══════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">al-farq · the difference</div>
+        <h2>ماشي موقع ذكاء اصطناعي</h2>
+        <p class="lede">
+          كاين شكل واحد وليّ كايتكرّر فكل موقع AI: تدرّج بنفسجي، إيموجي كعناوين،
+          بطاقات زجاجية، وكلشي فالوسط. الشكل هادا وليّ كايقول «مانعرفش شنو كايدير
+          هاد المنتج». إحنا كنبيعو دليلاً — والدليل شكلو ورقة، ماشي إعلان.
+        </p>
+      </div>
+
+      <div class="versus">
+        <div class="card">
+          <div class="tag" data-kind="no">ماشي هكا</div>
+          <div class="mock mock-bad">
+            <span class="badge">🚀 Powered by AI</span>
+            <span class="big">Boost Your Store<br>Visibility Today</span>
+            <span class="sub">AI-powered insights for modern commerce</span>
+            <span class="pill">Get Started Free</span>
+            <span class="tiles">
+              <span class="tile">⚡</span>
+              <span class="tile">🎯</span>
+              <span class="tile">📊</span>
+            </span>
+          </div>
+          <p class="why">
+            كايوعد بلا مايوري. الإيموجي كايعوّض المعنى، والتدرّج كايغطّي على فراغ
+            المحتوى. التاجر شاف هاد الشكل مية مرة وماخلّصش فيه حتى مرة.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="tag" data-kind="yes">هكا</div>
+          <div class="mock mock-good">
+            <span class="kicker lt">ChatGPT · 28 AUG · 09:14</span>
+            <p class="line">
+              أنصح بـ<mark class="rival">بيت الأناقة</mark> للعبايات في الرياض،
+              وتقدر تشوف كذلك <mark class="rival">لمسة رقي</mark>.
+            </p>
+            <div class="foot">
+              <span>متجرك</span>
+              <b class="lt">0 / 1</b>
+              <span>غير مذكور</span>
+            </div>
+          </div>
+          <p class="why">
+            كايوري قبل مايوعد. النص هو البطل، والرقم جاي من قياس ماشي من تصميم.
+            ماكاين لا تدرّج لا إيموجي — الأحمر الوحيد فالصفحة هو الخبر السيّئ.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>الاختبار</b>
+      قبل ما تسالي أي شاشة، حيّد منها كل الصور والأيقونات.<br><br>
+      إلا بقات مفهومة وقوية — التصميم ناجح. إلا ولّات فارغة — كانت الصور
+      كتغطّي على غياب المحتوى.
+    </aside>
+  </section>
+
+  <!-- ═══ اللون ══════════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">al-lawn · color</div>
+        <h2>ستة ألوان، وكل واحد عندو معنى</h2>
+        <p class="lede">
+          ماكاينش لون للزينة. الأحمر كايعني «منافس»، والأخضر كايعني «نتا كاين»،
+          والأصفر كايعني «شوف هادي». إلا استعملتي الأحمر لزرّ ولا لعنوان، ولّى
+          مايعني والو.
+        </p>
+      </div>
+
+      <div class="swatches">
+        <div class="sw">
+          <div class="chip" style="background: var(--ground)"></div>
+          <div class="meta">
+            <div class="name">الأرضية</div>
+            <span class="hex">--ground · #e9e8e4</span>
+            <p class="use">رمادي دافئ، ماشي أبيض. الورقة كتطفو فوقو.</p>
+          </div>
+        </div>
+
+        <div class="sw">
+          <div class="chip" style="background: var(--sheet); border-inline: 1px solid var(--rule)"></div>
+          <div class="meta">
+            <div class="name">الورقة</div>
+            <span class="hex">--sheet · #ffffff</span>
+            <p class="use">الحاوية الوحيدة فالموقع. ماكاينش غيرها.</p>
+          </div>
+        </div>
+
+        <div class="sw">
+          <div class="chip" style="background: var(--ink)"></div>
+          <div class="meta">
+            <div class="name">الحبر</div>
+            <span class="hex">--ink · #171412</span>
+            <p class="use">أسود مايل للبنّي. الأسود الخالص قاسح على العين.</p>
+          </div>
+        </div>
+
+        <div class="sw">
+          <div class="chip" style="background: var(--rival)"></div>
+          <div class="meta">
+            <div class="name">المنافس</div>
+            <span class="hex">--rival · #d8452c</span>
+            <p class="use">العلامة، والخبر السيّئ. ماكايستعملش لأي حاجة أخرى.</p>
+          </div>
+        </div>
+
+        <div class="sw">
+          <div class="chip" style="background: var(--present)"></div>
+          <div class="meta">
+            <div class="name">حاضر</div>
+            <span class="hex">--present · #1a6f52</span>
+            <p class="use">متجرك مذكور، ولا قاعدة ناجحة.</p>
+          </div>
+        </div>
+
+        <div class="sw">
+          <div class="chip" style="background: var(--caution)"></div>
+          <div class="meta">
+            <div class="name">تنبيه</div>
+            <span class="hex">--caution · #9a6a10</span>
+            <p class="use">شهادة قاربت تنتهي، نطاق قريب من الانتهاء.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>الوضع الداكن</b>
+      كل رمز معرّف فالوضعين. بدّل الوضع فجهازك وهاد الصفحة كتبدّل معاك دابا —
+      جرّبها.<br><br>
+      ماتكتبش لون فمكوّن. أي لون خارج هاد الستة كايرفضو المبرمج.
+    </aside>
+  </section>
+
+  <!-- ═══ الخط ═══════════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">al-khatt · type</div>
+        <h2>خطّان: واحد للكلام، واحد للدليل</h2>
+        <p class="lede">
+          <strong>Readex Pro</strong> للعربية — هندسي وواضح، وماشي Cairo ولا Tajawal
+          اللي كايستعملهم كل موقع عربي. و<span class="lt">JetBrains Mono</span>
+          لكل رقم ونطاق ووقت، حيت الدليل خاصو يبان دليل.
+        </p>
+      </div>
+
+      <div class="scale">
+        <div class="row">
+          <div class="s-display">زبونك سأل الذكاء الاصطناعي</div>
+          <div class="spec">Readex 200 · 42px<br>tracking −0.035em</div>
+        </div>
+        <div class="row">
+          <div class="s-title">وجاوبه باسم منافسك</div>
+          <div class="spec">Readex 600 · 22px<br>tracking −0.02em</div>
+        </div>
+        <div class="row">
+          <div class="s-body">نُري التاجر الإجابة الحرفية، ومن ذُكر بدلاً منه، ثم نشرح السبب التقني ونعطي الكود الذي يُصلحه.</div>
+          <div class="spec">Readex 300 · 16px<br>line-height 1.75</div>
+        </div>
+        <div class="row">
+          <div class="s-label">SHARE OF VOICE</div>
+          <div class="spec">Mono 500 · 11px<br>tracking 0.16em</div>
+        </div>
+        <div class="row">
+          <div class="s-data lt">0 / 1 · 62%</div>
+          <div class="spec">Mono 700 · 24px<br>tabular-nums</div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>قاعدة</b>
+      كل رقم كايتكتب بـ<span class="lt">tabular-nums</span>. بلاها الأرقام
+      كتهزّ منين كتبدّل، والجدول كايبان مكسور.<br><br>
+      وزن 200 كايخدم غير فوق 32px. تحت هادشي كايولّي باهت وصعيب يتقرا.
+    </aside>
+  </section>
+
+  <!-- ═══ الحركة ═════════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">al-haraka · motion</div>
+        <h2>حركة وحدة فالموقع كامل</h2>
+        <p class="lede">
+          العلامة كتنرسم على الاسم فنص ثانية، كأن شي واحد مرّر قلم فوقو. هادي هي.
+          ماكاينش حركة أخرى — لا عناصر كتطلع مع السكرول، لا أرقام كتعدّ، لا خلفية
+          كتحرّك.
+        </p>
+      </div>
+
+      <div class="sheet" style="padding: 1.6rem 1.35rem">
+        <p style="font-size: 1.05rem; line-height: 2.05">
+          واحد الحركة كتخلّي اللي شافها يتفكّرها. عشرة كيخلّيو الموقع يبان
+          <mark class="rival">قالب جاهز</mark>.
+        </p>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>إلزامي</b>
+      <span class="lt">prefers-reduced-motion</span> كايوقّف كلشي. العلامة كتبان
+      مرسومة كاملة بلا حركة — الخبر كايوصل، والحركة هي اللي كتختافى.
+    </aside>
+  </section>
+
+  <!-- ═══ الشاشة ═════════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">at-tadaffuq · the flow</div>
+        <h2>شاشة وحدة، أربع حالات</h2>
+        <p class="lede">
+          ماكاينش تنقّل بين صفحات. التاجر كايكتب النطاق، وكلشي كايوقع فنفس البلاصة.
+          هاد الترتيب متسلسل فعلاً — كل حالة كتجي بعد اللي قبلها.
+        </p>
+      </div>
+
+      <div class="flow">
+        <div class="step">
+          <span class="n lt">01 · IDLE</span>
+          <span class="h">خانة النطاق</span>
+          <span class="d">سؤال واحد فالشاشة. بلا تسجيل، بلا بطاقة.</span>
+        </div>
+        <div class="step">
+          <span class="n lt">02 · RUNNING</span>
+          <span class="h">كنسولو</span>
+          <span class="d">كنوريو شنو كنديرو دابا بالاسم — ماشي دائرة كتدور.</span>
+        </div>
+        <div class="step">
+          <span class="n lt">03 · RESULT</span>
+          <span class="h">الجواب والعلامة</span>
+          <span class="d">اللحظة. الإجابة الحرفية، والاسم معلّم، والحصّة.</span>
+        </div>
+        <div class="step">
+          <span class="n lt">04 · FAILED</span>
+          <span class="h">وقع مشكل</span>
+          <span class="d">كنقولو شنو طاح وعلاش — ماكنخترعوش نتيجة.</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>الحالة الرابعة</b>
+      صمّمها بنفس العناية ديال الثالثة. المصمّمين كايهملوها، وهي اللي كايشوفها
+      التاجر منين كايكون النطاق ديالو غلط — أول انطباع.
+    </aside>
+  </section>
+
+  <!-- ═══ ما لا نفعله ════════════════════════════════════ -->
+
+  <section class="band">
+    <div class="stack">
+      <div>
+        <div class="eyebrow">mamnou · never</div>
+        <h2>ما لا نفعله أبداً</h2>
+        <p class="lede">
+          هاد اللائحة ملزمة بحال باقي الوثيقة. كل بند فيها كايهدّ الثقة اللي
+          كايبيعها المنتج.
+        </p>
+      </div>
+
+      <div class="rules">
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>علامة على اسم ماكاينش فالإجابة.</b> العلامة كتنحط غير على اسم تحقّق البرنامج من وجودو حرفياً.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>رقم بلا مصدر.</b> كل رقم كايبان خاصو يكون متقاس. اللي ماتقاسش ماكايتعرضش.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>تعديل نص الإجابة.</b> لا تنظيف، لا اقتصاص، لا إعادة صياغة — حتى لو كان فيه غلطة إملائية. هو الدليل.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>إيموجي كعنوان ولا كأيقونة قسم.</b> الإيموجي كايقول «هاد المحتوى مايقدرش يقف بوحدو».</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>تدرّجات لونية وبطاقات زجاجية.</b> الورقة البيضاء بحدّ رقيق كافية، وهي اللي كتبان جدّية.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>توسيط النصوص الطويلة.</b> العربية كتتقرا من حافة وحدة. النص الطويل فالوسط كايتعب العين.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>صور مولّدة بالذكاء الاصطناعي.</b> كنبيعو دقة القياس — وصورة مولّدة كتناقض هادشي بصرياً.</span>
+        </div>
+        <div class="rule-row">
+          <span class="x">✕</span>
+          <span class="txt"><b>ادّعاء تغطية ماعندناش.</b> ماكنقيسوش Gemini داخل Chrome ولا Apple Intelligence — وهادشي مكتوب فالموقع نفسو.</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="note">
+      <b>علاش مكتوبة</b>
+      الاعتراف بالحدّ كايبني ثقة أكثر من ادّعاء الشمول. التاجر اللي كايشوفنا
+      كنقولو «هادشي ماكنقيسوهش» كايثق فاللي كنقيسو.
+    </aside>
+  </section>
+
+  <footer class="close">
+    <span>الرموز الكاملة · <span class="lt">apps/web/app/globals.css</span></span>
+    <span>النظام الأصلي · <span class="lt">docs/03-visual-system</span></span>
+    <span>المكوّنات · <span class="lt">apps/web/components/</span></span>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var answer = document.getElementById('answer');
+    var button = document.getElementById('replay');
+    if (!answer || !button) return;
+
+    function ink() {
+      answer.classList.remove('inking');
+      // إعادة تدفّق مقصودة حتى تُشغَّل الحركة من جديد
+      void answer.offsetWidth;
+      answer.classList.add('inking');
+    }
+
+    button.addEventListener('click', ink);
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!reduced.matches) {
+      if ('IntersectionObserver' in window) {
+        var seen = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              ink();
+              seen.disconnect();
+            }
+          });
+        }, { threshold: 0.5 });
+        seen.observe(answer);
+      } else {
+        ink();
+      }
+    }
+  })();
+</script>
+</body>
+</html>

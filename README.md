@@ -1,45 +1,97 @@
-# 🔍🤖 WakeelCheck (وكيل تشيك) — AI Readiness Audit Engine for E-Commerce
+# وكيل تشيك — WakeelCheck
 
-> **أول أداة لفحص وتأهيل المتاجر الإلكترونية لجيل الشراء الذكي وكلاء ومتصفحات الذكاء الاصطناعي (ChatGPT, Google AI Overviews, Perplexity, Safari Intelligence, Edge Copilot)**
+> **زبونك سأل الذكاء الاصطناعي… وجاوبه باسم منافسك.**
 
----
-
-## 🌟 Overview
-
-WakeelCheck is an enterprise-grade AI agent compatibility auditor for e-commerce stores (Salla, Zid, Shopify, Custom). It performs real-time technical audits across **64 dynamic criteria** and provides verifiable technical proof (`evidence`), platform fingerprinting, Google PageSpeed Insights integration, instant `llms.txt` generation, and `AI-Ready Certified Badge` snippets.
+يُري التاجر الإجابة الحرفية التي يعطيها ChatGPT وبحث Google عن متجره، ومن ذُكر
+بدلاً منه — ثم يشرح السبب التقني ويعطي الكود الذي يُصلحه.
 
 ---
 
-## 🚀 Live Demo & Production Deployment
+## ما يقيسه — وما لا يقيسه
 
-- **Live Site**: [https://aitchek.online](https://aitchek.online)
-- **Vercel Production**: Automated continuous deployment via Vercel Serverless Functions.
+| ✅ يُقاس فعلاً | ❌ لا يُقاس — ولا يقيسه أحد |
+|---|---|
+| ChatGPT | Gemini داخل Chrome |
+| Google AI Overviews | Apple Intelligence و Safari |
+| Google AI Mode | الإجابات المخصّصة لكل مستخدم |
+| Perplexity | |
 
----
-
-## 🛠️ Architecture & Features
-
-1. **Deterministic 64-Rule Audit Engine (`api/audit.js`)**: Evaluates JSON-LD Product Schemas, Merchant Return Policies, Shipping Details, OpenGraph price/currency consistency, robots.txt bot directives (`GPTBot`, `PerplexityBot`, `Google-Extended`), and semantic HTML5 structures.
-2. **Technical Proof & Evidence**: Every rule outputs explicit DOM/Header signatures (e.g. `Schema @type: Product`, `Found 1 <h1> tags in DOM`, `GET /robots.txt 200 OK`).
-3. **Multi-Factor Platform Detection**: Accurately detects Salla (`salla.network`), Zid (`zid.sa`), Shopify (`cdn.shopify.com`), and Custom stores.
-4. **Google PageSpeed API v5**: Live mobile and desktop Lighthouse performance counters (`api/pagespeed.js`).
-5. **PDF Executive Master Plan**: Included in repository as `WakeelCheck_Executive_Master_Plan.pdf`.
+الأسطح في العمود الأيسر مغلقة بلا واجهة عامة. هذا الجدول معروض على الموقع نفسه:
+الاعتراف بالحدّ يبني ثقة أكثر مما يبنيه ادّعاء الشمول.
 
 ---
 
-## ⚙️ Local Development Setup
+## البنية
 
-```bash
-# 1. Install dependencies
-npm install
+```
+packages/
+├── core/         العقود المشتركة · طمس الأسرار · الأخطاء · البيئة
+├── fetcher/      الجلب السلبي الآمن — كل شبكة تمرّ من هنا (حراس SSRF)
+├── readiness/    قواعد الجاهزية · محلّل robots.txt وفق RFC 9309
+├── security/     فحص سلبي: RDAP · TLS · DNS · الأسرار المكشوفة
+├── visibility/   المرآة: التوصيف · الأسئلة · استخراج الذكر والمنافسين
+├── llm/          تجريد المزوّد: ox-alpha ← DeepSeek ← وهمي
+├── engines/      ChatGPT عبر OpenAI · أسطح Google عبر DataForSEO
+├── limits/       الكاش · حدّ الزائر · سقف الميزانية
+├── pipeline/     تنسيق الفحص — كل تبعية مُحقَنة
+└── db/           مخطط Postgres
 
-# 2. Run local server
-npm start
-# App available at http://localhost:3005
+apps/
+└── web/          Next.js — عربي و/en، أربع حالات على شاشة واحدة
 ```
 
+**قاعدة بنيوية:** لا حزمة في `packages/` تستورد `next` أو تعرف عن الطلب
+والاستجابة. تأخذ بيانات وتُرجع بيانات — ولذلك تُختبر بلا خادم ولا شبكة.
+
 ---
 
-## 🔒 License
+## التشغيل
 
-MIT License © 2026 WakeelCheck Team.
+```bash
+pnpm install
+pnpm test         # 202 اختبار
+pnpm typecheck    # strict، بلا any
+
+cd apps/web && pnpm dev   # http://localhost:3005
+```
+
+بلا مفاتيح يعمل الموقع في **وضع تجريبي** ويصرّح بذلك على الشاشة: التدفّق كامل
+والبيانات نموذجية. انظر [`docs/05-launch.md`](docs/05-launch.md) لتشغيل الحقيقي.
+
+---
+
+## القواعد الملزمة
+
+مكتوبة في [`docs/04-build-spec`](docs/) ومربوطة باختبارات:
+
+1. **الطمس عند المصدر** — قيمة سرّ كاملة لا تدخل قاعدة بيانات ولا سجلّاً ولا
+   استجابة. مفاتيح دفع مئات المتاجر في جدول واحد هدف اختراق لا أصل.
+2. **لا شبكة خارج `safeFetch`** — يحجب العناوين الداخلية ويعيد التحقق عند كل
+   إعادة توجيه.
+3. **لا نداء مباشر لـ ox-alpha** — معاينة مجانية لفترة محدودة؛ الطبقة تجعل
+   اختفاءها تغييراً في البيئة لا في الكود.
+4. **الكاش وحدّ الزائر قبل الترويج** — حملة مؤثر واحدة بلا حدود تحرق آلاف الريالات.
+5. **`answerText` حرفي** — لا تنظيف ولا اقتصاص. هو الدليل، وتعديله يُبطله.
+6. **لا رقم بلا مصدر** — ما لم يُقَس لا يُعرض.
+7. **الفحص العميق خلف ملكية مُثبتة** — نظام الجرائم المعلوماتية لا يستثني حسن النية.
+8. **`strict: true` ولا `any`.**
+
+---
+
+## الوثائق
+
+| | لمن |
+|---|---|
+| [الخريطة التقنية](docs/01-technical-roadmap.pdf) | المعمار والقرارات |
+| [الدليل التجاري](docs/02-go-to-market.pdf) | الخدمات والأهداف والقنوات |
+| [الاتجاه البصري](docs/06-design-direction.pdf) | **المصمم** — ابدأ من هنا |
+| [نظام العلامة](docs/03-visual-system.pdf) | **المصمم** — النظام الكامل |
+| [طريق الإطلاق](docs/07-launch-path.pdf) | **المبرمج** — ابدأ من هنا |
+| [مواصفة البناء](docs/04-build-spec.pdf) | **المبرمج** — العقود |
+| [العرض التجاري الأول](docs/08-first-offer.pdf) | **المبيعات** — أول 20 محادثة |
+| [نموذج التقرير](docs/specimen/) | ما يراه التاجر — مولَّد من خطّ الأنابيب |
+| [قائمة الإطلاق](docs/05-launch.md) | ما تبقّى قبل أول زائر |
+
+---
+
+MIT © 2026

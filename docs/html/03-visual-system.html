@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نظام العلامة البصري — WakeelCheck</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}</style>
+</head>
+<body>
+<title>نظام علامة وكيل تشيك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ═════════ TOKENS — light is the base ═════════ */
+:root{
+  direction: rtl;
+
+  /* الأسطح */
+  --paper:    #e9e8e4;
+  --sheet:    #ffffff;
+  --sheet-2:  #f4f3f0;
+  --rule:     #d5d3cc;
+  --rule-soft:#e2e0da;
+
+  /* الحبر */
+  --ink:      #171412;
+  --ink-2:    #3b3733;
+  --muted:    #6d6862;
+  --faint:    #9a948c;
+
+  /* العلامتان — قلب الهوية */
+  --rival:      #d8452c;
+  --rival-mark: #fbe3dd;
+  --rival-deep: #a8321f;
+
+  --present:      #1a6f52;
+  --present-mark: #dcefe6;
+  --present-deep: #12523c;
+
+  --caution:      #9a6a10;
+  --caution-mark: #f7ecd6;
+
+  --lift:    0 1px 2px rgba(23,20,18,.05), 0 10px 28px -16px rgba(23,20,18,.28);
+  --lift-lg: 0 2px 5px rgba(23,20,18,.07), 0 26px 56px -28px rgba(23,20,18,.42);
+
+  --face: "Readex Pro", "Segoe UI", Tahoma, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --pad: clamp(1.1rem, 4vw, 2.6rem);
+  --measure: 66ch;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:    #12100f;
+    --sheet:    #1b1917;
+    --sheet-2:  #232120;
+    --rule:     #35322f;
+    --rule-soft:#2a2825;
+
+    --ink:      #f1efec;
+    --ink-2:    #cfcbc6;
+    --muted:    #9b958e;
+    --faint:    #726c65;
+
+    --rival:      #ff7259;
+    --rival-mark: #38190f;
+    --rival-deep: #ff9581;
+
+    --present:      #4fbc91;
+    --present-mark: #10281f;
+    --present-deep: #6fd3aa;
+
+    --caution:      #d59f3c;
+    --caution-mark: #2e2312;
+
+    --lift:    0 1px 2px rgba(0,0,0,.5), 0 10px 28px -16px rgba(0,0,0,.9);
+    --lift-lg: 0 2px 5px rgba(0,0,0,.55), 0 26px 56px -28px rgba(0,0,0,1);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:    #12100f;
+  --sheet:    #1b1917;
+  --sheet-2:  #232120;
+  --rule:     #35322f;
+  --rule-soft:#2a2825;
+
+  --ink:      #f1efec;
+  --ink-2:    #cfcbc6;
+  --muted:    #9b958e;
+  --faint:    #726c65;
+
+  --rival:      #ff7259;
+  --rival-mark: #38190f;
+  --rival-deep: #ff9581;
+
+  --present:      #4fbc91;
+  --present-mark: #10281f;
+  --present-deep: #6fd3aa;
+
+  --caution:      #d59f3c;
+  --caution-mark: #2e2312;
+
+  --lift:    0 1px 2px rgba(0,0,0,.5), 0 10px 28px -16px rgba(0,0,0,.9);
+  --lift-lg: 0 2px 5px rgba(0,0,0,.55), 0 26px 56px -28px rgba(0,0,0,1);
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--face);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.72;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,h2,h3,h4{ margin: 0; line-height: 1.24; text-wrap: balance; font-weight: 600; letter-spacing: -.02em; }
+p{ margin: 0; max-width: var(--measure); }
+.mono{ font-family: var(--mono); direction: ltr; unicode-bidi: isolate; }
+
+.wrap{
+  max-width: 64rem; margin-inline: auto;
+  padding-inline: var(--pad); padding-block: clamp(1.5rem,5vw,3rem);
+  display: flex; flex-direction: column; gap: clamp(2.4rem,6vw,4rem);
+}
+
+/* ═════════ masthead ═════════ */
+.top{ display: flex; flex-direction: column; gap: 1rem; border-block-end: 2px solid var(--ink); padding-block-end: 1.5rem; }
+.eyebrow{
+  font-family: var(--mono); font-size: .7rem; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--rival);
+  direction: ltr; text-align: start;
+}
+.top h1{ font-size: clamp(1.9rem,5.6vw,3.1rem); font-weight: 600; }
+.top .lede{ font-size: clamp(1rem,2.3vw,1.16rem); color: var(--muted); max-width: 54ch; }
+.top .meta{
+  display: flex; flex-wrap: wrap; gap: .4rem .9rem;
+  font-family: var(--mono); font-size: .72rem; color: var(--faint);
+  direction: ltr; justify-content: flex-end;
+}
+
+/* ═════════ sections ═════════ */
+section{ display: flex; flex-direction: column; gap: 1.2rem; }
+.head{ display: flex; align-items: baseline; gap: .85rem; border-block-end: 1px solid var(--rule); padding-block-end: .6rem; }
+.head .n{ font-family: var(--mono); font-size: .76rem; font-weight: 600; color: var(--rival); flex: none; }
+.head h2{ font-size: clamp(1.25rem,3.2vw,1.65rem); font-weight: 600; }
+.note{ font-size: .89rem; color: var(--muted); }
+
+/* ═════════ the mark — brand device ═════════ */
+mark.rival{
+  background: var(--rival-mark); color: var(--rival-deep);
+  font-weight: 500; padding: .06em .38em; border-radius: 3px;
+  border-block-end: 2px solid var(--rival);
+}
+mark.present{
+  background: var(--present-mark); color: var(--present-deep);
+  font-weight: 500; padding: .06em .38em; border-radius: 3px;
+  border-block-end: 2px solid var(--present);
+}
+
+.device{
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px;
+  padding: clamp(1.3rem,4vw,2rem); box-shadow: var(--lift-lg);
+  font-size: clamp(1.05rem,2.6vw,1.3rem); line-height: 2.1; color: var(--ink-2); font-weight: 300;
+}
+
+/* ═════════ swatches ═════════ */
+.swatches{ display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit,minmax(9.5rem,1fr)); }
+.sw{ border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background: var(--sheet); }
+.sw .chip{ height: 4.6rem; display: block; }
+.sw .info{ padding: .6rem .75rem; display: flex; flex-direction: column; gap: .05rem; }
+.sw .role{ font-size: .82rem; font-weight: 500; color: var(--ink); }
+.sw .hex{ font-family: var(--mono); font-size: .72rem; color: var(--muted); direction: ltr; text-align: start; }
+.sw .use{ font-size: .74rem; color: var(--faint); }
+
+/* ═════════ type specimen ═════════ */
+.spec{ background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.spec > div{ padding: 1rem 1.2rem; border-block-end: 1px solid var(--rule-soft); display: flex; flex-direction: column; gap: .25rem; }
+.spec > div:last-child{ border-block-end: 0; }
+.spec .tag{ font-family: var(--mono); font-size: .68rem; color: var(--rival); letter-spacing: .1em; direction: ltr; text-align: start; }
+.sp-d1{ font-size: clamp(1.9rem,5.4vw,3rem); font-weight: 600; letter-spacing: -.025em; line-height: 1.15; }
+.sp-d2{ font-size: clamp(1.3rem,3.4vw,1.9rem); font-weight: 600; letter-spacing: -.02em; }
+.sp-b { font-size: 1.05rem; font-weight: 300; line-height: 1.8; color: var(--ink-2); }
+.sp-s { font-size: .88rem; font-weight: 400; color: var(--muted); }
+.sp-m { font-family: var(--mono); font-size: .92rem; font-weight: 500; direction: ltr; text-align: start; }
+
+/* ═════════ component demos ═════════ */
+.demo{ background: var(--sheet-2); border: 1px dashed var(--rule); border-radius: 8px; padding: clamp(1rem,3vw,1.6rem); }
+.demo + .note{ margin-block-start: -.3rem; }
+
+.probe{ display: flex; gap: .45rem; background: var(--sheet); border: 1px solid var(--ink); border-radius: 10px; padding: .4rem; max-width: 32rem; }
+.probe input{
+  flex: 1 1 auto; min-width: 0; border: 0; background: transparent;
+  font-family: var(--mono); font-size: .96rem; color: var(--ink);
+  padding: .75rem .85rem; direction: ltr; text-align: left;
+}
+.probe input::placeholder{ color: var(--faint); }
+.probe input:focus{ outline: none; }
+.btn{
+  border: 0; border-radius: 7px; background: var(--ink); color: var(--paper);
+  font-family: var(--face); font-weight: 500; font-size: .95rem;
+  padding: .75rem 1.4rem; cursor: pointer;
+}
+.btn:hover{ background: var(--rival); }
+.btn:focus-visible{ outline: 2px solid var(--rival); outline-offset: 3px; }
+
+.exhibit{ background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; box-shadow: var(--lift); max-width: 40rem; }
+.ex-head{ padding: .7rem 1rem; background: var(--sheet-2); border-block-end: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: center; }
+.engine{
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 100px; padding: .08rem .55rem; direction: ltr;
+}
+.ex-head .q{ font-size: .88rem; color: var(--ink); font-weight: 400; }
+.ex-body{ padding: 1.1rem 1.2rem; line-height: 2; color: var(--ink-2); font-size: .99rem; }
+.tiles{ display: grid; grid-template-columns: repeat(auto-fit,minmax(9.5rem,1fr)); gap: 1px; background: var(--rule); border-block-start: 1px solid var(--rule); }
+.tile{ background: var(--sheet); padding: .85rem 1rem; display: flex; flex-direction: column; gap: .1rem; }
+.tile .k{ font-size: .76rem; color: var(--muted); }
+.tile .v{ font-family: var(--mono); font-size: 1.55rem; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.tile.a .v{ color: var(--rival); }
+.tile.b .v{ color: var(--ink); }
+.tile .s{ font-size: .78rem; color: var(--faint); }
+
+.alarm{
+  background: var(--caution-mark); border: 1px solid var(--caution); border-radius: 8px;
+  padding: .9rem 1.1rem; display: grid; grid-template-columns: auto 1fr; gap: .8rem;
+  max-width: 40rem; align-items: start;
+}
+.alarm .glyph{ font-family: var(--mono); font-weight: 600; color: var(--caution); font-size: .95rem; }
+.alarm b{ display: block; font-weight: 500; color: var(--ink); font-size: .95rem; }
+.alarm p{ font-size: .86rem; color: var(--ink-2); margin-block-start: .1rem; }
+
+/* ═════════ scale tables ═════════ */
+.tbl{ overflow-x: auto; border: 1px solid var(--rule); border-radius: 6px; background: var(--sheet); }
+table{ border-collapse: collapse; width: 100%; min-width: 32rem; font-size: .88rem; }
+th{
+  background: var(--sheet-2); text-align: start; font-weight: 500; font-size: .76rem;
+  letter-spacing: .04em; padding: .65rem .8rem; border-block-end: 1px solid var(--rule); white-space: nowrap;
+}
+td{ padding: .6rem .8rem; border-block-end: 1px solid var(--rule-soft); color: var(--ink-2); vertical-align: top; }
+tr:last-child td{ border-block-end: 0; }
+td strong{ color: var(--ink); font-weight: 500; }
+.num{ font-family: var(--mono); font-variant-numeric: tabular-nums; direction: ltr; text-align: start; white-space: nowrap; }
+
+/* ═════════ never list ═════════ */
+.never{ background: var(--sheet); border: 1px solid var(--rival); border-radius: 8px; overflow: hidden; }
+.never > div{
+  display: grid; grid-template-columns: auto 1fr; gap: .8rem;
+  padding: .7rem 1rem; border-block-end: 1px solid var(--rule-soft); font-size: .89rem; align-items: baseline;
+}
+.never > div:last-child{ border-block-end: 0; }
+.never .x{ font-family: var(--mono); color: var(--rival); font-weight: 600; }
+.never b{ color: var(--ink); font-weight: 500; }
+.never span:last-child{ color: var(--muted); }
+
+/* ═════════ flow ═════════ */
+.flow{ display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit,minmax(12rem,1fr)); }
+.fstep{ background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: .9rem 1rem; display: flex; flex-direction: column; gap: .3rem; }
+.fstep .fn{ font-family: var(--mono); font-size: .72rem; color: var(--rival); direction: ltr; text-align: start; }
+.fstep h4{ font-size: .95rem; font-weight: 500; }
+.fstep p{ font-size: .83rem; color: var(--muted); }
+.fstep .t{ font-family: var(--mono); font-size: .72rem; color: var(--faint); direction: ltr; text-align: start; margin-block-start: .2rem; }
+
+hr.end{ border: 0; border-block-start: 1px solid var(--rule); margin: 0; }
+.colophon{ font-family: var(--mono); font-size: .72rem; color: var(--faint); direction: ltr; text-align: start; }
+
+/* ═════════ motion ═════════ */
+@keyframes ink{ from{ background-size: 0% 100%; } to{ background-size: 100% 100%; } }
+.animark{
+  background-image: linear-gradient(var(--rival-mark), var(--rival-mark));
+  background-repeat: no-repeat; background-position: right center;
+  animation: ink .5s cubic-bezier(.25,.8,.35,1) both;
+  color: var(--rival-deep); font-weight: 500; padding: .06em .38em; border-radius: 3px;
+  border-block-end: 2px solid var(--rival);
+}
+.animark:nth-of-type(1){ animation-delay: .25s; }
+.animark:nth-of-type(2){ animation-delay: .75s; }
+.animark:nth-of-type(3){ animation-delay: 1.25s; }
+@media (prefers-reduced-motion: reduce){
+  .animark{ animation: none; background-size: 100% 100%; }
+}
+</style>
+
+<div class="wrap" dir="rtl">
+
+  <header class="top">
+    <div class="eyebrow">WakeelCheck · Visual System v1</div>
+    <h1>نظام علامة وكيل تشيك</h1>
+    <p class="lede">
+      الهوية البصرية ومواصفات المكوّنات — للمصمم والمطوّر. كل قيمة هنا نهائية وجاهزة للنسخ،
+      ولائحة «ما لا نفعله أبداً» ملزمة مثل الباقي.
+    </p>
+    <div class="meta"><span>aitchek.online</span><span>·</span><span>ar / en</span><span>·</span><span>2026-08</span></div>
+  </header>
+
+  <!-- 01 ═════════ -->
+  <section>
+    <div class="head"><span class="n">01</span><h2>الفكرة: العلامة على النص</h2></div>
+    <p>
+      وكيل تشيك ما عندوش شعار ولا تدرّج ألوان ولا روبوت ثلاثي الأبعاد. عندو <strong>شيء واحد</strong>:
+      نصّ إجابة خارج من الذكاء الاصطناعي، وفيه اسم <em>مظلَّل</em>. هاد التظليل هو العلامة التجارية كلها —
+      وهو نفسه المنتج، ونفسه الدليل، ونفسه الألم.
+    </p>
+
+    <div class="device">
+      من أبرز الخيارات في الرياض <mark class="animark rival">دار الأناقة</mark> — تصاميم راقية وتوصيل خلال 24 ساعة.
+      كذلك <mark class="animark rival">بيت العباية</mark> معروف بجودة الأقمشة، و<mark class="animark rival">لمسة رقي</mark>
+      يوفّر مقاسات متعددة وأسعاراً مفصّلة.
+    </div>
+
+    <p class="note">
+      قاعدة ملزمة: <strong>لا تُظلَّل إلا الأسماء الحقيقية الخارجة من محرك حقيقي.</strong>
+      التظليل ادّعاء بالدليل — استعماله للزينة يقتل معناه، ويقتل معه الثقة.
+    </p>
+  </section>
+
+  <!-- 02 ═════════ -->
+  <section>
+    <div class="head"><span class="n">02</span><h2>اللون</h2></div>
+    <p>
+      لونان دلاليان فقط، والحبر والورق. <strong>ما كاينش لون علامة ثالث</strong> — وهادي هي الانضباطة
+      اللي كتفرّقنا عن كل قالب AI فالسوق. اللون هنا <em>معنى</em>، ماشي زينة.
+    </p>
+
+    <div class="swatches">
+      <div class="sw"><span class="chip" style="background:#d8452c"></span><span class="info">
+        <span class="role">علامة المنافس</span><span class="hex">#D8452C</span><span class="use">اسم ظهر بدلاً منك</span></span></div>
+      <div class="sw"><span class="chip" style="background:#fbe3dd"></span><span class="info">
+        <span class="role">خلفية علامة المنافس</span><span class="hex">#FBE3DD</span><span class="use">التظليل نفسه</span></span></div>
+      <div class="sw"><span class="chip" style="background:#1a6f52"></span><span class="info">
+        <span class="role">علامة الحضور</span><span class="hex">#1A6F52</span><span class="use">اسمك أنت ظهر</span></span></div>
+      <div class="sw"><span class="chip" style="background:#9a6a10"></span><span class="info">
+        <span class="role">التحذير</span><span class="hex">#9A6A10</span><span class="use">أمان · انتهاء نطاق</span></span></div>
+      <div class="sw"><span class="chip" style="background:#171412"></span><span class="info">
+        <span class="role">الحبر</span><span class="hex">#171412</span><span class="use">أسود دافئ — ماشي #000</span></span></div>
+      <div class="sw"><span class="chip" style="background:#e9e8e4;border-block-end:1px solid #d5d3cc"></span><span class="info">
+        <span class="role">الورق</span><span class="hex">#E9E8E4</span><span class="use">رمادي ورقي — ماشي كريمي</span></span></div>
+    </div>
+
+    <p class="note">
+      الوضع الليلي كيقلب الأسطح ويرفع سطوع العلامتين فقط:
+      المنافس <span class="mono">#FF7259</span> · الحضور <span class="mono">#4FBC91</span> · التحذير <span class="mono">#D59F3C</span>.
+      كل لون كيتعرّف مرة فـ<span class="mono">:root</span> ومرة فالوضع الليلي — أبداً داخل بلوك واحد فقط.
+    </p>
+  </section>
+
+  <!-- 03 ═════════ -->
+  <section>
+    <div class="head"><span class="n">03</span><h2>الخط</h2></div>
+    <p>
+      عائلتان. <strong>Readex Pro</strong> كتغطي العربية واللاتينية فنفس العائلة — يعني النسخة العربية
+      والإنجليزية كيبانو نفس المنتج، ماشي جوج مواقع. و<strong>JetBrains Mono</strong> لكل شي جاي من الآلة.
+    </p>
+
+    <div class="spec">
+      <div><span class="tag">DISPLAY · Readex Pro 600</span><span class="sp-d1">زبونك سأل الذكاء الاصطناعي</span></div>
+      <div><span class="tag">DISPLAY EN · Readex Pro 600</span><span class="sp-d1" style="direction:ltr;text-align:left">Your customer asked AI</span></div>
+      <div><span class="tag">HEADING · Readex Pro 600</span><span class="sp-d2">ما نقيسه — وما لا نقيسه</span></div>
+      <div><span class="tag">BODY · Readex Pro 300</span><span class="sp-b">نُريك الإجابة الحرفية التي يعطيها ChatGPT وبحث Google عن متجرك، ثم نُصلح السبب التقني وراء غيابك.</span></div>
+      <div><span class="tag">SMALL · Readex Pro 400</span><span class="sp-s">بلا تسجيل · أقل من 60 ثانية · مجاني</span></div>
+      <div><span class="tag">MONO · JetBrains Mono 500</span><span class="sp-m">mystore.sa · 0/10 · TTFB 340ms · sk_live_••••4f2a</span></div>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>الدور</th><th>الحجم</th><th>الوزن</th><th>الاستعمال</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Display 1</strong></td><td class="num">clamp(1.9rem, 5.4vw, 3rem)</td><td class="num">600</td><td>عنوان الصفحة الرئيسي — مرة واحدة فقط</td></tr>
+          <tr><td><strong>Display 2</strong></td><td class="num">clamp(1.3rem, 3.4vw, 1.9rem)</td><td class="num">600</td><td>عناوين الأقسام</td></tr>
+          <tr><td><strong>Body</strong></td><td class="num">1.05rem / 1.8</td><td class="num">300</td><td>النص العام — الوزن الخفيف مقصود</td></tr>
+          <tr><td><strong>Small</strong></td><td class="num">0.88rem</td><td class="num">400</td><td>تسميات، شروح، تفاصيل</td></tr>
+          <tr><td><strong>Mono</strong></td><td class="num">0.72–0.95rem</td><td class="num">400–500</td><td>نطاقات · أرقام · أدلة · تسميات المحركات</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">
+      قاعدة: <strong>كل ما جاء من الآلة يُكتب بالـMono.</strong> اسم النطاق، النتيجة، زمن الاستجابة، المفتاح المكشوف،
+      اسم المحرك. وكل ما نقولوه احنا بلساننا يُكتب بـ Readex. هاد الفصل كيخلق مصداقية بلا ما تكتب كلمة «موثوق».
+    </p>
+  </section>
+
+  <!-- 04 ═════════ -->
+  <section>
+    <div class="head"><span class="n">04</span><h2>المكوّنات</h2></div>
+
+    <p><strong>أ — حقل الفحص.</strong> عنصر البطولة فالصفحة. حدّ أسود بسمك 1px (ماشي رمادي)، زاوية 10px، وزر بالحبر كيولّي بلون المنافس فالـhover.</p>
+    <div class="demo">
+      <div class="probe">
+        <input type="text" value="" placeholder="mystore.sa" aria-label="رابط المتجر">
+        <button class="btn" type="button">شوف الجواب</button>
+      </div>
+    </div>
+
+    <p><strong>ب — بطاقة الدليل (Exhibit).</strong> أهم مكوّن فالمنتج. اسم المحرك كشريحة، السؤال بخط عادي، الإجابة الحرفية بارتفاع سطر 2 باش التظليل يتنفّس.</p>
+    <div class="demo">
+      <div class="exhibit">
+        <div class="ex-head">
+          <span class="engine">ChatGPT</span>
+          <span class="q">«وش أفضل متجر عبايات فخمة بالرياض؟»</span>
+        </div>
+        <div class="ex-body">
+          أنصح بمراجعة <mark class="rival">دار الأناقة</mark> أولاً — تصاميم راقية وتوصيل سريع،
+          و<mark class="rival">بيت العباية</mark> لجودة الأقمشة.
+        </div>
+        <div class="tiles">
+          <div class="tile a"><span class="k">متجرك <span class="mono">mystore.sa</span></span><span class="v">0 / 10</span><span class="s">لم يُذكر إطلاقاً</span></div>
+          <div class="tile b"><span class="k">أكثر منافس ذُكر</span><span class="v">7 / 10</span><span class="s">دار الأناقة</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p><strong>ج — التحذير الأمني.</strong> واحد فقط فالفحص المجاني — الأصدم. جدول بعمودين، رمز mono ماشي إيموجي.</p>
+    <div class="demo">
+      <div class="alarm">
+        <span class="glyph">!</span>
+        <div>
+          <b>نطاقك ينتهي بعد 34 يوماً</b>
+          <p>إذا لم تُجدّده، يختفي متجرك ويستطيع أي شخص شراء اسمك.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>القياس</th><th>القيمة</th><th>التطبيق</th></tr></thead>
+        <tbody>
+          <tr><td><strong>سلّم المسافات</strong></td><td class="num">4 · 8 · 12 · 16 · 24 · 32 · 48 · 64</td><td>استعمل <span class="mono">gap</span> فالـflex/grid — أبداً margin فردي</td></tr>
+          <tr><td><strong>الزوايا</strong></td><td class="num">3 · 6 · 8 · 10 px</td><td>3 للتظليل · 6 للبطاقات · 8 للأقسام · 10 للحقل</td></tr>
+          <tr><td><strong>الحدود</strong></td><td class="num">1px solid</td><td>دائماً 1px. الحدّ الأسمك للـ<span class="mono">border-block-end</span> ديال التظليل فقط (2px)</td></tr>
+          <tr><td><strong>الظل</strong></td><td class="num">مستويان لا غير</td><td>بطاقة عادية / بطاقة الدليل. أبداً توهّج ملوّن</td></tr>
+          <tr><td><strong>عرض النص</strong></td><td class="num">66ch</td><td>سقف لكل فقرة — عربي وإنجليزي</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 05 ═════════ -->
+  <section>
+    <div class="head"><span class="n">05</span><h2>الحركة — لحظة واحدة</h2></div>
+    <p>
+      الموقع كامل ساكن، ما عدا <strong>لحظة وحدة</strong>: التظليل كيتكتب على النص واحداً بعد واحد، كأن شي حد
+      كيمرّر قلم فسفوري على ورقة. شوف القسم 01 فوق — هادي هي.
+    </p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>العنصر</th><th>المواصفة</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td><strong>كتابة التظليل</strong></td><td class="num">background-size 0%→100%, 500ms, cubic-bezier(.25,.8,.35,1)</td><td>تأخير متدرّج 500ms بين كل اسم</td></tr>
+          <tr><td><strong>خطوات الفحص</strong></td><td class="num">900ms لكل خطوة، 4 خطوات</td><td>الانتظار المرئي كيخلق قيمة مدركة</td></tr>
+          <tr><td><strong>ظهور البطاقات</strong></td><td class="num">translateY(10px)→0, 450ms</td><td>تأخير 150ms بين البطاقة والأخرى</td></tr>
+          <tr><td><strong>hover</strong></td><td class="num">border-color فقط، 180ms</td><td>أبداً رفع ولا تكبير ولا توهّج</td></tr>
+          <tr><td><strong>reduced-motion</strong></td><td class="num">كل شي ثابت فحالته النهائية</td><td>إلزامي</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 06 ═════════ -->
+  <section>
+    <div class="head"><span class="n">06</span><h2>ما لا نفعله أبداً</h2></div>
+    <p>هاد اللائحة ملزمة. كل بند فيها هو بالضبط اللي كيخلي موقع يبان «مولّد بالذكاء الاصطناعي» — وحنا كنبيعو الذكاء الاصطناعي، فما نقدروش نبانو كذلك.</p>
+    <div class="never">
+      <div><span class="x">✕</span><span><b>Glassmorphism</b> — لا <span class="mono">backdrop-filter</span>، لا بطاقات شفافة، لا <span class="mono">.glass-panel</span>. أسطح صلبة فقط.</span></div>
+      <div><span class="x">✕</span><span><b>تدرّج بنفسجي→أزرق</b> — ولا أي تدرّج فالخلفيات. لون واحد مسطّح لكل سطح.</span></div>
+      <div><span class="x">✕</span><span><b>إيموجي كأيقونات</b> — 🤖 🚀 ✨ ⚡ ممنوعة كعناصر واجهة. رموز mono أو SVG بسيط.</span></div>
+      <div><span class="x">✕</span><span><b>Inter · Poppins · Space Grotesk</b> — الخطوط «الآمنة» اللي كيستعملها الجميع. Readex Pro فقط.</span></div>
+      <div><span class="x">✕</span><span><b>توهّج ملوّن حول البطاقات</b> — <span class="mono">box-shadow</span> بألوان. الظل رمادي محايد فقط.</span></div>
+      <div><span class="x">✕</span><span><b>توسيط كل شي</b> — النص محاذى للبداية. التوسيط للـCTA الختامي وحده.</span></div>
+      <div><span class="x">✕</span><span><b>رسوم روبوتات وأدمغة</b> — المنتج كيوري نصاً حقيقياً. الرسم التوضيحي كيقول «ما عندنا شي نوريه».</span></div>
+      <div><span class="x">✕</span><span><b>شعارات عملاء وهمية</b> — «موثوق من 500 متجر» وأنت عندك صفر. الفراغ أشرف، والتقرير كيعوّض.</span></div>
+      <div><span class="x">✕</span><span><b>زوايا 16px+ فكل بلاصة</b> — <span class="mono">rounded-2xl</span> على كل شي = قالب. سلّم الزوايا فوق ملزم.</span></div>
+    </div>
+  </section>
+
+  <!-- 07 ═════════ -->
+  <section>
+    <div class="head"><span class="n">07</span><h2>تدفّق الشاشة</h2></div>
+    <p>شاشة وحدة، أربع حالات. ما كاينش تنقّل، ما كاينش صفحات داخلية قبل التسجيل.</p>
+    <div class="flow">
+      <div class="fstep"><span class="fn">STATE 01</span><h4>ساكن</h4><p>عنوان + حقل + زر. تلاتة عناصر، حتى شي حاجة أخرى فوق الطية.</p><span class="t">0s</span></div>
+      <div class="fstep"><span class="fn">STATE 02</span><h4>الفحص</h4><p>أربع خطوات كتتبدّل. الحقل كيتقفل والزر كيقول «جارٍ الفحص…».</p><span class="t">0–4s</span></div>
+      <div class="fstep"><span class="fn">STATE 03</span><h4>الدليل</h4><p>بطاقة الإجابة + التظليل كيتكتب + المربّعان + تحذير أمني واحد.</p><span class="t">4–7s</span></div>
+      <div class="fstep"><span class="fn">STATE 04</span><h4>البوّابة</h4><p>«هذا سؤال واحد من عشرة» + حقل الإيميل. بعد الألم، ماشي قبلو.</p><span class="t">7s+</span></div>
+    </div>
+  </section>
+
+  <!-- 08 ═════════ -->
+  <section>
+    <div class="head"><span class="n">08</span><h2>النسخة الإنجليزية</h2></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>البند</th><th>عربي</th><th>English</th></tr></thead>
+        <tbody>
+          <tr><td><strong>الاتجاه</strong></td><td class="num">dir="rtl"</td><td class="num">dir="ltr"</td></tr>
+          <tr><td><strong>الخط</strong></td><td>Readex Pro</td><td>Readex Pro — نفس العائلة</td></tr>
+          <tr><td><strong>العنوان</strong></td><td>زبونك سأل الذكاء الاصطناعي… وجاوبه باسم منافسك.</td><td style="direction:ltr;text-align:left">Your customer asked AI. It named your competitor.</td></tr>
+          <tr><td><strong>العملة</strong></td><td class="num">149 ر.س / شهر</td><td class="num">$39 / month</td></tr>
+          <tr><td><strong>الدفع</strong></td><td>ميسر — مدى وفاتورة زاتكا</td><td>Lemon Squeezy — MoR + أفلييت مدمج</td></tr>
+          <tr><td><strong>المسار</strong></td><td class="num">aitchek.online/</td><td class="num">aitchek.online/en</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      استعمل <span class="mono">margin-inline-start</span> و<span class="mono">border-inline-end</span> و<span class="mono">text-align: start</span>
+      فكل مكان — أبداً <span class="mono">left/right</span>. بهاد الطريقة النسختان كيخدمو من نفس الـCSS بلا شي تعديل.
+    </p>
+  </section>
+
+  <hr class="end">
+  <p class="colophon">WakeelCheck visual system · hand this file to the designer as-is</p>
+
+</div>
+
+</body>
+</html>

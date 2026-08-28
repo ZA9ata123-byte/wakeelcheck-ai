@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>العرض التجاري الأول</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--ground:#e9e8e4;--sheet:#fff;--sheet-2:#f4f3f0;--rule:#d5d3cc;--rule-soft:#e2e0da;--ink:#171412;--ink-2:#3b3733;--muted:#6d6862;--faint:#9a948c;--rival:#d8452c;--rival-mark:#fbe3dd;--rival-deep:#a8321f;--present:#1a6f52;--present-mark:#dcefe6;--caution:#9a6a10;--caution-mark:#f7ecd6;--lift:0 1px 2px rgb(23 20 18/5%),0 10px 28px -16px rgb(23 20 18/28%);--face:'Readex Pro','Segoe UI',Tahoma,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme='light']){--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}}
+:root[data-theme='dark']{--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;direction:rtl;background:var(--ground);color:var(--ink);font-family:var(--face);font-weight:300;font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;line-height:1.22;font-weight:600;letter-spacing:-0.02em;text-wrap:balance}
+p{margin:0}
+.lt{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.page{max-width:56rem;margin-inline:auto;padding-inline:clamp(1.1rem,4vw,2.5rem);padding-block:clamp(2rem,5vw,4rem) 4rem}
+
+.head{padding-block-end:2rem;border-block-end:1px solid var(--rule)}
+.kicker{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.24em;color:var(--faint);margin-block-end:1.6rem}
+.head h1{font-size:clamp(1.8rem,4.4vw,2.7rem);font-weight:200;letter-spacing:-0.035em;max-width:20ch;margin-block-end:1rem}
+.head h1 em{font-style:normal;font-weight:500}
+.head .lede{color:var(--ink-2);max-width:52ch}
+
+section{padding-block:clamp(2rem,4.5vw,3.25rem);border-block-end:1px solid var(--rule)}
+section:last-of-type{border-block-end:none}
+.eyebrow{font-family:var(--mono);font-size:0.63rem;letter-spacing:0.2em;color:var(--faint);text-transform:uppercase;margin-block-end:0.8rem}
+section>h2{font-size:clamp(1.3rem,2.8vw,1.75rem);margin-block-end:0.7rem}
+section>.lede{color:var(--ink-2);max-width:56ch;margin-block-end:1.6rem}
+
+/* ── الرسالة كما تُرسل ─────────────────────────────── */
+.msg{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;box-shadow:var(--lift);overflow:hidden;margin-block-end:1.1rem}
+.msg-hd{padding:0.75rem 1.15rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;color:var(--muted);display:flex;flex-wrap:wrap;gap:0.55rem;align-items:baseline}
+.msg-hd b{color:var(--ink);font-weight:700}
+.msg-hd .n{margin-inline-start:auto;color:var(--faint)}
+.msg-body{padding:1.2rem 1.15rem;font-size:0.97rem;line-height:1.95;white-space:pre-line}
+.msg-why{padding:0.85rem 1.15rem;border-block-start:1px solid var(--rule);background:var(--sheet-2);font-size:0.82rem;color:var(--muted)}
+.msg-why b{color:var(--ink-2);font-weight:500}
+
+/* ── الجداول ───────────────────────────────────────── */
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+table{width:100%;border-collapse:collapse;font-size:0.87rem;min-width:32rem}
+th{text-align:right;font-family:var(--mono);font-size:0.59rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:0.68rem 0.95rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);white-space:nowrap}
+td{padding:0.68rem 0.95rem;border-block-end:1px solid var(--rule-soft);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-block-end:none}
+td.name{color:var(--ink);font-weight:500;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:left;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+td.good{color:var(--present);font-weight:500}
+
+/* ── التسعير ───────────────────────────────────────── */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.plan{background:var(--sheet);padding:1.2rem 1.2rem 1.4rem;display:flex;flex-direction:column;gap:0.55rem}
+.plan[data-hero='yes']{background:var(--sheet-2)}
+.plan .pn{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.15em;color:var(--faint);text-transform:uppercase}
+.plan h3{font-size:1.05rem;font-weight:500}
+.plan .price{font-family:var(--mono);font-size:1.75rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3;letter-spacing:-0.02em}
+.plan .price small{font-size:0.72rem;font-weight:400;color:var(--muted);letter-spacing:0}
+.plan ul{margin:0;padding-inline-start:1.05rem;font-size:0.85rem;color:var(--ink-2);line-height:1.8}
+.plan li::marker{color:var(--faint)}
+.plan .foot{margin-block-start:auto;padding-block-start:0.7rem;font-size:0.79rem;color:var(--muted);border-block-start:1px solid var(--rule)}
+
+/* ── الاعتراضات ────────────────────────────────────── */
+.obj{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.o{background:var(--sheet);padding:1rem 1.2rem 1.15rem;display:flex;flex-direction:column;gap:0.4rem}
+.o .q{font-weight:500;color:var(--ink);font-size:0.95rem}
+.o .q::before{content:'«';color:var(--faint)}
+.o .q::after{content:'»';color:var(--faint)}
+.o .a{font-size:0.89rem;color:var(--ink-2)}
+.o .note{font-size:0.79rem;color:var(--muted);border-inline-start:2px solid var(--rule);padding-inline-start:0.7rem}
+
+/* ── لا نقول ───────────────────────────────────────── */
+.never{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.nv{background:var(--sheet);padding:0.9rem 1.2rem;display:grid;grid-template-columns:1.4rem minmax(0,1fr);gap:0.8rem;align-items:start}
+.nv .x{color:var(--rival);font-family:var(--mono);font-weight:700;line-height:1.7}
+.nv .t{font-size:0.9rem;color:var(--ink-2)}
+.nv .t b{color:var(--ink);font-weight:500}
+
+.foot{margin-block-start:2.5rem;padding-block-start:1.4rem;border-block-start:1px solid var(--rule);font-family:var(--mono);font-size:0.65rem;letter-spacing:0.07em;color:var(--faint);display:flex;flex-wrap:wrap;gap:0.4rem 1.3rem}
+
+@media print{.msg,.plan,.o,.nv{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="head">
+  <div class="kicker">وكيل تشيك · العرض التجاري الأول · أول 20 محادثة</div>
+  <h1>ماتبيعش أداة. <em>ورّي الجواب</em>، وسكت.</h1>
+  <p class="lede">
+    هاد الوثيقة هي اللي كتمشي بيها لأول 20 تاجر. فيها الرسالة كما تُرسل حرفياً،
+    والتسعير، والأجوبة على الاعتراضات اللي غادي تجي، واللي ماكنقولوهش أبداً.
+  </p>
+</header>
+
+<!-- ═══ 1 · القناة ═══════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">01 · القناة</div>
+  <h2>واتساب مباشر — ماشي رابط عام</h2>
+  <p class="lede">
+    القناة المباشرة كتحوّل حوالي 3%، والقمع المجاني حوالي 0.5%. يعني 20 محادثة
+    مباشرة كتسوى 120 زائر من رابط. والفرق ماشي فالأرقام فقط: المحادثة كتعطيك
+    السبب اللي حيّد بيه التاجر — والرابط ماكايعطيك والو.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>القناة</th><th>تحويل</th><th>باش توصل 3 مشتركين</th><th>كتعطيك السبب؟</th></tr></thead>
+      <tbody>
+        <tr><td class="name">واتساب مباشر بتقرير</td><td class="num">~3%</td><td class="num">~100 محادثة</td><td class="good">نعم</td></tr>
+        <tr><td class="name">رابط عام / تويتر</td><td class="num">~0.5%</td><td class="num">~600 زائر</td><td>لا</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 2 · الرسالة ══════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">02 · الرسالة</div>
+  <h2>ثلاث رسائل — وثلاثة أدوار</h2>
+  <p class="lede">
+    ماترسلش الثلاثة مرة وحدة. الأولى كتفتح، والثانية كتجاوب على «شنو هادشي»،
+    والثالثة كتسأل الفلوس. وبينهم كتسنّى جوابو.
+  </p>
+
+  <div class="msg">
+    <div class="msg-hd"><b>الرسالة 1</b><span>الافتتاح — بعد ما تفحص متجرو</span><span class="n">~40 كلمة</span></div>
+    <div class="msg-body">السلام عليكم أستاذ [الاسم]،
+
+فحصت متجر [اسم المتجر] وسألت ChatGPT: «وش أفضل متجر [التخصص] في [المدينة]؟»
+
+جاوب بثلاثة أسماء. متجرك ماكانش فيهم.
+
+هاك الجواب الحرفي — صورة، ماشي كلام مني:
+[صورة التقرير]</div>
+    <div class="msg-why"><b>علاش خدّامة:</b> ماكاين لا تعريف بنفسك، لا اسم شركة، لا «نحن نقدّم». غير الشي اللي كايهمّو. والصورة كتحسم — ماكايقدرش يقول «ماشي بصح».</div>
+  </div>
+
+  <div class="msg">
+    <div class="msg-hd"><b>الرسالة 2</b><span>بعد ما يجاوب «شنو هادشي؟»</span><span class="n">~60 كلمة</span></div>
+    <div class="msg-body">الزبون اللي كان كايسول جوجل ولّا كايسول ChatGPT.
+
+والفرق: جوجل كايعطي 10 روابط، وChatGPT كايعطي جواب واحد فيه 3 أسماء. اللي ماكانش فهاد الثلاثة، ماكاينش.
+
+فحصت متجرك ولقيت السبب التقني: [السبب من التقرير — مثلاً: robots.txt ديالك كايحظر GPTBot].
+
+نقدر نصيفط ليك التقرير كامل — 20 قاعدة، وكل وحدة راسبة معاها الكود اللي كايصلّحها.</div>
+    <div class="msg-why"><b>علاش خدّامة:</b> السبب التقني كايحوّلك من «واحد كايبيع» إلى «واحد عارف». والكود الجاهز كايوري أنك ماشي كتشخّص وصافي.</div>
+  </div>
+
+  <div class="msg">
+    <div class="msg-hd"><b>الرسالة 3</b><span>بعد ما يشوف التقرير</span><span class="n">~45 كلمة</span></div>
+    <div class="msg-body">التقرير هادا مجاني، وهو ديالك حتى إلا ماكملناش.
+
+إلا بغيتي نتبّعو الوضع كل أسبوع ونعلمك منين يتبدّل — واش دخلتي للأجوبة، وواش شي منافس جديد طلع — هادشي 149 ريال فالشهر.
+
+وأول شهر بلا التزام: ماعجبكش، توقّف وماتخلّص والو.</div>
+    <div class="msg-why"><b>علاش خدّامة:</b> «التقرير ديالك حتى إلا ماكملناش» كتحيّد الضغط. والفرق بين المجاني والمدفوع واضح: المجاني تشخيص مرة وحدة، والمدفوع متابعة.</div>
+  </div>
+</section>
+
+<!-- ═══ 3 · التسعير ══════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">03 · التسعير</div>
+  <h2>ثلاث درجات — وواحدة هي اللي كتبيع</h2>
+  <p class="lede">
+    المجاني وظيفتو يخلق الألم ماشي يحلّو: سؤالين، محرّك واحد، وإنذار أمني واحد.
+    اللي كايخلّص هو «المتابعة» — حيت المشكل ماشي مرة وحدة، كايتبدّل كل أسبوع.
+  </p>
+
+  <div class="plans">
+    <div class="plan">
+      <span class="pn">مجاني</span>
+      <h3>الفحص السريع</h3>
+      <span class="price">0 <small>ريال</small></span>
+      <ul>
+        <li>سؤالان على ChatGPT</li>
+        <li>الجواب الحرفي والأسماء المعلَّمة</li>
+        <li>إنذار أمني واحد</li>
+      </ul>
+      <p class="foot">بلا تسجيل وبلا بطاقة. 3 فحوصات فاليوم لكل زائر.</p>
+    </div>
+
+    <div class="plan" data-hero="yes">
+      <span class="pn">الأساسي</span>
+      <h3>المتابعة الأسبوعية</h3>
+      <span class="price">149 <small>ريال / شهر</small></span>
+      <ul>
+        <li>10 أسئلة على 4 محرّكات</li>
+        <li>20 قاعدة جاهزية مع الكود المُصلِح</li>
+        <li>فحص أمني كامل</li>
+        <li>تنبيه منين يتبدّل الوضع</li>
+      </ul>
+      <p class="foot">أول شهر بلا التزام. توقّف فأي وقت.</p>
+    </div>
+
+    <div class="plan">
+      <span class="pn">الوكالات</span>
+      <h3>متعدّد المتاجر</h3>
+      <span class="price">449 <small>ريال / شهر</small></span>
+      <ul>
+        <li>حتى 10 متاجر</li>
+        <li>تقرير بعلامة الوكالة</li>
+        <li>مقارنة بين المتاجر</li>
+      </ul>
+      <p class="foot">للوكالات اللي كتسيّر متاجر ديال عملاء.</p>
+    </div>
+  </div>
+
+  <p class="lede" style="margin-block-start:1.5rem;margin-block-end:0">
+    <b>نقطة التعادل:</b> بـ149 ريال، حوالي <span class="lt">30</span> مشترك كايغطّيو
+    التكلفة الشهرية (نماذج + محرّكات + بنية). فوق 30 كلشي ربح — وهادا هو الرقم
+    اللي كتقيس بيه، ماشي عدد الزوار.
+  </p>
+</section>
+
+<!-- ═══ 4 · الاعتراضات ═══════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">04 · الاعتراضات</div>
+  <h2>اللي غادي يقولو ليك — وشنو تجاوب</h2>
+  <p class="lede">
+    كل جواب هنا مبني على شي حاجة كنقدرو نوريوها، ماشي على إقناع. إلا ماقدرتيش
+    توري، ماتقولش.
+  </p>
+
+  <div class="obj">
+    <div class="o">
+      <p class="q">أنا عندي SEO خدّام مزيان</p>
+      <p class="a">SEO كايخدم على الروابط. هادشي على الأجوبة. زبون كايسول ChatGPT ماكايشوفش روابط — كايشوف جواب واحد فيه ثلاثة أسماء.</p>
+      <p class="note">وريه التقرير: ممكن يكون رقم 1 فجوجل وماكاينش فأي جواب.</p>
+    </div>
+
+    <div class="o">
+      <p class="q">واش هادشي مهم فعلاً؟</p>
+      <p class="a">ماكنقدرش نقول ليك شحال زبون ضيّعتي — ماكاينش رقم موثوق فهادشي، وأي واحد كايعطيك رقم كايخترعو. اللي نقدر نوريه: منافسك مذكور ونتا لا، والسبب التقني معروف ومصلّح.</p>
+      <p class="note">هادا هو الجواب الصحيح. ماتخترعش نسبة.</p>
+    </div>
+
+    <div class="o">
+      <p class="q">ماشي نتوما اللي كتفبركو الجواب؟</p>
+      <p class="a">الجواب حرفي كما جا، بلا تنظيف ولا اقتصاص. وكنعلّمو غير الأسماء اللي كتأكّد أنها موجودة فالنص — تقدر تعاود السؤال بنفسك دابا.</p>
+      <p class="note">خلّيه يجرّب قدامك. هادي أقوى لحظة فالمحادثة.</p>
+    </div>
+
+    <div class="o">
+      <p class="q">واش كتفحصو Gemini؟</p>
+      <p class="a">لا. Gemini داخل Chrome وApple Intelligence مغلوقين بلا واجهة عامة — ماكايقيسهم حتى واحد. كنقيسو ChatGPT وGoogle AI Overviews وAI Mode وPerplexity.</p>
+      <p class="note">الاعتراف بالحدّ كايبني ثقة أكثر من ادّعاء الشمول.</p>
+    </div>
+
+    <div class="o">
+      <p class="q">غالي</p>
+      <p class="a">أول شهر بلا التزام. جرّب، وإلا ماشفتيش حاجة كتستاهل، توقّف وماتخلّص والو.</p>
+      <p class="note">ماتنقصش الثمن فأول 20 محادثة. إلا نقصتيه، ماغاديش تعرف واش الثمن هو المشكل ولا العرض.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · ما لا نقول ═══════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">05 · ملزم</div>
+  <h2>ما لا نقول أبداً</h2>
+  <p class="lede">
+    هادي ماشي نصائح تسويق — هادي نفس القاعدة 06 ديال الكود، مطبّقة على الكلام.
+    وعد ماكنقدروش نوفّيوه كايهدّ كلشي بنيناه.
+  </p>
+
+  <div class="never">
+    <div class="nv"><span class="x">✕</span><span class="t"><b>«غادي ترفع مبيعاتك بـX%».</b> ماكاينش قياس كايربط الظهور فالأجوبة بالمبيعات. أي رقم هنا مخترَع.</span></div>
+    <div class="nv"><span class="x">✕</span><span class="t"><b>«كنغطّيو كل منصات الذكاء الاصطناعي».</b> Gemini داخل Chrome وApple Intelligence ماكنقيسوهمش، ومكتوبة فالموقع نفسو.</span></div>
+    <div class="nv"><span class="x">✕</span><span class="t"><b>«غادي نخلّيوك رقم 1 فChatGPT».</b> ماكاينش تحكّم فمخرجات النموذج. كنصلّحو الأسباب التقنية وكنقيسو التبدّل.</span></div>
+    <div class="nv"><span class="x">✕</span><span class="t"><b>«فحصنا أمن متجرك بالكامل».</b> الفحص سلبي: مصادر عامة فقط. الفحص العميق كايحتاج إثبات ملكية — والقانون ماكايستثنيش حسن النية.</span></div>
+    <div class="nv"><span class="x">✕</span><span class="t"><b>أي رقم بلا مصدر.</b> إلا ماقدرتيش تقول من فين جا الرقم، ماتقولوش.</span></div>
+  </div>
+</section>
+
+<!-- ═══ 6 · قبل أول محادثة ═══════════════════════════ -->
+
+<section>
+  <div class="eyebrow">06 · الترتيب</div>
+  <h2>قبل أول محادثة</h2>
+  <p class="lede">
+    ماتبدأش قبل هاد الثلاثة — أول انطباع كايتعطى مرة وحدة.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>#</th><th>الشرط</th><th>علاش</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td class="name">20 متجر مفحوص ومقروء</td><td>أي قاعدة كتغلط على متجر واحد كتغلط على مية — وأول تاجر شاف تقرير غالط عمرو مايرجع</td></tr>
+        <tr><td class="num">2</td><td class="name">مفتاح OpenAI خدّام</td><td>بلا المرآة عندك تشخيص وصافي — والجملة الحرفية هي اللي كتبيع</td></tr>
+        <tr><td class="num">3</td><td class="name">تقرير جاهز لكل واحد قبل ما تكتب ليه</td><td>الرسالة 1 كتبدا بنتيجة، ماشي بطلب</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>الدليل التجاري · <span class="lt">docs/02-go-to-market</span></span>
+  <span>نموذج التقرير · <span class="lt">docs/specimen/report.html</span></span>
+  <span>طريق الإطلاق · <span class="lt">docs/07-launch-path</span></span>
+</footer>
+
+</div>
+</body>
+</html>

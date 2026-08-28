@@ -6,3 +6,12 @@ node_modules/
 .vscode/
 .idea/
 test.pdf
+
+# build
+dist/
+*.tsbuildinfo
+.next/
+next-env.d.ts
+
+# ربط Vercel المحلي — خاص بالجهاز لا بالمستودع
+.vercel/

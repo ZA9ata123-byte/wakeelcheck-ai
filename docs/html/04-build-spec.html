@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مواصفة البناء — WakeelCheck</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}</style>
+</head>
+<body>
+<title>مواصفة بناء وكيل تشيك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  direction: rtl;
+  --paper:#f4f6f7; --surface:#ffffff; --surface-2:#eceff1;
+  --rule:#d6dde1; --rule-soft:#e6ebee;
+  --ink:#16202b; --ink-2:#33434f; --muted:#5f7180; --faint:#8496a2;
+  --accent:#0d6f79; --accent-2:#0a5860; --accent-wash:#e2f0f1;
+  --brass:#a4630f; --brass-wash:#f6ecdd;
+  --ok:#2c7048; --warn:#a9640d; --crit:#a8241d;
+  --ok-wash:#e4f0e9; --warn-wash:#f8eeda; --crit-wash:#f7e5e3;
+  --shadow:0 1px 2px rgba(22,32,43,.06), 0 6px 20px -12px rgba(22,32,43,.22);
+  --sans:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --measure:68ch; --pad:clamp(1.1rem,4vw,2.5rem);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e161d; --surface:#161f28; --surface-2:#1d2831;
+    --rule:#2c3a45; --rule-soft:#232f39;
+    --ink:#e4ecf1; --ink-2:#c2ced7; --muted:#93a4b0; --faint:#6d7f8c;
+    --accent:#2ca7b1; --accent-2:#4cc3cc; --accent-wash:#123037;
+    --brass:#d69436; --brass-wash:#2e2415;
+    --ok:#57b380; --warn:#d69436; --crit:#e0736a;
+    --ok-wash:#14291f; --warn-wash:#2e2415; --crit-wash:#2e1a19;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e161d; --surface:#161f28; --surface-2:#1d2831;
+  --rule:#2c3a45; --rule-soft:#232f39;
+  --ink:#e4ecf1; --ink-2:#c2ced7; --muted:#93a4b0; --faint:#6d7f8c;
+  --accent:#2ca7b1; --accent-2:#4cc3cc; --accent-wash:#123037;
+  --brass:#d69436; --brass-wash:#2e2415;
+  --ok:#57b380; --warn:#d69436; --crit:#e0736a;
+  --ok-wash:#14291f; --warn-wash:#2e2415; --crit-wash:#2e1a19;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.72;margin:0;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.28;text-wrap:balance;font-weight:600;letter-spacing:-.015em}
+p{margin:0;max-width:var(--measure)}
+.wrap{max-width:64rem;margin-inline:auto;padding-inline:var(--pad);padding-block:clamp(1.5rem,5vw,3rem);display:flex;flex-direction:column;gap:clamp(2.2rem,5vw,3.4rem)}
+
+.mono{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+code:not(pre code){font-family:var(--mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--rule-soft);border-radius:4px;padding:.08em .38em;direction:ltr;display:inline-block;unicode-bidi:isolate}
+
+.top{display:flex;flex-direction:column;gap:.9rem;border-block-end:2px solid var(--ink);padding-block-end:1.4rem}
+.eyebrow{font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);direction:ltr;text-align:start}
+.top h1{font-size:clamp(1.9rem,5.6vw,3rem);font-weight:700}
+.lede{font-size:clamp(1rem,2.3vw,1.15rem);color:var(--muted);font-weight:300;max-width:56ch}
+.meta{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-family:var(--mono);font-size:.73rem;color:var(--faint);direction:ltr;justify-content:flex-end}
+
+section{display:flex;flex-direction:column;gap:1.1rem}
+.head{display:flex;align-items:baseline;gap:.8rem;border-block-end:1px solid var(--rule);padding-block-end:.55rem}
+.head .n{font-family:var(--mono);font-size:.77rem;font-weight:600;color:var(--accent);flex:none}
+.head h2{font-size:clamp(1.25rem,3.2vw,1.6rem)}
+.note{font-size:.88rem;color:var(--muted)}
+
+pre{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:1rem 1.15rem;overflow-x:auto;direction:ltr;text-align:start;margin:0;font-family:var(--mono);font-size:.78rem;line-height:1.7;color:var(--ink-2);unicode-bidi:isolate}
+pre .c{color:var(--faint)}
+pre .k{color:var(--accent);font-weight:500}
+pre .t{color:var(--brass);font-weight:500}
+pre .s{color:var(--crit)}
+pre .d{color:var(--ink);font-weight:600}
+
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.88rem}
+th{background:var(--surface-2);color:var(--ink);font-weight:600;font-size:.77rem;letter-spacing:.03em;text-align:start;padding:.65rem .8rem;border-block-end:1px solid var(--rule);white-space:nowrap}
+td{padding:.62rem .8rem;border-block-end:1px solid var(--rule-soft);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-block-end:0}
+td strong{color:var(--ink);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;direction:ltr;text-align:start;white-space:nowrap}
+.path{font-family:var(--mono);font-size:.82em;direction:ltr;unicode-bidi:isolate;color:var(--accent);white-space:nowrap}
+
+.pkg{background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden;box-shadow:var(--shadow)}
+.pkg-top{padding:.8rem 1.1rem;background:var(--surface-2);border-block-end:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .8rem}
+.pkg-top .p{font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--accent);direction:ltr}
+.pkg-top .r{font-size:.88rem;color:var(--muted)}
+.pkg-body{padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.75rem}
+.dod{background:var(--ok-wash);border-inline-start:3px solid var(--ok);border-radius:0 4px 4px 0;padding:.55rem .8rem;font-size:.85rem;color:var(--ink)}
+.dod b{font-weight:600}
+
+.rule-box{background:var(--surface);border:1px solid var(--crit);border-radius:6px;overflow:hidden}
+.rule-box>div{display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:.7rem 1rem;border-block-end:1px solid var(--rule-soft);font-size:.89rem;align-items:baseline}
+.rule-box>div:last-child{border-block-end:0}
+.rule-box .x{font-family:var(--mono);color:var(--crit);font-weight:600}
+.rule-box b{color:var(--ink);font-weight:600}
+.rule-box span:last-child{color:var(--muted)}
+
+.pill{display:inline-block;font-family:var(--mono);font-size:.67rem;font-weight:600;padding:.1rem .5rem;border-radius:100px;border:1px solid;white-space:nowrap}
+.p-ok{background:var(--ok-wash);color:var(--ok);border-color:var(--ok)}
+.p-warn{background:var(--warn-wash);color:var(--warn);border-color:var(--warn)}
+.p-crit{background:var(--crit-wash);color:var(--crit);border-color:var(--crit)}
+.p-acc{background:var(--accent-wash);color:var(--accent);border-color:var(--accent)}
+
+hr.end{border:0;border-block-start:1px solid var(--rule);margin:0}
+.colophon{font-family:var(--mono);font-size:.72rem;color:var(--faint);direction:ltr;text-align:start}
+</style>
+
+<div class="wrap" dir="rtl">
+
+  <header class="top">
+    <div class="eyebrow">WakeelCheck · Build Specification</div>
+    <h1>مواصفة بناء وكيل تشيك</h1>
+    <p class="lede">
+      شجرة الملفات، عقود البيانات، مسؤولية كل حزمة، ومعيار الإنجاز لكل واحدة.
+      المبرمج ينفّذ من هنا بلا قرارات معمارية.
+    </p>
+    <div class="meta"><span>pnpm workspaces</span><span>·</span><span>TypeScript strict</span><span>·</span><span>Next.js 15 + Node worker</span></div>
+  </header>
+  <div style="background:var(--caution-mark,#f7ecd6);border:1px solid var(--caution,#9a6a10);border-radius:4px;padding:0.9rem 1.15rem;margin-block:1.5rem 0;font-size:0.9rem;line-height:1.7">
+    <b style="color:var(--caution,#9a6a10)">هذه المواصفة خُطّة، والكود نُفِّذ.</b>
+    الشجرة والعقود أدناه هي ما صُمّم قبل الكتابة. ما اختلف فعلاً مسرود في
+    قسم <b>«المنفَّذ مقابل المخطَّط»</b> في آخر الوثيقة — اقرأه قبل أن تبني على أي مسار هنا.
+  </div>
+
+
+  <!-- 01 -->
+  <section>
+    <div class="head"><span class="n">01</span><h2>شجرة الملفات</h2></div>
+    <p>مستودعان منطقيان في مستودع واحد: <code>apps/web</code> على Vercel، و<code>apps/worker</code> على Contabo. كل المنطق في <code>packages/</code> ولا يعرف شيئاً عن HTTP.</p>
+
+<pre>wakeelcheck/
+├── <span class="d">apps/</span>
+│   ├── <span class="d">web/</span>                          <span class="c"># Next.js 15 — Vercel</span>
+│   │   ├── app/
+│   │   │   ├── layout.tsx              <span class="c"># dir=rtl, خطوط, tokens</span>
+│   │   │   ├── page.tsx                <span class="c"># الصفحة العربية — 4 حالات</span>
+│   │   │   ├── en/page.tsx             <span class="c"># النسخة الإنجليزية</span>
+│   │   │   └── api/
+│   │   │       ├── scan/route.ts       <span class="c"># POST → يُنشئ مهمة، يرجع scanId</span>
+│   │   │       ├── scan/[id]/route.ts  <span class="c"># GET  → حالة + نتيجة</span>
+│   │   │       ├── lead/route.ts       <span class="c"># POST → إيميل + scanId</span>
+│   │   │       └── health/route.ts
+│   │   ├── components/
+│   │   │   ├── Probe.tsx               <span class="c"># حقل الفحص</span>
+│   │   │   ├── ScanSteps.tsx           <span class="c"># 4 خطوات متحركة</span>
+│   │   │   ├── ExhibitCard.tsx         <span class="c"># بطاقة الدليل + التظليل</span>
+│   │   │   ├── VerdictTiles.tsx        <span class="c"># 0/10 مقابل 7/10</span>
+│   │   │   ├── SecurityAlarm.tsx       <span class="c"># تحذير واحد</span>
+│   │   │   └── LeadGate.tsx            <span class="c"># بوّابة الإيميل</span>
+│   │   ├── lib/{api.ts,i18n.ts}
+│   │   └── styles/tokens.css           <span class="c"># من نظام العلامة — لا تعدّله يدوياً</span>
+│   │
+│   └── <span class="d">worker/</span>                       <span class="c"># Node — Contabo VPS + Docker</span>
+│       ├── src/index.ts                <span class="c"># BullMQ consumer</span>
+│       ├── src/pipeline.ts             <span class="c"># يرتّب المحرّكات ويكتب النتيجة</span>
+│       └── Dockerfile
+│
+├── <span class="d">packages/</span>
+│   ├── <span class="d">core/</span>        types.ts · redact.ts · errors.ts · env.ts
+│   ├── <span class="d">fetcher/</span>     safeFetch.ts · guards.ts
+│   ├── <span class="d">llm/</span>         provider.ts · oxalpha.ts · deepseek.ts · index.ts
+│   ├── <span class="d">engines/</span>     openai.ts · dataforseo.ts · index.ts
+│   ├── <span class="d">visibility/</span>  profile.ts · questions.ts · ask.ts · extract.ts
+│   ├── <span class="d">readiness/</span>   rules/*.ts · run.ts        <span class="c"># الـ64 بعد الإصلاح</span>
+│   ├── <span class="d">security/</span>    dns.ts · tls.ts · whois.ts · headers.ts · secrets.ts
+│   └── <span class="d">db/</span>          schema.ts · client.ts · queries.ts
+│
+├── pnpm-workspace.yaml
+├── turbo.json
+└── .env.example</pre>
+
+    <p class="note">
+      قاعدة بنيوية واحدة: <strong>حزمة في <code>packages/</code> ممنوع أن تستورد <code>next</code> أو تعرف عن الطلب/الاستجابة.</strong>
+      تأخذ بيانات وتُرجع بيانات — وبهذا تُختبر بلا شبكة ولا خادم.
+    </p>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <div class="head"><span class="n">02</span><h2>العقود — <code>packages/core/types.ts</code></h2></div>
+    <p><strong>هذا أهم ملف في المشروع.</strong> اكتبه أولاً وثبّته. بعده يستطيع مبرمجان أن يشتغلا بالتوازي بلا تصادم.</p>
+
+<pre><span class="k">export type</span> <span class="t">Platform</span> = <span class="s">'salla'</span>|<span class="s">'zid'</span>|<span class="s">'shopify'</span>|<span class="s">'woocommerce'</span>|<span class="s">'custom'</span>;
+<span class="k">export type</span> <span class="t">Engine</span>   = <span class="s">'chatgpt'</span>|<span class="s">'ai_overviews'</span>|<span class="s">'ai_mode'</span>|<span class="s">'perplexity'</span>;
+<span class="k">export type</span> <span class="t">ScanKind</span> = <span class="s">'quick'</span>|<span class="s">'full'</span>|<span class="s">'monitor'</span>;
+<span class="k">export type</span> <span class="t">ScanStatus</span> = <span class="s">'queued'</span>|<span class="s">'running'</span>|<span class="s">'done'</span>|<span class="s">'failed'</span>;
+<span class="k">export type</span> <span class="t">Severity</span> = <span class="s">'critical'</span>|<span class="s">'high'</span>|<span class="s">'medium'</span>|<span class="s">'low'</span>;
+<span class="k">export type</span> <span class="t">Bilingual</span> = { ar: <span class="k">string</span>; en: <span class="k">string</span> };
+
+<span class="c">// ── ما نعرفه عن المتجر قبل أي سؤال</span>
+<span class="k">export interface</span> <span class="t">StoreProfile</span> {
+  domain: <span class="k">string</span>;
+  platform: <span class="t">Platform</span>;
+  category: <span class="k">string</span>;          <span class="c">// "عبايات نسائية"</span>
+  city: <span class="k">string</span> | <span class="k">null</span>;      <span class="c">// "الرياض"</span>
+  locale: <span class="k">string</span>;            <span class="c">// "ar-SA"</span>
+  currency: <span class="k">string</span> | <span class="k">null</span>;
+  productUrls: <span class="k">string</span>[];    <span class="c">// حتى 10 — من sitemap أو الروابط</span>
+}
+
+<span class="c">// ── سؤال شراء بلهجة السوق</span>
+<span class="k">export interface</span> <span class="t">BuyingQuestion</span> {
+  id: <span class="k">string</span>;
+  text: <span class="k">string</span>;
+  intent: <span class="s">'discovery'</span>|<span class="s">'price'</span>|<span class="s">'shipping'</span>|<span class="s">'comparison'</span>;
+}
+
+<span class="k">export interface</span> <span class="t">CompetitorMention</span> {
+  name: <span class="k">string</span>;
+  domain: <span class="k">string</span> | <span class="k">null</span>;
+  position: <span class="k">number</span>;         <span class="c">// ترتيب ظهوره في النص، 1 = الأول</span>
+}
+
+<span class="c">// ── ★ العقد المركزي: هذا ما يبيعه المنتج</span>
+<span class="k">export interface</span> <span class="t">EngineAnswer</span> {
+  questionId: <span class="k">string</span>;
+  engine: <span class="t">Engine</span>;
+  answerText: <span class="k">string</span>;        <span class="c">// حرفياً كما خرج — ممنوع أي تعديل</span>
+  citedUrls: <span class="k">string</span>[];
+  storeMentioned: <span class="k">boolean</span>;
+  competitors: <span class="t">CompetitorMention</span>[];
+  capturedAt: <span class="k">string</span>;
+  costMicros: <span class="k">number</span>;         <span class="c">// دولار × 1e6 — للمحاسبة</span>
+}
+
+<span class="k">export interface</span> <span class="t">SecurityFinding</span> {
+  kind: <span class="s">'domain_expiry'</span>|<span class="s">'tls_expiry'</span>|<span class="s">'no_dmarc'</span>|<span class="s">'exposed_secret'</span>
+      | <span class="s">'dangling_cname'</span>|<span class="s">'missing_headers'</span>|<span class="s">'cookie_flags'</span>|<span class="s">'mixed_content'</span>;
+  severity: <span class="t">Severity</span>;
+  title: <span class="t">Bilingual</span>;
+  detail: <span class="t">Bilingual</span>;
+  evidence: <span class="k">string</span>;          <span class="c">// ★ مطموس دائماً — انظر القسم 08</span>
+  expiresAt?: <span class="k">string</span>;
+}
+
+<span class="k">export interface</span> <span class="t">RuleResult</span> {
+  key: <span class="k">string</span>;                <span class="c">// "schema.product" لا رقم</span>
+  passed: <span class="k">boolean</span>;
+  weight: <span class="k">number</span>;
+  detail: <span class="t">Bilingual</span>;
+  evidence: <span class="k">string</span>;
+  fixSnippet?: <span class="k">string</span>;        <span class="c">// كود جاهز للصق</span>
+}
+
+<span class="c">// ── ما ترجعه ‎GET /api/scan/:id</span>
+<span class="k">export interface</span> <span class="t">ScanResult</span> {
+  id: <span class="k">string</span>;
+  kind: <span class="t">ScanKind</span>;
+  status: <span class="t">ScanStatus</span>;
+  profile: <span class="t">StoreProfile</span> | <span class="k">null</span>;
+  questions: <span class="t">BuyingQuestion</span>[];
+  answers: <span class="t">EngineAnswer</span>[];
+  security: <span class="t">SecurityFinding</span>[];
+  rules: <span class="t">RuleResult</span>[];
+  shareOfVoice: { store: <span class="k">number</span>; top: <span class="t">CompetitorMention</span> | <span class="k">null</span>; total: <span class="k">number</span> };
+  error?: <span class="k">string</span>;
+}</pre>
+
+    <div class="dod"><b>معيار الإنجاز:</b> الملف يمرّ <code>tsc --noEmit</code> بـ<code>strict: true</code>، ولا يستورد أي حزمة خارجية.</div>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <div class="head"><span class="n">03</span><h2>الحزم — المسؤولية والتوقيع</h2></div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/fetcher</span><span class="r">الجلب السلبي الآمن — كل شبكة تمرّ من هنا</span></div>
+      <div class="pkg-body">
+<pre><span class="k">export async function</span> <span class="t">safeFetch</span>(url: <span class="k">string</span>, opts?: {
+  timeoutMs?: <span class="k">number</span>;    <span class="c">// افتراضي 10000</span>
+  maxBytes?: <span class="k">number</span>;     <span class="c">// افتراضي 2_000_000</span>
+  method?: <span class="s">'GET'</span>|<span class="s">'HEAD'</span>;
+}): <span class="t">Promise</span>&lt;{ status: <span class="k">number</span>; headers: <span class="t">Record</span>&lt;<span class="k">string</span>,<span class="k">string</span>&gt;;
+              body: <span class="k">string</span>; ttfbMs: <span class="k">number</span>; finalUrl: <span class="k">string</span> }&gt;;</pre>
+        <p class="note">يحلّ الـDNS أولاً ويرفض: <code>127.0.0.0/8</code> · <code>10./172.16./192.168.</code> · <code>169.254.0.0/16</code> · <code>::1</code> · <code>fc00::/7</code>. يعيد التحقق بعد كل إعادة توجيه (حد 3).</p>
+        <div class="dod"><b>معيار الإنجاز:</b> اختبار يثبت رفض <code>http://169.254.169.254/</code> وإعادة توجيه تنتهي إلى IP داخلي.</div>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/llm</span><span class="r">تجريد المزوّد — ox-alpha مع احتياطي</span></div>
+      <div class="pkg-body">
+<pre><span class="k">export interface</span> <span class="t">LlmProvider</span> {
+  name: <span class="k">string</span>;
+  complete(p: { system: <span class="k">string</span>; user: <span class="k">string</span>; json?: <span class="k">boolean</span> })
+    : <span class="t">Promise</span>&lt;{ text: <span class="k">string</span>; costMicros: <span class="k">number</span> }&gt;;
+}
+<span class="c">// index.ts — المحاولة بالترتيب، السقوط عند أي خطأ</span>
+<span class="k">export const</span> llm = <span class="t">withFallback</span>([ oxAlpha, deepSeekFlash ]);</pre>
+        <p class="note">
+          <span class="pill p-crit">إلزامي</span> لا يستدعي أي ملف آخر <code>oxAlpha</code> مباشرةً — فقط <code>llm.complete()</code>.
+          ox-alpha معاينة مجانية لفترة محدودة؛ يوم تختفي يتغيّر سطر واحد فقط.
+        </p>
+        <p class="note">التعليمات الثابتة أولاً في البرومبت، ومحتوى المتجر آخراً — الكاش يعمل على البادئة فقط.</p>
+        <div class="dod"><b>معيار الإنجاز:</b> اختبار يُسقط المزوّد الأول عمداً ويتحقق أن الثاني ردّ ونتيجة <code>costMicros</code> صحيحة.</div>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/visibility</span><span class="r">المرآة — قلب المنتج</span></div>
+      <div class="pkg-body">
+<pre>profile.ts    <span class="t">buildProfile</span>(html, domain, robots) → <span class="t">StoreProfile</span>
+questions.ts  <span class="t">generateQuestions</span>(profile, n) → <span class="t">BuyingQuestion</span>[]
+ask.ts        <span class="t">askEngine</span>(engine, question, locale) → { text, urls, costMicros }
+extract.ts    <span class="t">extractMentions</span>(answerText, profile) → {
+                 storeMentioned: <span class="k">boolean</span>;
+                 competitors: <span class="t">CompetitorMention</span>[];
+              }</pre>
+        <p class="note">
+          <code>extractMentions</code> يطابق: اسم النطاق، واسم المتجر بالعربية، والاسم بلا «متجر/محل».
+          المنافس = أي اسم تجاري في النص ليس هو المتجر. <strong>ممنوع تعديل <code>answerText</code> إطلاقاً</strong> — يُخزَّن حرفياً.
+        </p>
+        <div class="dod"><b>معيار الإنجاز:</b> 10 إجابات ثابتة محفوظة كـfixtures، والاستخراج يطابق المتوقّع في العشرة.</div>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/readiness</span><span class="r">القواعد الـ64 — بعد الإصلاح</span></div>
+      <div class="pkg-body">
+        <p class="note">كل قاعدة ملف مستقل يُصدّر <code>{ key, weight, evaluate(ctx): RuleResult }</code>. أربعة إصلاحات إلزامية:</p>
+        <div class="tbl"><table>
+          <thead><tr><th>الإصلاح</th><th>ماذا يتغيّر</th></tr></thead>
+          <tbody>
+            <tr><td><strong>robots</strong></td><td>استخدم <code>robots-parser</code> وحلّل كتلة كل <code>User-agent</code>. المنطق الحالي مقلوب: يُنجح متجراً يحظر الجميع ويُرسب متجراً يسمح لـGPTBot.</td></tr>
+            <tr><td><strong>صفحات المنتج</strong></td><td>قواعد Product/Offer/Rating تُقيَّم على <code>profile.productUrls</code>، لا على الرئيسية.</td></tr>
+            <tr><td><strong>الأوزان</strong></td><td>النتيجة = <code>Σ(weight × passed) / Σweight</code> — لا عدّ القواعد.</td></tr>
+            <tr><td><strong>PageSpeed</strong></td><td>احذف المعادلة المخترعة. إمّا <code>pagespeed.ts</code> الحقيقي، أو لا يُعرض رقم إطلاقاً.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="dod"><b>معيار الإنجاز:</b> لكل قاعدة اختباران على HTML ثابت — حالة ناجحة وحالة راسبة — والاثنان يمرّان.</div>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/security</span><span class="r">فحص سلبي فقط</span></div>
+      <div class="pkg-body">
+<pre>whois.ts    <span class="t">domainExpiry</span>(domain) → { expiresAt, daysLeft }
+tls.ts      <span class="t">certInfo</span>(domain)    → { expiresAt, daysLeft, protocol }
+dns.ts      <span class="t">mailAuth</span>(domain)    → { spf, dkim, dmarc: <span class="k">boolean</span> }
+            <span class="t">danglingCnames</span>(domain) → <span class="k">string</span>[]
+headers.ts  <span class="t">headerAudit</span>(headers) → <span class="t">SecurityFinding</span>[]
+secrets.ts  <span class="t">scanJsForSecrets</span>(jsUrls) → <span class="t">SecurityFinding</span>[]</pre>
+        <p class="note">
+          <span class="pill p-crit">قانوني</span> لا مسح منافذ، لا تخمين مجلدات، لا حقن. كل ما هنا يفعله متصفح عادي عند زيارة الموقع.
+          الدرجة 2 (المفاتيح المكشوفة) خلف ملكية مُثبتة فقط.
+        </p>
+        <div class="dod"><b>معيار الإنجاز:</b> اختبار يثبت أن <code>evidence</code> لا يحتوي مفتاحاً كاملاً في أي مسار.</div>
+      </div>
+    </div>
+
+    <div class="pkg">
+      <div class="pkg-top"><span class="p">packages/db</span><span class="r">Drizzle + Postgres</span></div>
+      <div class="pkg-body">
+<pre>createScan(input) → scanId
+updateScanStatus(id, status, error?)
+saveProfile / saveAnswers / saveSecurity / saveRules
+getScanResult(id) → <span class="t">ScanResult</span>
+cacheGet(domain) / cacheSet(domain, scanId, ttl=24h)</pre>
+        <div class="dod"><b>معيار الإنجاز:</b> الترحيلات تعمل من صفر، و<code>getScanResult</code> يُرجع النوع كاملاً باستعلام واحد.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <div class="head"><span class="n">04</span><h2>قاعدة البيانات</h2></div>
+<pre><span class="k">create table</span> <span class="d">stores</span> (
+  id uuid primary key default gen_random_uuid(),
+  domain text unique not null,
+  platform text,
+  <span class="t">verified_at</span> timestamptz,          <span class="c">-- ★ يجيز الفحص الأمني العميق</span>
+  verify_method text,                 <span class="c">-- salla_oauth | dns_txt | file | email</span>
+  created_at timestamptz default now()
+);
+
+<span class="k">create table</span> <span class="d">scans</span> (
+  id uuid primary key default gen_random_uuid(),
+  store_id uuid references stores(id),
+  kind text not null,                 <span class="c">-- quick | full | monitor</span>
+  status text not null default <span class="s">'queued'</span>,
+  profile jsonb,
+  share_of_voice jsonb,
+  cost_micros bigint default 0,
+  ip_hash text,                       <span class="c">-- sha256(ip+salt) — لحدّ المعدّل</span>
+  error text,
+  started_at timestamptz, finished_at timestamptz,
+  created_at timestamptz default now()
+);
+
+<span class="k">create table</span> <span class="d">questions</span> (
+  id uuid primary key default gen_random_uuid(),
+  scan_id uuid references scans(id) on delete cascade,
+  text_ar text not null, intent text, locale text
+);
+
+<span class="k">create table</span> <span class="d">engine_answers</span> (       <span class="c">-- ★ هنا يعيش المنتج</span>
+  id uuid primary key default gen_random_uuid(),
+  scan_id uuid references scans(id) on delete cascade,
+  question_id uuid references questions(id) on delete cascade,
+  engine text not null,
+  answer_text text not null,          <span class="c">-- حرفياً، بلا تعديل</span>
+  cited_urls text[],
+  store_mentioned boolean not null,
+  competitors jsonb not null,
+  cost_micros bigint default 0,
+  captured_at timestamptz default now()
+);
+
+<span class="k">create table</span> <span class="d">security_findings</span> (
+  id uuid primary key default gen_random_uuid(),
+  scan_id uuid references scans(id) on delete cascade,
+  kind text not null, severity text not null,
+  title jsonb, detail jsonb,
+  <span class="t">evidence_redacted</span> text not null,  <span class="c">-- ★ لا يُخزَّن سرّ كامل أبداً</span>
+  expires_at timestamptz
+);
+
+<span class="k">create table</span> <span class="d">rule_results</span> (
+  scan_id uuid references scans(id) on delete cascade,
+  key text not null, passed boolean, weight int,
+  detail jsonb, evidence text, fix_snippet text,
+  primary key (scan_id, key)
+);
+
+<span class="k">create table</span> <span class="d">leads</span> (
+  id uuid primary key default gen_random_uuid(),
+  email text not null, scan_id uuid references scans(id),
+  locale text, created_at timestamptz default now()
+);
+
+<span class="k">create index</span> on scans(created_at desc);
+<span class="k">create index</span> on scans(ip_hash, created_at desc);
+<span class="k">create index</span> on engine_answers(scan_id);</pre>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <div class="head"><span class="n">05</span><h2>عقود الـAPI</h2></div>
+    <div class="tbl"><table>
+      <thead><tr><th>المسار</th><th>الطلب</th><th>الاستجابة</th><th>ملاحظة</th></tr></thead>
+      <tbody>
+        <tr><td class="path">POST /api/scan</td><td class="num">{ url, kind, turnstileToken }</td><td class="num">202 { scanId, cached }</td><td>يُنشئ المهمة ويرجع فوراً — <strong>لا ينتظر أبداً</strong></td></tr>
+        <tr><td class="path">GET /api/scan/:id</td><td class="num">—</td><td class="num">200 ScanResult</td><td>الواجهة تسأل كل 2 ثانية حتى <code>done</code></td></tr>
+        <tr><td class="path">POST /api/lead</td><td class="num">{ email, scanId, locale }</td><td class="num">204</td><td>يفتح باقي التقرير</td></tr>
+        <tr><td class="path">GET /api/health</td><td class="num">—</td><td class="num">200 { ok, queueDepth }</td><td>للمراقبة</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">
+      <code>POST /api/scan</code> قبل أي شيء: تحقّق Turnstile → كاش النطاق (24س) → حدّ الـIP → ثم أنشئ المهمة.
+      الكاش يعيد <code>{ scanId, cached: true }</code> بلا تكلفة.
+    </p>
+  </section>
+
+  <!-- 06 -->
+  <section>
+    <div class="head"><span class="n">06</span><h2>متغيّرات البيئة</h2></div>
+<pre><span class="c"># نماذج</span>
+OPENROUTER_API_KEY=      <span class="c"># ox-alpha (مجاني، مؤقت)</span>
+DEEPSEEK_API_KEY=        <span class="c"># الاحتياطي — إلزامي</span>
+LLM_PRIMARY=oxalpha      <span class="c"># oxalpha | deepseek</span>
+
+<span class="c"># محرّكات الإجابة</span>
+OPENAI_API_KEY=
+DATAFORSEO_LOGIN=
+DATAFORSEO_PASSWORD=
+
+<span class="c"># بنية</span>
+DATABASE_URL=
+REDIS_URL=
+TURNSTILE_SECRET=
+IP_HASH_SALT=
+
+<span class="c"># حدود التكلفة — ليست اختيارية</span>
+FREE_SCANS_PER_IP_PER_DAY=3
+CACHE_TTL_HOURS=24
+MAX_MONTHLY_SPEND_USD=300
+
+<span class="c"># دفع</span>
+MOYASAR_SECRET_KEY=      <span class="c"># الخليج</span>
+LEMONSQUEEZY_API_KEY=    <span class="c"># أوروبا + الأفلييت</span></pre>
+  </section>
+
+  <!-- 07 -->
+  <section>
+    <div class="head"><span class="n">07</span><h2>ترتيب التنفيذ</h2></div>
+    <p>الترتيب مُلزم: كل يوم يعتمد على ما قبله. يومان يمكن أن يتوازيا فقط بعد تثبيت <code>core/types.ts</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th class="num">اليوم</th><th>الملفات</th><th>يكتمل عندما</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><code>core/*</code> · <code>fetcher/*</code> · <code>db/schema.ts</code></td><td>الأنواع مثبّتة، اختبار SSRF يمرّ، الترحيلات تعمل</td></tr>
+        <tr><td class="num">2</td><td><code>readiness/rules/*</code> · <code>readiness/run.ts</code></td><td>الإصلاحات الأربعة + اختباران لكل قاعدة</td></tr>
+        <tr><td class="num">3</td><td><code>llm/*</code> · <code>engines/*</code> · <code>visibility/*</code></td><td>فحص مرآة كامل يعمل من الطرفية على متجر حقيقي</td></tr>
+        <tr><td class="num">4</td><td><code>worker/*</code> · Redis · الكاش وحدّ IP</td><td>مهمة تدخل الطابور وتخرج نتيجة في Postgres</td></tr>
+        <tr><td class="num">5</td><td><code>security/*</code></td><td>الطمس مُثبت باختبار</td></tr>
+        <tr><td class="num">6</td><td><code>web/app/*</code> · <code>components/*</code></td><td>الحالات الأربع تعمل على بيانات حقيقية</td></tr>
+        <tr><td class="num">7</td><td><code>en/page.tsx</code> · Lemon Squeezy · Turnstile · Sentry</td><td>20 متجراً حقيقياً مفحوصاً بلا خطأ → إطلاق</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- 08 -->
+  <section>
+    <div class="head"><span class="n">08</span><h2>قواعد ملزمة — لا تُناقَش</h2></div>
+    <div class="rule-box">
+      <div><span class="x">01</span><span><b>الطمس عند المصدر.</b> <code>redact()</code> في <code>core</code> يُستدعى قبل أي إرجاع أو تخزين. سرّ كامل لا يدخل الذاكرة الدائمة ولا السجلّات. <code>sk_live_••••4f2a</code> فقط.</span></div>
+      <div><span class="x">02</span><span><b>لا شبكة خارج <code>safeFetch</code>.</b> أي <code>fetch()</code> مباشر في <code>packages/</code> يُرفض في المراجعة. هذا ما يمنع SSRF.</span></div>
+      <div><span class="x">03</span><span><b>لا استدعاء مباشر لـ ox-alpha.</b> فقط <code>llm.complete()</code>. المزوّد المجاني مؤقّت بطبيعته.</span></div>
+      <div><span class="x">04</span><span><b>الكاش وحدّ الـIP قبل الترويج.</b> بلاهما حملة أفلييت واحدة تحرق آلاف الريالات في شهر.</span></div>
+      <div><span class="x">05</span><span><b><code>answerText</code> حرفي.</b> لا تنظيف، لا اقتصاص، لا إعادة صياغة. هو الدليل — وتعديله يُبطل المنتج.</span></div>
+      <div><span class="x">06</span><span><b>لا رقم بلا مصدر.</b> إن لم يأتِ الرقم من قياس فعلي، لا يُعرض. هذا يشمل PageSpeed.</span></div>
+      <div><span class="x">07</span><span><b>الفحص الأمني العميق خلف <code>verified_at</code>.</b> بلا ملكية مُثبتة: الطبقة السلبية فقط.</span></div>
+      <div><span class="x">08</span><span><b><code>strict: true</code> ولا <code>any</code>.</b> أربعة من الأخطاء السبعة الحرجة كان المترجم سيرفضها.</span></div>
+    </div>
+  </section>
+
+
+  <section>
+    <div class="eyebrow">المنفَّذ مقابل المخطَّط</div>
+    <h2>ما اختلف — وحُجّته</h2>
+    <p class="lede">
+      كل سطر هنا فرق حقيقي بين هذه الوثيقة والكود القائم على الفرع. المصدر هو
+      الكود لا الوثيقة؛ هذا الجدول يمنع أن يبني أحد على مسار لم يعد موجوداً.
+    </p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-block-start:1rem">
+      <thead>
+        <tr>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">في المواصفة</th>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">في الكود</th>
+          <th style="text-align:right;padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule,#d5d3cc);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.65">السبب</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/layout.tsx</code> واحد</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/(ar)/layout.tsx</code> و<code>app/(en)/layout.tsx</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">Next لا يمرّر معلومات المسار إلى تخطيط جذري واحد، فكان <code>/en</code> يُقدَّم بـ<code>dir="rtl"</code>. لغة الصفحة واتجاهها يحتاجان مجموعتَي مسارات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ستة مكوّنات (<code>Probe</code>، <code>ScanSteps</code>، <code>ExhibitCard</code>، …)</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>Scanner.tsx</code> و<code>Landing.tsx</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الحالات الأربع تعيش في شاشة واحدة وتتشارك الحالة؛ تقسيمها إلى ستة مكوّنات كان يعني تمرير الحالة نفسها ستّ مرات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>styles/tokens.css</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>app/globals.css</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">مسار App Router المعتاد. المحتوى نفسه: كل لون رمز، ومعرَّف في الوضعين.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>llm/oxalpha.ts</code> و<code>llm/deepseek.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>llm/providers.ts</code> و<code>llm/fallback.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">المزوّدان يتشاركان الشكل نفسه؛ ما يستحق ملفاً مستقلاً هو سلسلة الاحتياط لا كل مزوّد.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">—</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/engines</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ChatGPT وأسطح Google. كل محرّك = محلّل خالص مُصدَّر ومُختبَر + غلاف شبكة رقيق، فتغيّر شكل ردّ لا يُسقط الفحص.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">—</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/limits</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الكاش وحدّ الزائر وسقف الميزانية. القاعدة 04 تحتاج مكاناً واحداً يُختبَر، لا شرطاً متناثراً في المسارات.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>apps/worker/src/pipeline.ts</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>packages/pipeline</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">وضعُه في حزمة يجعله قابلاً للاختبار بلا خادم، ويجعل نقلَه إلى العامل لاحقاً تغييرَ مُستدعٍ لا إعادةَ كتابة.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>apps/worker/</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><b>غير مبني بعد</b></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">الفحص يجري حالياً داخل عملية الويب. يكفي للعرض ولا يكفي للحمل — مطلوب فوق عشر فحوصات متزامنة.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">قواعد الجاهزية</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><b>20</b> قاعدة فعّالة في <code>ACTIVE_RULES</code></td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">النطاق مقصود: قاعدة بلا إصلاح حقيقي تُنتج ضجيجاً في التقرير ولا تُنتج قيمة للتاجر.</td>
+        </tr>
+        <tr>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)"><code>perplexity</code> ضمن الخطة الكاملة</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">مذكور في <code>PLANS.full</code> بلا عميل</td>
+          <td style="padding:0.6rem 0.85rem;border-bottom:1px solid var(--rule-soft,#e2e0da)">ينتج تحذيراً لا فشلاً. مهمّة مفتوحة — انظر <code>docs/07-launch-path</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lede" style="margin-block-start:1.4rem">
+      نموذج تقرير مولّد من خطّ الأنابيب نفسه في
+      <code>docs/specimen/report.html</code>، ومصدره <code>docs/specimen/report.json</code>.
+      استعمله مرجعاً لشكل المخرَج بدل بناء بيانات وهمية.
+    </p>
+  </section>
+
+  <hr class="end">
+  <p class="colophon">WakeelCheck build spec · hand to the engineer as-is</p>
+
+</div>
+
+</body>
+</html>

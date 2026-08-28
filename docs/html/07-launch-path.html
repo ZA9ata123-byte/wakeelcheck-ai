@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>طريق إطلاق وكيل تشيك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --ground: #e9e8e4;
+    --sheet: #ffffff;
+    --sheet-2: #f4f3f0;
+    --rule: #d5d3cc;
+    --rule-soft: #e2e0da;
+
+    --ink: #171412;
+    --ink-2: #3b3733;
+    --muted: #6d6862;
+    --faint: #9a948c;
+
+    --rival: #d8452c;
+    --rival-mark: #fbe3dd;
+    --rival-deep: #a8321f;
+
+    --present: #1a6f52;
+    --present-mark: #dcefe6;
+
+    --caution: #9a6a10;
+    --caution-mark: #f7ecd6;
+
+    --lift: 0 1px 2px rgb(23 20 18 / 5%), 0 10px 28px -16px rgb(23 20 18 / 28%);
+
+    --face: 'Readex Pro', 'Segoe UI', Tahoma, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #12100f;
+      --sheet: #1b1917;
+      --sheet-2: #232120;
+      --rule: #35322f;
+      --rule-soft: #2a2825;
+      --ink: #f1efec;
+      --ink-2: #cfcbc6;
+      --muted: #9b958e;
+      --faint: #726c65;
+      --rival: #ff7259;
+      --rival-mark: #38190f;
+      --rival-deep: #ff9581;
+      --present: #4fbc91;
+      --present-mark: #10281f;
+      --caution: #d59f3c;
+      --caution-mark: #2e2312;
+      --lift: 0 1px 2px rgb(0 0 0 / 50%), 0 10px 28px -16px rgb(0 0 0 / 90%);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #12100f;
+    --sheet: #1b1917;
+    --sheet-2: #232120;
+    --rule: #35322f;
+    --rule-soft: #2a2825;
+    --ink: #f1efec;
+    --ink-2: #cfcbc6;
+    --muted: #9b958e;
+    --faint: #726c65;
+    --rival: #ff7259;
+    --rival-mark: #38190f;
+    --rival-deep: #ff9581;
+    --present: #4fbc91;
+    --present-mark: #10281f;
+    --caution: #d59f3c;
+    --caution-mark: #2e2312;
+    --lift: 0 1px 2px rgb(0 0 0 / 50%), 0 10px 28px -16px rgb(0 0 0 / 90%);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    direction: rtl;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--face);
+    font-weight: 300;
+    font-size: 15.5px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { margin: 0; line-height: 1.22; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+  p { margin: 0; }
+  a { color: var(--ink); }
+
+  .lt { font-family: var(--mono); direction: ltr; unicode-bidi: isolate; }
+
+  .page {
+    max-width: 60rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.1rem, 4vw, 2.75rem);
+    padding-block: clamp(2.25rem, 6vw, 4.5rem) 4rem;
+  }
+
+  /* ── الترويسة ───────────────────────────────────────── */
+
+  .head { padding-block-end: 2.25rem; border-block-end: 1px solid var(--rule); }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    color: var(--faint);
+    margin-block-end: 1.75rem;
+  }
+
+  .head h1 {
+    font-size: clamp(1.9rem, 4.6vw, 2.9rem);
+    font-weight: 200;
+    letter-spacing: -0.035em;
+    max-width: 20ch;
+    margin-block-end: 1rem;
+  }
+
+  .head h1 em { font-style: normal; font-weight: 500; }
+
+  .head .lede { color: var(--ink-2); max-width: 52ch; }
+
+  /* ── لوحة الأرقام ───────────────────────────────────── */
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-block-start: 2rem;
+  }
+
+  .tile { background: var(--sheet); padding: 0.95rem 1.05rem 1.1rem; display: flex; flex-direction: column; gap: 0.1rem; }
+  .tile .k { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--faint); text-transform: uppercase; }
+  .tile .v { font-family: var(--mono); font-size: 1.55rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.35; }
+  .tile .n { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+  .tile[data-tone='good'] .v { color: var(--present); }
+  .tile[data-tone='bad'] .v { color: var(--rival); }
+  .tile[data-tone='warn'] .v { color: var(--caution); }
+
+  /* ── الأقسام ────────────────────────────────────────── */
+
+  section { padding-block: clamp(2.25rem, 5vw, 3.5rem); border-block-end: 1px solid var(--rule); }
+  section:last-of-type { border-block-end: none; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    color: var(--faint);
+    text-transform: uppercase;
+    margin-block-end: 0.85rem;
+  }
+
+  section > h2 { font-size: clamp(1.35rem, 3vw, 1.8rem); margin-block-end: 0.75rem; }
+  section > .lede { color: var(--ink-2); max-width: 56ch; margin-block-end: 1.75rem; }
+
+  /* ── الجداول ────────────────────────────────────────── */
+
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; min-width: 34rem; }
+
+  th {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 500;
+    padding: 0.7rem 0.95rem;
+    background: var(--sheet-2);
+    border-block-end: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  td { padding: 0.7rem 0.95rem; border-block-end: 1px solid var(--rule-soft); vertical-align: top; color: var(--ink-2); }
+  tr:last-child td { border-block-end: none; }
+
+  td.name { color: var(--ink); font-weight: 500; white-space: nowrap; }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: left; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+  td.path { font-family: var(--mono); font-size: 0.76rem; direction: ltr; unicode-bidi: isolate; color: var(--muted); }
+
+  /* ── شارات الحالة ───────────────────────────────────── */
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 0.18rem 0.55rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .chip[data-s='done']    { background: var(--present-mark); color: var(--present); }
+  .chip[data-s='partial'] { background: var(--caution-mark); color: var(--caution); }
+  .chip[data-s='none']    { background: var(--rival-mark); color: var(--rival-deep); }
+
+  /* ── التحذير ────────────────────────────────────────── */
+
+  .alarm {
+    border: 1px solid var(--rival);
+    border-inline-start-width: 4px;
+    border-radius: 4px;
+    background: var(--sheet);
+    padding: 1.25rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    box-shadow: var(--lift);
+  }
+
+  .alarm .t {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    color: var(--rival);
+    text-transform: uppercase;
+  }
+
+  .alarm h3 { font-size: 1.15rem; }
+  .alarm p { color: var(--ink-2); font-size: 0.92rem; }
+
+  .calc {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    direction: ltr;
+    unicode-bidi: isolate;
+    background: var(--sheet-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.85rem 1rem;
+    line-height: 1.9;
+    color: var(--ink-2);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ── المهام ─────────────────────────────────────────── */
+
+  .tasks { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+
+  .task { background: var(--sheet); padding: 1.05rem 1.2rem 1.2rem; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); gap: 1rem; }
+
+  .task .id {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--faint);
+    padding-block-start: 0.15rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .task .b { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+
+  .task .hd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; }
+  .task .hd h3 { font-size: 1rem; font-weight: 500; }
+
+  .task .est {
+    margin-inline-start: auto;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .task .d { font-size: 0.88rem; color: var(--ink-2); }
+
+  .task .files { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+  .task .files code {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    direction: ltr;
+    unicode-bidi: isolate;
+    background: var(--sheet-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.1rem 0.42rem;
+    color: var(--muted);
+  }
+
+  .task .ok {
+    font-size: 0.82rem;
+    color: var(--present);
+    border-inline-start: 2px solid var(--present);
+    padding-inline-start: 0.7rem;
+    line-height: 1.65;
+  }
+
+  .task .ok b { font-weight: 500; }
+
+  /* ── الجدول الزمني ──────────────────────────────────── */
+
+  .days { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+
+  .day { background: var(--sheet); padding: 1.1rem 1.15rem 1.35rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .day .n { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--faint); }
+  .day h3 { font-size: 1rem; font-weight: 500; }
+  .day ul { margin: 0; padding-inline-start: 1.05rem; font-size: 0.85rem; color: var(--ink-2); line-height: 1.85; }
+  .day li::marker { color: var(--faint); }
+
+  /* ── قائمة نهائية ───────────────────────────────────── */
+
+  .gate { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .gate .g { background: var(--sheet); padding: 0.85rem 1.15rem; display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0.8rem; align-items: start; font-size: 0.9rem; }
+  .gate .g .box { font-family: var(--mono); color: var(--faint); line-height: 1.7; }
+  .gate .g b { font-weight: 500; color: var(--ink); }
+
+  .foot {
+    margin-block-start: 3rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1.4rem;
+  }
+
+  @media print {
+    section, .head { break-inside: auto; }
+    .alarm, .task, .day, .tile { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header class="head">
+  <div class="kicker">وكيل تشيك · تقرير الحالة وطريق الإطلاق · 28 أغسطس 2026</div>
+
+  <h1>المنتج <em>خدّام</em>. اللي باقي هو التوصيل.</h1>
+
+  <p class="lede">
+    عشر حزم وتطبيق ويب، 202 اختبار، صفر خطأ أنواع، وبناء إنتاج ناجح — كلو تبنى
+    بلا ولا مفتاح API. هاد التقرير كايقول بالضبط شنو كاين، شنو ماكاينش، وشنو
+    خاصنا نديرو هاد اليومين باش نطلقو.
+  </p>
+
+  <div class="tiles">
+    <div class="tile" data-tone="good">
+      <span class="k">اختبارات</span>
+      <span class="v">201</span>
+      <span class="n">من 202 · واحد متخطّى · صفر فاشل</span>
+    </div>
+    <div class="tile" data-tone="good">
+      <span class="k">أخطاء الأنواع</span>
+      <span class="v">0</span>
+      <span class="n">strict · بلا any</span>
+    </div>
+    <div class="tile">
+      <span class="k">حزم</span>
+      <span class="v">10</span>
+      <span class="n">+ تطبيق Next.js</span>
+    </div>
+    <div class="tile">
+      <span class="k">أسطر مصدر</span>
+      <span class="v">5737</span>
+      <span class="n">+ 2151 سطر اختبار</span>
+    </div>
+    <div class="tile" data-tone="bad">
+      <span class="k">حاجز الإطلاق</span>
+      <span class="v">3</span>
+      <span class="n">كلها فالنشر ماشي فالكود</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 1 · ما أُنجز ═══════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">01 · ما أُنجز</div>
+  <h2>الحزم — وكل وحدة مربوطة باختبارات</h2>
+  <p class="lede">
+    القرار المعماري الحاكم: ولا حزمة كتعرف على HTTP. كتاخد بيانات وكترجّع بيانات،
+    وكل ما كايلامس العالم الخارجي (شبكة، ساعة، مولّد معرّفات) كايتحقن من برّا.
+    لهذا الفحص كامل كايتّختبر بلا خادم ولا مفتاح ولا شبكة.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>الحزمة</th>
+          <th>المسؤولية</th>
+          <th>مصدر</th>
+          <th>اختبار</th>
+          <th>ناجح</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name lt">core</td>
+          <td>العقود المشتركة · طمس الأسرار · قراءة البيئة</td>
+          <td class="num">486</td>
+          <td class="num">101</td>
+          <td class="num">10</td>
+        </tr>
+        <tr>
+          <td class="name lt">fetcher</td>
+          <td>الجلب الآمن — حراس SSRF وسقف البايتات</td>
+          <td class="num">385</td>
+          <td class="num">187</td>
+          <td class="num">20</td>
+        </tr>
+        <tr>
+          <td class="name lt">readiness</td>
+          <td>20 قاعدة جاهزية · محلّل robots وفق RFC 9309</td>
+          <td class="num">847</td>
+          <td class="num">397</td>
+          <td class="num">34</td>
+        </tr>
+        <tr>
+          <td class="name lt">security</td>
+          <td>فحص سلبي: RDAP · TLS · DNS · أسرار مكشوفة</td>
+          <td class="num">610</td>
+          <td class="num">433</td>
+          <td class="num">44</td>
+        </tr>
+        <tr>
+          <td class="name lt">visibility</td>
+          <td>المرآة: التوصيف · الأسئلة · استخراج الذكر</td>
+          <td class="num">474</td>
+          <td class="num">216</td>
+          <td class="num">19</td>
+        </tr>
+        <tr>
+          <td class="name lt">llm</td>
+          <td>تجريد المزوّد: ox-alpha ← DeepSeek ← وهمي</td>
+          <td class="num">353</td>
+          <td class="num">149</td>
+          <td class="num">19</td>
+        </tr>
+        <tr>
+          <td class="name lt">engines</td>
+          <td>ChatGPT عبر OpenAI · أسطح Google عبر DataForSEO</td>
+          <td class="num">258</td>
+          <td class="num">156</td>
+          <td class="num">15</td>
+        </tr>
+        <tr>
+          <td class="name lt">limits</td>
+          <td>الكاش · حدّ الزائر · سقف الميزانية</td>
+          <td class="num">279</td>
+          <td class="num">247</td>
+          <td class="num">24</td>
+        </tr>
+        <tr>
+          <td class="name lt">pipeline</td>
+          <td>تنسيق الفحص — كل تبعية محقونة</td>
+          <td class="num">268</td>
+          <td class="num">265</td>
+          <td class="num">16</td>
+        </tr>
+        <tr>
+          <td class="name lt">db</td>
+          <td>مخطط Postgres — مكتوب، غير موصول</td>
+          <td class="num">140</td>
+          <td class="num">0</td>
+          <td class="num">—</td>
+        </tr>
+        <tr>
+          <td class="name lt">apps/web</td>
+          <td>Next.js 15 · عربي و<span class="lt">/en</span> · 4 مسارات API</td>
+          <td class="num">1637</td>
+          <td class="num">0</td>
+          <td class="num">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-block: 1.5rem 0.85rem">
+    وهاد الأخطاء الحقيقية اللي الاختبارات مسكاتها فالمحرّك القديم — كل وحدة كانت
+    كتعطي نتيجة غالطة لتاجر حقيقي:
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>الخطأ</th><th>الأثر على التاجر</th><th>الحالة</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">منطق robots مقلوب</td>
+          <td>متجر كايرحّب بـGPTBot كان كايرسب، ومتجر حاظر الكل كان كاينجح</td>
+          <td><span class="chip" data-s="done">مُصلَح</span></td>
+        </tr>
+        <tr>
+          <td class="name">اتساق الأسعار</td>
+          <td><span class="lt">null === null</span> خلّى متجر بلا أي سعر يجتاز الفحص</td>
+          <td><span class="chip" data-s="done">مُصلَح</span></td>
+        </tr>
+        <tr>
+          <td class="name">قواعد المنتج على الرئيسية</td>
+          <td>الرئيسية ماكتحملش Product Schema — كل متجر كان كايرسب</td>
+          <td><span class="chip" data-s="done">مُصلَح</span></td>
+        </tr>
+        <tr>
+          <td class="name">‏<span class="lt">\b</span> ماكايخدمش مع العربية</td>
+          <td>«دار» كانت كتطابق داخل «مدارس» وتنتج ذكراً وهمياً</td>
+          <td><span class="chip" data-s="done">مُصلَح</span></td>
+        </tr>
+        <tr>
+          <td class="name">‏<span class="lt">file:///etc/passwd</span></td>
+          <td>ثغرة قراءة ملفات الخادم عبر خانة النطاق</td>
+          <td><span class="chip" data-s="done">مُصلَح</span></td>
+        </tr>
+        <tr>
+          <td class="name">‏PageSpeed مخترَع</td>
+          <td>رقم محسوب بمعادلة ومنسوب إلى Google — القاعدة 06</td>
+          <td><span class="chip" data-s="done">محذوف</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 2 · ما لم يُنجز ════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">02 · ما لم يُنجز</div>
+  <h2>الناقص — وشنو كايحجز</h2>
+  <p class="lede">
+    ماشي كلشي خاصو يتّدار قبل الإطلاق. العمود الأخير كايقول واش هاد البند كايحجز
+    أول زائر، ولا كايتسنّى أول مشترك، ولا بعّاد.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>البند</th><th>الحالة</th><th>شنو كاين دابا</th><th>مطلوب متى</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">قاعدة البيانات</td>
+          <td><span class="chip" data-s="partial">مخطط فقط</span></td>
+          <td>النتائج ف<span class="lt">Map</span> فالذاكرة — كتضيع عند كل إعادة تشغيل</td>
+          <td>قبل أول زائر</td>
+        </tr>
+        <tr>
+          <td class="name">Redis مشترك</td>
+          <td><span class="chip" data-s="none">غير موصول</span></td>
+          <td>الحدّ والكاش لكل عملية على حدة</td>
+          <td><b>قبل تويتر</b></td>
+        </tr>
+        <tr>
+          <td class="name">Turnstile</td>
+          <td><span class="chip" data-s="partial">يُقرأ فقط</span></td>
+          <td>المتغيّر مقروء ف<span class="lt">core/env.ts</span> وماكايتّحققش</td>
+          <td><b>قبل تويتر</b></td>
+        </tr>
+        <tr>
+          <td class="name">محرّك Perplexity</td>
+          <td><span class="chip" data-s="none">غير مبني</span></td>
+          <td>مذكور ف<span class="lt">PLANS.full</span> وماعندوش عميل — كايرجع تحذيراً</td>
+          <td>مع أول مشترك</td>
+        </tr>
+        <tr>
+          <td class="name">عامل على Contabo</td>
+          <td><span class="chip" data-s="none">غير مبني</span></td>
+          <td>الفحص كايجري داخل دالة Vercel وكتنتهي مهلتها</td>
+          <td>فوق 10 فحوصات متزامنة</td>
+        </tr>
+        <tr>
+          <td class="name">الدفع</td>
+          <td><span class="chip" data-s="none">غير مبني</span></td>
+          <td>ولا سطر — تحويل بنكي يدوي حتى العميل العاشر</td>
+          <td>مع أول مشترك</td>
+        </tr>
+        <tr>
+          <td class="name">الفحص الأمني العميق</td>
+          <td><span class="chip" data-s="none">مؤجّل عمداً</span></td>
+          <td>كايحتاج <span class="lt">verified_at</span> — إثبات ملكية</td>
+          <td>ماشي دابا</td>
+        </tr>
+        <tr>
+          <td class="name">نظام الأفلييت</td>
+          <td><span class="chip" data-s="none">مخطط فقط</span></td>
+          <td>Lemon Squeezy المدمج · 30% متكررة 12 شهر</td>
+          <td>بعد أول 3 مشتركين</td>
+        </tr>
+        <tr>
+          <td class="name">Sentry</td>
+          <td><span class="chip" data-s="none">غير مبني</span></td>
+          <td>فحص كايفشل صامت على متجر عميل = اشتراك ملغى بلا سبب معروف</td>
+          <td>قبل أول مشترك</td>
+        </tr>
+        <tr>
+          <td class="name">المراقبة الأسبوعية</td>
+          <td><span class="chip" data-s="none">غير مبني</span></td>
+          <td>كتحتاج العامل والجدولة</td>
+          <td>ماشي دابا</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 3 · تحذير تويتر ════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">03 · قبل الترويج</div>
+  <h2>تويتر بلا Redis كايحرق الميزانية</h2>
+
+  <div class="alarm">
+    <span class="t">حاجز — القاعدة 04</span>
+    <h3>حدّ الزائر دابا ماشي حدّ</h3>
+
+    <p>
+      <span class="lt">apps/web/lib/scans.ts</span> كايستعمل <span class="lt">memoryStore()</span>،
+      يعني العدّاد كايعيش داخل العملية. وVercel كايشغّل عمليات متعددة متوازية —
+      فالحدّ كايتضرب فعدد العمليات. تغريدة كتمشي بعيد وهاد الحساب كايوقع:
+    </p>
+
+    <div class="calc">FREE_SCANS_PER_IP_PER_DAY = 3   (المقصود)
+Vercel instances                = 8   (تحت الحمل)
+──────────────────────────────────────────
+الحدّ الفعلي لكل IP             = 24 فحص/يوم
+
+فحص واحد = سؤالين × ChatGPT بالبحث = $0.0434
+1000 زائر × 24 فحص × $0.0434       = $1,041</div>
+
+    <p>
+      الرقم تقديري (عدد العمليات كايتبدّل مع الحمل)، ولكن الاتجاه مضمون: <b>بلا مخزن
+      مشترك، الحدّ اللي كتبناه ماكايحجزش والو</b>. وحلّها ماشي كبير — Upstash مجاني
+      للبداية، والواجهة <span class="lt">KeyValueStore</span> موجودة أصلاً فحزمة
+      <span class="lt">limits</span>، خاص غير تبديل التنفيذ.
+    </p>
+  </div>
+
+  <p class="lede" style="margin-block-start: 1.5rem">
+    نفس الشي على Turnstile: <span class="lt">TURNSTILE_SECRET</span> كايتقرا ف
+    <span class="lt">packages/core/src/env.ts</span> وماكايتّحققش فـ
+    <span class="lt">/api/scan</span>. رابط عام على تويتر بلا تحقّق = آليات كتفحص
+    بفلوسك.
+  </p>
+</section>
+
+<!-- ═══ 4 · الحواجز الثلاثة ════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">04 · حواجز الإطلاق</div>
+  <h2>ثلاثة أشياء كتحجز اليوم — كلها فالنشر</h2>
+  <p class="lede">
+    ماكاين حتى واحد فيهم فالكود. الكود خدّام ومختبَر — المشكل هو أن Vercel ماكايعرفش
+    عليه.
+  </p>
+
+  <div class="tasks">
+    <div class="task">
+      <span class="id">ح‑1</span>
+      <div class="b">
+        <div class="hd">
+          <h3>Vercel كاينشر المحرّك القديم المكسور</h3>
+          <span class="est">قرار المالك</span>
+        </div>
+        <p class="d">
+          فالجذر باقي <span class="lt">index.html</span> و<span class="lt">api/audit.js</span>
+          و<span class="lt">server.js</span>، و<span class="lt">vercel.json</span> فيه غير
+          <span class="lt">{"version": 2}</span>. Vercel كايشوف الجذر وكاينشر هاداك، ماشي
+          <span class="lt">apps/web</span>. وسطر 244 من <span class="lt">api/audit.js</span>
+          هو بالضبط منطق robots المقلوب اللي صلّحناه.
+        </p>
+        <div class="files">
+          <code>vercel.json</code><code>api/audit.js</code><code>index.html</code><code>server.js</code>
+        </div>
+        <p class="ok">
+          <b>الحل:</b> حيّد الموقع القديم من الجذر، وضبط Root Directory = <span class="lt">apps/web</span>
+          فإعدادات Vercel. البديل: نطاق فرعي <span class="lt">app.aitchek.online</span> للجديد
+          والقديم كايبقى حيّ مؤقتاً.
+        </p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">ح‑2</span>
+      <div class="b">
+        <div class="hd">
+          <h3>لوكفايلان متعارضان — البناء كايطيح</h3>
+          <span class="est">~10 دقائق</span>
+        </div>
+        <p class="d">
+          <span class="lt">package-lock.json</span> باقي كايعلن
+          <span class="lt">cheerio · express · cors · node-fetch</span>، و<span class="lt">package.json</span>
+          ماعادش كايعلنهم. <span class="lt">npm ci</span> كايطيح مباشرة، وحضور اللوكفايل كايخلي
+          Vercel يختار npm بدل pnpm — وpnpm هو الوحيد اللي كايفهم
+          <span class="lt">workspace:*</span>.
+        </p>
+        <div class="files"><code>package-lock.json</code><code>package.json</code></div>
+        <p class="ok"><b>الحل:</b> حيّد <span class="lt">package-lock.json</span>. الاعتماد على pnpm وحدو.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">ح‑3</span>
+      <div class="b">
+        <div class="hd">
+          <h3>المفاتيح غير مضبوطة فVercel</h3>
+          <span class="est">~15 دقيقة</span>
+        </div>
+        <p class="d">
+          بلا مفاتيح الموقع كايخدم فوضع تجريبي وكايصرّح بيه على الشاشة — مفيد للعرض،
+          ماصالحش للإطلاق. المطلوب للحدّ الأدنى: نموذج للعقل، ومحرّك للمرآة، وملح للتجزئة.
+        </p>
+        <div class="files">
+          <code>DEEPSEEK_API_KEY</code><code>OPENAI_API_KEY</code><code>OPENROUTER_API_KEY</code><code>IP_HASH_SALT</code>
+        </div>
+        <p class="ok">
+          <b>الحل:</b> Vercel ← Settings ← Environment Variables. ولّد الملح ب
+          <span class="lt">openssl rand -hex 32</span>. المفاتيح ماكتدخلش المستودع ولا محادثة.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · مهام المبرمج ═══════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">05 · للمبرمج</div>
+  <h2>المهام بالترتيب — كل وحدة بملفّها وشرط قبولها</h2>
+  <p class="lede">
+    الترتيب مقصود: كل مهمة كتفتح اللي بعدها. والتقديرات ديال الوقت تقريبية لمبرمج
+    عارف المستودع.
+  </p>
+
+  <div class="tasks">
+    <div class="task">
+      <span class="id">01</span>
+      <div class="b">
+        <div class="hd"><h3>تنظيف الجذر وضبط النشر</h3><span class="est">~1 ساعة</span></div>
+        <p class="d">
+          حيّد الموقع القديم واللوكفايل، وخلي <span class="lt">vercel.json</span> كايوجّه
+          لـ<span class="lt">apps/web</span> — ولا حيّدو خلاص واضبط Root Directory من الواجهة.
+        </p>
+        <div class="files"><code>vercel.json</code><code>api/</code><code>index.html</code><code>server.js</code><code>app.js</code><code>style.css</code><code>package-lock.json</code></div>
+        <p class="ok"><b>القبول:</b> دفعة للفرع كتولّد Preview Deployment كايعرض تطبيق Next.js، ماشي الصفحة القديمة.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">02</span>
+      <div class="b">
+        <div class="hd"><h3>Redis مشترك بدل الذاكرة</h3><span class="est">~3 ساعات</span></div>
+        <p class="d">
+          نفّذ <span class="lt">KeyValueStore</span> فوق Upstash. الواجهة موجودة وماكتتبدّلش —
+          التبديل كايكون فسطر واحد فـ<span class="lt">scans.ts</span>.
+        </p>
+        <div class="files"><code>packages/limits/src/redisStore.ts</code><code>apps/web/lib/scans.ts</code></div>
+        <p class="ok"><b>القبول:</b> نفس اختبارات <span class="lt">limits</span> كتنجح على التنفيذ الجديد، وحدّ الزائر كايحترم من عمليتين مختلفتين.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">03</span>
+      <div class="b">
+        <div class="hd"><h3>ربط Turnstile ب<span class="lt">/api/scan</span></h3><span class="est">~1.5 ساعة</span></div>
+        <p class="d">
+          تحقّق من الرمز قبل <span class="lt">admit()</span>. فشل التحقق كايرجع 403 بلا
+          ما يستهلك حصة ولا ميزانية.
+        </p>
+        <div class="files"><code>apps/web/app/api/scan/route.ts</code><code>apps/web/components/Scanner.tsx</code></div>
+        <p class="ok"><b>القبول:</b> طلب بلا رمز صالح كايترفض، والاختبار كايغطي الحالتين.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">04</span>
+      <div class="b">
+        <div class="hd"><h3>Postgres بدل خريطة الذاكرة</h3><span class="est">~4 ساعات</span></div>
+        <p class="d">
+          شغّل الترحيلات من <span class="lt">packages/db</span> واستبدل
+          <span class="lt">Map</span>. العقد ماكايتبدّلش: POST كاينشئ ويرجع فوراً، وGET كايسأل.
+        </p>
+        <div class="files"><code>packages/db/</code><code>apps/web/lib/scans.ts</code></div>
+        <p class="ok"><b>القبول:</b> فحص كايبقى موجود بعد إعادة تشغيل الخادم.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">05</span>
+      <div class="b">
+        <div class="hd"><h3>تثبيت أول نداء حقيقي</h3><span class="est">~2 ساعة</span></div>
+        <p class="d">
+          ثلاثة أشياء تكتبات من التوثيق وماتجرّباتش على ردّ حيّ: مسار DataForSEO لـAI Mode،
+          شكل ردّ AI Overviews، وواش أداة <span class="lt">web_search</span> مفعّلة فعلاً
+          مع نموذج OpenAI — إلا ماكانتش، الإجابة جاية من ذاكرة النموذج ماشي من الويب،
+          وهادشي كايخالف القاعدة 06.
+        </p>
+        <div class="files"><code>packages/engines/src/index.ts</code></div>
+        <p class="ok"><b>القبول:</b> ردّ حقيقي محفوظ كعيّنة اختبار لكل محرّك. المحرّك اللي ماخدمش كايتعطّل بدل ما يدّعي.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">06</span>
+      <div class="b">
+        <div class="hd"><h3>Sentry</h3><span class="est">~1 ساعة</span></div>
+        <p class="d">التقاط أخطاء الخادم والعميل. تنبّه: الطمس كايجي قبل الإرسال — القاعدة 01.</p>
+        <div class="files"><code>apps/web/</code><code>packages/core/src/redact.ts</code></div>
+        <p class="ok"><b>القبول:</b> فحص فاشل كايبان فSentry بالنطاق والخطوة، وبلا حتى قيمة سرّ.</p>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="id">07</span>
+      <div class="b">
+        <div class="hd"><h3>محرّك Perplexity</h3><span class="est">~2 ساعة</span></div>
+        <p class="d">
+          مذكور ف<span class="lt">PLANS.full</span> وماعندوش عميل. نفس النمط: محلّل خالص
+          مُصدَّر ومُختبَر، وغلاف شبكة رقيق، و<span class="lt">available: false</span> بلا مفتاح.
+        </p>
+        <div class="files"><code>packages/engines/src/index.ts</code><code>packages/engines/test/parse.test.ts</code></div>
+        <p class="ok"><b>القبول:</b> <span class="lt">buildEngines</span> كايرجّعو منين يكون المفتاح موجود فقط، والمحلّل عندو اختبار على ردّ حقيقي.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 6 · اليومين ════════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">06 · خارطة الطريق</div>
+  <h2>اليومين الجايين</h2>
+  <p class="lede">
+    مقسّمة على اللي كايدير كل واحد. المهام التقنية للمبرمج، والمفاتيح والمحادثات
+    ديالك نتا — ماشي حيت كنقسمو الخدمة، حيت المفاتيح ماخصهاش تمرّ من عندي.
+  </p>
+
+  <div class="days">
+    <div class="day">
+      <span class="n">اليوم 1 · صباحاً</span>
+      <h3>النشر</h3>
+      <ul>
+        <li>المبرمج: مهمة 01</li>
+        <li>نتا: شحن OpenAI $10 + DeepSeek $10</li>
+        <li>نتا: المفاتيح فVercel</li>
+        <li>نتا: ربط Vercel بالمستودع</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <span class="n">اليوم 1 · مساءً</span>
+      <h3>أول نداء حقيقي</h3>
+      <ul>
+        <li>المبرمج: مهمة 05</li>
+        <li>بجوج: فحص 3 متاجر وقراية التقارير</li>
+        <li>تعطيل أي محرّك ماثبتش</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <span class="n">اليوم 2 · صباحاً</span>
+      <h3>الحدود الحقيقية</h3>
+      <ul>
+        <li>المبرمج: مهام 02 و03</li>
+        <li>نتا: <span class="lt">MAX_MONTHLY_SPEND_USD</span> على رقم كتحتملو</li>
+        <li>نتا: فحص 20 متجر وقراية كل تقرير</li>
+      </ul>
+    </div>
+
+    <div class="day">
+      <span class="n">اليوم 2 · مساءً</span>
+      <h3>أول محادثة تاجر</h3>
+      <ul>
+        <li>واتساب مباشر — ماشي رابط عام</li>
+        <li>تقرير حقيقي ديال متجرو قبل ما تهضر</li>
+        <li>تويتر <b>مايتحلّش</b> حتى تكمل 02 و03</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7 · بوابة تويتر ════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">07 · بوابة الترويج</div>
+  <h2>قبل أول تغريدة</h2>
+  <p class="lede">
+    القناة المباشرة كتحوّل 3%، والقمع المجاني 0.5%. يعني تويتر ماشي أول قناة —
+    هو اللي كايجي بعد ما تعرف شنو الجملة اللي كتبيع. وهاد اللائحة كلها إلزامية
+    قبل أول رابط عام.
+  </p>
+
+  <div class="gate">
+    <div class="g"><span class="box">☐</span><span><b>Redis مشترك خدّام</b> — بلاه الحدّ ماشي حدّ (مهمة 02)</span></div>
+    <div class="g"><span class="box">☐</span><span><b>Turnstile مفعّل على <span class="lt">/api/scan</span></b> — بلاه الآليات كتفحص بفلوسك (مهمة 03)</span></div>
+    <div class="g"><span class="box">☐</span><span><b><span class="lt">MAX_MONTHLY_SPEND_USD</span></b> على رقم كتحتملو فعلاً، ماشي 300 الافتراضي</span></div>
+    <div class="g"><span class="box">☐</span><span><b>20 متجر مفحوص ومقروء سطر بسطر</b> — أي قاعدة كتغلط على متجر واحد كتغلط على مية</span></div>
+    <div class="g"><span class="box">☐</span><span><b>3 محادثات تاجر مباشرة على الأقل</b> — باش تعرف شنو الجملة اللي كتخلي واحد يجاوب</span></div>
+    <div class="g"><span class="box">☐</span><span><b>الكاش خدّام</b> — نفس النطاق مرتين ماخصوش يكلّف مرتين</span></div>
+  </div>
+</section>
+
+<!-- ═══ 8 · القواعد ════════════════════════════════════ -->
+
+<section>
+  <div class="eyebrow">08 · العقد</div>
+  <h2>ثمان قواعد ماكتتناقشش</h2>
+  <p class="lede">
+    مكتوبة كاملة ف<span class="lt">CLAUDE.md</span> وكل وحدة مربوطة باختبار. تغيير
+    أي وحدة قرار المالك، ماشي قرار اللي كايكتب الكود.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>#</th><th>القاعدة</th><th>علاش</th></tr></thead>
+      <tbody>
+        <tr><td class="num">01</td><td class="name">الطمس عند المصدر</td><td>مفاتيح دفع مئات المتاجر فجدول واحد هدف اختراق ماشي أصل</td></tr>
+        <tr><td class="num">02</td><td class="name">لا شبكة خارج <span class="lt">safeFetch</span></td><td>هو اللي كايمنع SSRF ويعيد التحقق عند كل إعادة توجيه</td></tr>
+        <tr><td class="num">03</td><td class="name">لا نداء مباشر لـox-alpha</td><td>معاينة مجانية لفترة محدودة — اختفاؤها خاصو يكون تغيير بيئة ماشي كود</td></tr>
+        <tr><td class="num">04</td><td class="name">الكاش والحدّ قبل أي ترويج</td><td>حملة وحدة بلا حدود كتحرق آلاف الريالات</td></tr>
+        <tr><td class="num">05</td><td class="name"><span class="lt">answerText</span> حرفي</td><td>هو الدليل، وتعديلو كايبطلو</td></tr>
+        <tr><td class="num">06</td><td class="name">لا رقم بلا مصدر</td><td>المحرّك القديم عرض PageSpeed محسوباً بمعادلة ونسبو لـGoogle</td></tr>
+        <tr><td class="num">07</td><td class="name">الفحص العميق خلف <span class="lt">verified_at</span></td><td>نظام الجرائم المعلوماتية ماكايستثنيش حسن النية</td></tr>
+        <tr><td class="num">08</td><td class="name"><span class="lt">strict: true</span> وبلا <span class="lt">any</span></td><td>أربعة من الأخطاء السبعة الأصلية كان المترجم غادي يرفضهم</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>المعايير · <span class="lt">CLAUDE.md</span></span>
+  <span>قائمة الإطلاق · <span class="lt">docs/05-launch.md</span></span>
+  <span>مواصفة البناء · <span class="lt">docs/04-build-spec</span></span>
+  <span>الاتجاه البصري · <span class="lt">docs/06-design-direction</span></span>
+</footer>
+
+</div>
+</body>
+</html>

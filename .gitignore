@@ -12,3 +12,6 @@ dist/
 *.tsbuildinfo
 .next/
 next-env.d.ts
+
+# ربط Vercel المحلي — خاص بالجهاز لا بالمستودع
+.vercel/

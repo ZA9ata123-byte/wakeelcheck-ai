@@ -13,6 +13,7 @@
 | 03 | **نظام العلامة البصري** — الهوية، الألوان، الخطوط، المكوّنات، الحركة، لائحة المحظورات | **المصمم** | [`03-visual-system.pdf`](03-visual-system.pdf) | [`html/`](html/03-visual-system.html) |
 | 04 | **مواصفة البناء** — شجرة الملفات، عقود TypeScript، مسؤولية كل حزمة، مخطط قاعدة البيانات، عقود API | **المبرمج** | [`04-build-spec.pdf`](04-build-spec.pdf) | [`html/`](html/04-build-spec.html) |
 | 05 | **النموذج التفاعلي** — تدفّق الصفحة بحالاته الأربع (تفاعلي، بلا PDF) | المصمم / المبرمج | — | [`html/`](html/05-landing-prototype.html) |
+| 06 | **الاتجاه البصري** — الفكرة الواحدة، الفرق عن مواقع الذكاء الاصطناعي، الرموز والمقاسات كما هي في الكود | **المصمم** | [`06-design-direction.pdf`](06-design-direction.pdf) | [`html/`](html/06-design-direction.html) |
 
 > النموذج رقم 05 تفاعلي: أدخل رابط متجر واضغط «شوف الجواب» لترى الفحص والنتيجة. تحويله إلى PDF يفقده معناه، لذا يبقى HTML فقط.
 
@@ -20,7 +21,7 @@
 
 ## القراءة الموصى بها حسب الدور
 
-- **مصمم** → 03، ثم 05 لرؤية التدفّق حياً
+- **مصمم** → 06 أولاً (الاتجاه والفرق)، ثم 03 للنظام الكامل، ثم 05 لرؤية التدفّق حياً
 - **مبرمج** → 04، ثم 01 لفهم سبب القرارات
 - **تسويق** → 02
 - **مستثمر / شريك** → 01 + 02
@@ -32,13 +33,13 @@
 ملفات PDF مُولّدة من مصادر HTML عبر Chromium بلا رأس أو تذييل، بمقاس A4.
 
 ```bash
-node scripts/build-docs.js
+node scripts/build-docs.cjs
 ```
 
 يتطلب Chromium. المسار الافتراضي `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`، ويمكن تجاوزه:
 
 ```bash
-CHROME_PATH=/usr/bin/chromium node scripts/build-docs.js
+CHROME_PATH=/usr/bin/chromium node scripts/build-docs.cjs
 ```
 
 عدّل ملفات `docs/html/*.html` ثم أعد التشغيل — يُعاد بناء ملفات PDF من نفس المصادر.

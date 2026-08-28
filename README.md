@@ -84,7 +84,8 @@ cd apps/web && pnpm dev   # http://localhost:3005
 |---|---|
 | [الخريطة التقنية](docs/01-technical-roadmap.pdf) | المعمار والقرارات |
 | [الدليل التجاري](docs/02-go-to-market.pdf) | الخدمات والأهداف والقنوات |
-| [نظام العلامة](docs/03-visual-system.pdf) | **المصمم** |
+| [الاتجاه البصري](docs/06-design-direction.pdf) | **المصمم** — ابدأ من هنا |
+| [نظام العلامة](docs/03-visual-system.pdf) | **المصمم** — النظام الكامل |
 | [مواصفة البناء](docs/04-build-spec.pdf) | **المبرمج** |
 | [قائمة الإطلاق](docs/05-launch.md) | ما تبقّى قبل أول زائر |
 

@@ -2,8 +2,8 @@
 /**
  * يبني ملفات PDF من مصادر HTML في docs/html عبر Chromium بلا رأس.
  *
- *   node scripts/build-docs.js
- *   CHROME_PATH=/usr/bin/chromium node scripts/build-docs.js
+ *   node scripts/build-docs.cjs
+ *   CHROME_PATH=/usr/bin/chromium node scripts/build-docs.cjs
  */
 
 const fs = require('fs');

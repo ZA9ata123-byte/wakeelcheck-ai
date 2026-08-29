@@ -369,6 +369,9 @@ html[lang='en'] .arrow-next {
 
 .hero h1 .title-line {
   display: block;
+  /* المصمم وضع nowrap؛ هنا balance بدله — يحفظ السطرين ولا يفيض
+     حين تطول النسخة أو تُترجَم. */
+  text-wrap: balance;
 }
 
 .hero h1 .title-line + .title-line {

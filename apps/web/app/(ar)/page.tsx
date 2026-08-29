@@ -1,5 +1,5 @@
-import Landing from '@/components/Landing';
+import Experience from '@/components/Experience';
 
 export default function Page() {
-  return <Landing locale="ar" />;
+  return <Experience locale="ar" />;
 }

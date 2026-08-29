@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# خطّاف بدء الجلسة: يحقن رسائل الجسر المفتوحة في سياق claude.
+#
+# يصمت حين لا شيء ينتظر — خطّاف يتكلّم في كل جلسة يصير ضجيجاً يُتجاهَل.
+
+set -uo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
+
+command -v jq >/dev/null 2>&1 || exit 0
+[ -x team/bin/bridge ] || exit 0
+
+n="$(team/bin/bridge inbox claude 2>/dev/null || echo 0)"
+[ "${n:-0}" -gt 0 ] 2>/dev/null || exit 0
+
+# يُزال تلوين ANSI — السياق نصّ لا طرفية
+body="$(team/bin/bridge read claude 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g')"
+board="$(sed -n '1,40p' team/BOARD.md 2>/dev/null)"
+
+jq -n --arg b "$body" --arg d "$board" --arg n "$n" '{
+  systemMessage: ("📬 الجسر: " + $n + " رسالة مفتوحة إلى claude"),
+  hookSpecificOutput: {
+    hookEventName: "SessionStart",
+    additionalContext: ("## 📬 رسائل الجسر المفتوحة إليك\n\n" + $b +
+      "\n\n## اللوحة\n\n" + $d +
+      "\n\n---\nأجب عليها أولاً. عند الانتهاء: `team/bin/bridge send claude <إلى> \"عنوان\"` ثم `team/bin/bridge close claude <ID>`. وإن احتجت قرار الرئيس: `team/bin/bridge ask claude \"سؤالك\"` ثم توقّف.")
+  }
+}'

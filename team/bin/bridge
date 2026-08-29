@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+# جسر وكيل تشيك — تنسيق بين الرئيس وclaude وcodex.
+#
+# القاعدة الوحيدة: اقرأ الكل، واكتب في صندوقك وحدك.
+# كاتب واحد لكل ملف = صفر تصادم، بلا أقفال ولا دمج يدوي.
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+TEAM="$ROOT/team"
+OUT="$TEAM/outbox"
+STATE="$TEAM/.state"
+MEMBERS=(raees claude codex)
+
+mkdir -p "$OUT" "$STATE"
+
+die() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
+ok()  { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+dim() { printf '\033[2m%s\033[0m\n' "$*"; }
+
+valid_member() {
+  local m
+  for m in "${MEMBERS[@]}"; do [ "$m" = "$1" ] && return 0; done
+  return 1
+}
+
+box() { echo "$OUT/$1.md"; }
+
+# المعرّف التالي: <عضو>-<تسلسل> — يُحسب من صندوق المرسل نفسه
+next_id() {
+  local who="$1" f n
+  f="$(box "$who")"
+  n=$(grep -coE "^## ${who^^}-[0-9]+" "$f" 2>/dev/null || true)
+  printf '%s-%03d' "${who^^}" "$(( ${n:-0} + 1 ))"
+}
+
+usage() {
+  cat <<'USAGE'
+جسر وكيل تشيك
+
+  bridge send <من> <إلى> <العنوان>   يفتح رسالة (يقرأ الجسد من stdin)
+  bridge read <من>                    يعرض الرسائل الموجّهة إليك وغير المغلقة
+  bridge inbox <من>                   عدّ الرسائل المفتوحة إليك (للتنبيه)
+  bridge close <من> <MESSAGE-ID>      يغلق رسالة في صندوقك
+  bridge board                        يعرض اللوحة
+  bridge ask <من> <السؤال>            يرفع الأمر للرئيس ويوقف الانتظار
+  bridge wake claude                  يوقظ claude بلا واجهة على الرسائل المفتوحة
+  bridge log [عدد]                    آخر الأحداث عبر الصناديق
+
+الأعضاء: raees · claude · codex
+القاعدة: اقرأ الكل، واكتب في صندوقك وحدك.
+USAGE
+}
+
+cmd_send() {
+  local from="${1:?من}" to="${2:?إلى}" subject="${3:?العنوان}"
+  valid_member "$from" || die "مرسل غير معروف: $from"
+  valid_member "$to"   || die "مستلم غير معروف: $to"
+  [ "$from" = "$to" ]  && die "لا تراسل نفسك"
+
+  local body id f
+  body="$(cat)"
+  [ -z "${body//[[:space:]]/}" ] && die "الجسد فارغ — الرسالة بلا محتوى لا تُرسل"
+
+  id="$(next_id "$from")"
+  f="$(box "$from")"
+
+  {
+    printf '\n## %s · %s · من %s إلى %s\n' "$id" "$(date +%F\ %H:%M)" "$from" "$to"
+    printf '**العنوان:** %s\n' "$subject"
+    printf '**الحالة:** مفتوح\n\n'
+    printf '%s\n' "$body"
+    printf '\n---\n'
+  } >> "$f"
+
+  chmod 600 "$f"
+  ok "$id → $to"
+  dim "  $f"
+}
+
+cmd_read() {
+  local me="${1:?من}"
+  valid_member "$me" || die "عضو غير معروف: $me"
+
+  local other f
+  for other in "${MEMBERS[@]}"; do
+    [ "$other" = "$me" ] && continue
+    f="$(box "$other")"
+    [ -f "$f" ] || continue
+    # يجمع كتلة كل رسالة، ثم يطبعها إن كانت إليّ وغير مغلقة
+    awk -v me="$me" '
+      function flush() {
+        if (n > 0 && mine && !closed) {
+          printf "\033[1m%s\033[0m\n", buf[1]
+          for (i = 2; i <= n; i++) print buf[i]
+          print ""
+        }
+        n = 0; mine = 0; closed = 0
+      }
+      /^## / { flush(); mine = ($0 ~ ("إلى " me "$")) }
+      /^---$/ { flush(); next }
+      /^\*\*الحالة:\*\*/ && $0 ~ /مغلق/ { closed = 1 }
+      { if ($0 ~ /^## / || n > 0) buf[++n] = $0 }
+      END { flush() }
+    ' "$f"
+  done
+
+  if [ "$(cmd_inbox "$me")" -eq 0 ]; then
+    dim "لا رسائل مفتوحة إلى $me."
+  fi
+}
+
+cmd_inbox() {
+  local me="${1:?من}" total=0 other f n
+  for other in "${MEMBERS[@]}"; do
+    [ "$other" = "$me" ] && continue
+    f="$(box "$other")"
+    [ -f "$f" ] || continue
+    n=$(awk -v me="$me" '
+      /^## / { hdr=$0; getline; getline st
+               if (hdr ~ ("إلى " me "$") && st !~ /مغلق/) c++ }
+      END { print c+0 }' "$f")
+    total=$(( total + n ))
+  done
+  echo "$total"
+}
+
+cmd_close() {
+  local me="${1:?من}" id="${2:?المعرّف}"
+  local f; f="$(box "$me")"
+  [ -f "$f" ] || die "لا صندوق لـ$me"
+  grep -q "^## $id " "$f" || die "$id ليس في صندوقك — تغلق رسائلك أنت فقط"
+  awk -v id="$id" '
+    $0 ~ ("^## " id " ") { hit=1 }
+    hit && /^\*\*الحالة:\*\*/ && !done { print "**الحالة:** مغلق"; done=1; next }
+    { print }
+  ' "$f" > "$f.tmp" && mv "$f.tmp" "$f" && chmod 600 "$f"
+  ok "$id مغلق"
+}
+
+cmd_board() {
+  [ -f "$TEAM/BOARD.md" ] && cat "$TEAM/BOARD.md" || die "لا لوحة"
+}
+
+cmd_ask() {
+  local from="${1:?من}"; shift
+  local q="$*"
+  [ -z "$q" ] && die "السؤال فارغ"
+  printf '%s\n' "$q" | cmd_send "$from" raees "🙋 يحتاج قرار الرئيس"
+  printf '\033[33m⏸  توقّف — القرار للرئيس.\033[0m\n'
+}
+
+cmd_wake() {
+  local who="${1:?من}"
+  [ "$who" = "claude" ] || die "الإيقاظ الآلي متاح لـclaude وحده (codex بلا CLI هنا)"
+  command -v claude >/dev/null || die "claude غير موجود في PATH"
+
+  local n; n=$(cmd_inbox claude)
+  if [ "$n" -eq 0 ]; then dim "لا رسائل مفتوحة إلى claude — لا إيقاظ."; return 0; fi
+
+  # المرسِل هو من يغلق رسالته، فرسالةٌ أُجيبت تبقى مفتوحة حتى يقتنع.
+  # بلا هذا يعاود الإيقاظُ على نفس الرسالة إلى الأبد.
+  local sig seen="$STATE/woke.sig"
+  # يُزال تلوين ANSI أوّلاً — بدونه لا يبدأ السطر بـ"## " فلا يطابق.
+  # و`|| true` لأن pipefail يُسقط السكربت حين لا يجد grep شيئاً.
+  sig="$( { cmd_read claude 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' \
+              | grep -oE '^## [A-Z]+-[0-9]+' || true; } | sort | sha256sum | cut -c1-16)"
+  if [ -f "$seen" ] && [ "$(cat "$seen")" = "$sig" ]; then
+    dim "نفس الرسائل التي أُوقظ عليها آخر مرة — لا إيقاظ. (احذف $seen لفرضه)"
+    return 0
+  fi
+
+  WAKE_LOCK="$STATE/wake.lock"
+  # قفل عمرُه فوق 30 دقيقة أثرُ انهيار لا إيقاظ حيّ — يُسترَدّ،
+  # وإلّا أقفل انهيارٌ واحدٌ الجسرَ إلى الأبد.
+  if [ -d "$WAKE_LOCK" ] && [ -z "$(find "$WAKE_LOCK" -maxdepth 0 -mmin -30 2>/dev/null)" ]; then
+    rmdir "$WAKE_LOCK" 2>/dev/null || true
+    dim "استُرِدّ قفل قديم."
+  fi
+  if ! mkdir "$WAKE_LOCK" 2>/dev/null; then
+    die "إيقاظ آخر يعمل الآن — لا توازي"
+  fi
+  # المصيدة تُقيَّم عند الخروج، فالمتغيّر عامّ لا محلّي — وإلّا خرج بـunbound
+  # INT وTERM أيضاً: مقاطعةٌ بـCtrl-C أو timeout لا تُطلق EXIT وحدها،
+  # فيبقى القفل ويُعطَّل الإيقاظ حتى يُستردّ بعد ثلاثين دقيقة.
+  trap 'rmdir "${WAKE_LOCK:-}" 2>/dev/null || true' EXIT INT TERM
+
+  ok "إيقاظ claude على $n رسالة…"
+  printf '%s' "$sig" > "$seen"
+  cd "$ROOT"
+  claude -p "اقرأ الجسر: شغّل \`team/bin/bridge read claude\` ثم نفّذ ما طُلب منك.
+حين تنتهي: اكتب النتيجة بـ\`bridge send claude <إلى> <عنوان>\` وأغلق الرسالة بـ\`bridge close\`.
+إن احتجت قرار الرئيس: \`bridge ask claude \"<سؤالك>\"\` ثم توقّف." \
+    --permission-mode acceptEdits \
+    --allowedTools "Bash(team/bin/bridge:*)" \
+    --max-budget-usd "${BRIDGE_WAKE_BUDGET:-2}"
+}
+
+cmd_log() {
+  local n="${1:-15}" f
+  for f in "$OUT"/*.md; do
+    [ -f "$f" ] || continue
+    grep -H "^## " "$f" 2>/dev/null || true
+  done \
+    | sed "s|^$OUT/||; s|\.md:## |\t|; s| · |\t|g" \
+    | sort -t$'\t' -k3 \
+    | awk -F'\t' '{ printf "%s  %-11s %s\n", $3, $2, $4 }' \
+    | tail -"$n"
+}
+
+case "${1:-}" in
+  send)  shift; cmd_send  "$@" ;;
+  read)  shift; cmd_read  "$@" ;;
+  inbox) shift; cmd_inbox "$@" ;;
+  close) shift; cmd_close "$@" ;;
+  board) shift; cmd_board "$@" ;;
+  ask)   shift; cmd_ask   "$@" ;;
+  wake)  shift; cmd_wake  "$@" ;;
+  log)   shift; cmd_log   "$@" ;;
+  ""|-h|--help|help) usage ;;
+  *) die "أمر غير معروف: $1 — جرّب: bridge help" ;;
+esac

@@ -1,6 +1,6 @@
 # اللوحة
 
-**آخر تحديث:** 2026-08-29 · **يكتبها:** claude
+**آخر تحديث:** 2026-08-29 18:12 · **يكتبها:** claude
 التصحيح يُطلب في صندوقك، ولا يُكتب هنا مباشرة.
 
 ---
@@ -24,8 +24,8 @@
 
 | | المهمة | لمن | الحالة |
 |---|---|---|---|
-| [#3](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/3) | Redis مشترك — الحدّ الحالي ليس حدّاً | codex | 🔵 مفتوح |
-| [#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) | Turnstile على `/api/scan` | codex | 🔵 مفتوح |
+| [#3](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/3) | Redis مشترك — الحدّ الحالي ليس حدّاً | codex | 🔵 **قيد العمل** |
+| [#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) | Turnstile على `/api/scan` | codex | ⏳ بعد #3 |
 | — | المفاتيح في Vercel | **الرئيس** | 🔵 مفتوح |
 | — | فحص 20 متجر وقراءة التقارير | **الرئيس** + claude | ⏳ ينتظر المفاتيح |
 

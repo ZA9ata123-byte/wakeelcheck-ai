@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>المرآة تتعدّد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--ground:#e9e8e4;--sheet:#fff;--sheet-2:#f4f3f0;--rule:#d5d3cc;--rule-soft:#e2e0da;--ink:#171412;--ink-2:#3b3733;--muted:#6d6862;--faint:#9a948c;--rival:#d8452c;--rival-mark:#fbe3dd;--rival-deep:#a8321f;--present:#1a6f52;--present-mark:#dcefe6;--caution:#9a6a10;--caution-mark:#f7ecd6;--lift:0 1px 2px rgb(23 20 18/5%),0 10px 28px -16px rgb(23 20 18/28%);--face:'Readex Pro','Segoe UI',Tahoma,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme='light']){--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}}
+:root[data-theme='dark']{--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;direction:rtl;background:var(--ground);color:var(--ink);font-family:var(--face);font-weight:300;font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;line-height:1.2;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+.lt{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.page{max-width:64rem;margin-inline:auto;padding-inline:clamp(1.1rem,4vw,2.75rem);padding-block:clamp(2.25rem,6vw,4.5rem) 4rem}
+
+.head{padding-block-end:2rem;border-block-end:1px solid var(--rule)}
+.kicker{font-family:var(--mono);font-size:.68rem;letter-spacing:.26em;color:var(--faint);margin-block-end:1.75rem}
+.head h1{font-size:clamp(1.9rem,4.8vw,3.1rem);font-weight:200;letter-spacing:-.035em;max-width:18ch;margin-block-end:1rem}
+.head h1 em{font-style:normal;font-weight:500}
+.head .lede{color:var(--ink-2);max-width:54ch}
+
+section{padding-block:clamp(2.25rem,5vw,3.5rem);border-block-end:1px solid var(--rule)}
+section:last-of-type{border-block-end:none}
+.eyebrow{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-block-end:.85rem}
+section>h2{font-size:clamp(1.35rem,3vw,1.9rem);margin-block-end:.75rem}
+section>.lede{color:var(--ink-2);max-width:58ch;margin-block-end:1.75rem}
+
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:34rem}
+th{text-align:right;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:.65rem .8rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);white-space:nowrap}
+td{padding:.6rem .8rem;border-block-end:1px solid var(--rule-soft);vertical-align:middle;color:var(--ink-2)}
+tr:last-child td{border-block-end:none}
+td.name{color:var(--ink);font-weight:500;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:left;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+
+/* المصفوفة — قلب الوثيقة */
+.matrix{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);box-shadow:var(--lift)}
+.matrix table{min-width:44rem;font-size:.82rem}
+.matrix th{text-align:center;font-size:.55rem;letter-spacing:.06em;padding:.7rem .5rem}
+.matrix th:first-child{text-align:right;min-width:9rem}
+.matrix td{text-align:center;padding:.62rem .5rem}
+.matrix td:first-child{text-align:right;font-weight:500;color:var(--ink);white-space:nowrap}
+.matrix tr[data-you='yes']{background:var(--rival-mark)}
+.matrix tr[data-you='yes'] td:first-child{color:var(--rival-deep);font-weight:600}
+.mk{display:inline-grid;place-items:center;width:1.35rem;height:1.35rem;border-radius:50%;font-family:var(--mono);font-size:.68rem;font-weight:700}
+.mk[data-v='1']{background:var(--present-mark);color:var(--present)}
+.mk[data-v='0']{background:var(--sheet-2);color:var(--faint)}
+tr[data-you='yes'] .mk[data-v='0']{background:var(--sheet);color:var(--rival)}
+.tot{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+tr[data-you='yes'] .tot{color:var(--rival-deep)}
+.matrix tfoot td{background:var(--sheet-2);font-size:.7rem;color:var(--muted);text-align:right;border-block-start:1px solid var(--rule)}
+
+.chip{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.09em;padding:.16rem .5rem;border-radius:3px;font-weight:500;white-space:nowrap}
+.chip[data-s='have']{background:var(--present-mark);color:var(--present)}
+.chip[data-s='new']{background:var(--caution-mark);color:var(--caution)}
+.chip[data-s='no']{background:var(--rival-mark);color:var(--rival-deep)}
+
+.phases{display:flex;flex-direction:column;gap:1.1rem}
+.phase{background:var(--sheet);border:1px solid var(--rule);border-inline-start-width:4px;border-radius:4px;box-shadow:var(--lift);overflow:hidden}
+.phase[data-p='1']{border-inline-start-color:var(--present)}
+.phase[data-p='2']{border-inline-start-color:var(--rival)}
+.phase[data-p='3']{border-inline-start-color:var(--caution)}
+.phase[data-p='4']{border-inline-start-color:var(--muted)}
+.p-hd{padding:1.05rem 1.25rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.7rem;border-block-end:1px solid var(--rule)}
+.p-hd .n{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;color:var(--faint)}
+.p-hd h3{font-size:1.1rem;font-weight:500}
+.p-hd .cost{margin-inline-start:auto;font-family:var(--mono);font-size:.66rem;color:var(--ink);background:var(--sheet-2);border:1px solid var(--rule);border-radius:3px;padding:.16rem .55rem;white-space:nowrap}
+.p-body{padding:1rem 1.25rem 1.2rem;display:flex;flex-direction:column;gap:.8rem}
+.p-body .what{font-size:.93rem;color:var(--ink-2)}
+.p-body ul{margin:0;padding-inline-start:1.05rem;font-size:.88rem;color:var(--ink-2);line-height:1.8}
+.p-body li::marker{color:var(--faint)}
+.p-body .why{font-size:.84rem;color:var(--muted);border-inline-start:2px solid var(--rule);padding-inline-start:.75rem;line-height:1.7}
+.p-body .why b{color:var(--ink-2);font-weight:500}
+
+.foot{margin-block-start:2.75rem;padding-block-start:1.5rem;border-block-start:1px solid var(--rule);font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--faint);display:flex;flex-wrap:wrap;gap:.45rem 1.4rem}
+@media print{.phase,.matrix{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="head">
+  <div class="kicker">وكيل تشيك · خارطة بناء الأداة · 2 سبتمبر 2026</div>
+  <h1>‏ChatGPT هو الباب. <em>المصفوفة هي المنتج.</em></h1>
+  <p class="lede">
+    يأتي التاجر لأنه سمع بـChatGPT. ويبقى لأنه رأى ما لم يره في أي أداة أخرى:
+    أين يظهر وأين يغيب عبر سبعة أسطح، ومن يسبقه في كلٍّ منها. إجابةٌ واحدة
+    لقطةُ شاشة؛ سبعُ إجاباتٍ في شبكةٍ واحدة استخبارات.
+  </p>
+</header>
+
+<!-- ═══ المصفوفة ═══ -->
+<section>
+  <div class="eyebrow">اللحظة الثانية</div>
+  <h2>ما يراه التاجر بعد أن يُبهره الجواب الأول</h2>
+  <p class="lede">
+    هذه هي الشاشة التي لا يعطيها أحد. نظرةٌ واحدة تكفي ليعرف موقعه — لا رقمٌ
+    مجرّد، بل خريطةُ حضورٍ مقابل من يزاحمه.
+  </p>
+
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>ChatGPT</th>
+          <th>AI Overviews</th>
+          <th>AI Mode</th>
+          <th>Perplexity</th>
+          <th>Copilot</th>
+          <th>Claude</th>
+          <th>Gemini</th>
+          <th>الحضور</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-you="yes">
+          <td>متجرك</td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td class="tot">1 / 7</td>
+        </tr>
+        <tr>
+          <td>بيت الأناقة</td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td class="tot">7 / 7</td>
+        </tr>
+        <tr>
+          <td>لمسة رقي</td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td class="tot">5 / 7</td>
+        </tr>
+        <tr>
+          <td>أناقتي</td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="1">✓</span></td>
+          <td><span class="mk" data-v="0">✕</span></td>
+          <td class="tot">4 / 7</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="9">مثالٌ توضيحيّ للشكل — الأرقام في المنتج تأتي من فحصٍ فعليّ، ولا يُعلَّم اسمٌ لم يَرِد حرفياً في نصّ إجابة.</td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-block-start:1.5rem;margin-block-end:0">
+    <b>ولماذا هذه بالذات؟</b> لأن التاجر لا يسأل «هل أنا موجود؟» بل «أين أنا
+    منهم؟». والصفّ الأحمر يجيب في ثانية. ثم يقرأ الجدول عمودياً فيرى أن
+    <span class="lt">Perplexity</span> هو مدخله الوحيد — وتلك خطّةُ عملٍ لا تشخيص.
+  </p>
+</section>
+
+<!-- ═══ التغطية ═══ -->
+<section>
+  <div class="eyebrow">القياس</div>
+  <h2>سبعة أسطح — ولماذا هذه السبعة</h2>
+  <p class="lede">
+    الترتيب بحصّة إحالات الذكاء الاصطناعي، لا بالشهرة. وكلُّ سطحٍ مذكورٌ
+    باسمه في التقرير: لا نجمع سبعة في رقمٍ واحد ونسمّيه «الذكاء الاصطناعي».
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>السطح</th><th>حصّة الإحالات</th><th>‏B2B</th><th>الطريق</th><th>الحالة</th></tr></thead>
+      <tbody>
+        <tr><td class="name">ChatGPT</td><td class="num">74.8%</td><td class="num">62.6%</td><td>واجهة OpenAI + بحث</td><td><span class="chip" data-s="have">مبنيّ</span></td></tr>
+        <tr><td class="name">Google AI Overviews</td><td class="num">—</td><td class="num">—</td><td>DataForSEO</td><td><span class="chip" data-s="have">مبنيّ</span></td></tr>
+        <tr><td class="name">Google AI Mode</td><td class="num">—</td><td class="num">—</td><td>DataForSEO</td><td><span class="chip" data-s="have">مبنيّ</span></td></tr>
+        <tr><td class="name">Perplexity</td><td class="num">7.2%</td><td class="num">7.3%</td><td>واجهة مباشرة</td><td><span class="chip" data-s="have">مبنيّ</span></td></tr>
+        <tr><td class="name">Copilot</td><td class="num">3.5%</td><td class="num">~4%</td><td>DataForSEO — نفس الحساب</td><td><span class="chip" data-s="new">المرحلة 1</span></td></tr>
+        <tr><td class="name">Claude</td><td class="num">2.6%</td><td class="num"><b>18.5%</b></td><td>واجهة Anthropic + بحث</td><td><span class="chip" data-s="new">المرحلة 1</span></td></tr>
+        <tr><td class="name">تطبيق Gemini</td><td class="num">11.6%</td><td class="num">10.6%</td><td>Gemini API بتأريض بحث</td><td><span class="chip" data-s="new">المرحلة 1 · بتحفّظ</span></td></tr>
+        <tr><td class="name">Gemini داخل Chrome</td><td class="num">—</td><td class="num">—</td><td>مغلق بلا واجهة عامة</td><td><span class="chip" data-s="no">لا يُقاس</span></td></tr>
+        <tr><td class="name">Apple Intelligence</td><td class="num">—</td><td class="num">—</td><td>مغلق</td><td><span class="chip" data-s="no">لا يُقاس</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-block-start:1.5rem;margin-block-end:0">
+    <b>‏Claude ليس هامشياً عندنا.</b> حصّته العامة 2.6% وحصّته في إحالات B2B
+    <b>18.5%</b> — وعملاؤنا تجارٌ لا مستهلكون. من رتّب المحرّكات بالشهرة وحدها
+    أسقط ثاني أهمّ سطحٍ لسوقه.
+    <br><br>
+    <b>وتحفّظ على Gemini:</b> واجهةُ Gemini بتأريض بحث Google تُعطي جواب Gemini،
+    ولم نتحقّق أنه نفس ما يراه مستخدم التطبيق. لا يُوسَم «Gemini» في التقرير
+    حتى يُقاس على ردٍّ حيّ ويُثبَّت — القاعدة 06.
+  </p>
+</section>
+
+<!-- ═══ المراحل ═══ -->
+<section>
+  <div class="eyebrow">التنفيذ</div>
+  <h2>أربع مراحل — بالترتيب الذي يبني القيمة أسرع</h2>
+  <p class="lede">
+    كلُّ مرحلة تُشحن وحدها وتُري التاجر شيئاً جديداً. ولا واحدة منها تنتظر
+    مفتاحاً لتُكتَب — المحلّلات نقيّة تُختبَر بعيّناتٍ ثابتة، وتُضاء حين يصل المفتاح.
+  </p>
+
+  <div class="phases">
+    <article class="phase" data-p="1">
+      <div class="p-hd"><span class="n">المرحلة 1</span><h3>المرآة تتعدّد</h3><span class="cost">~6 ساعات</span></div>
+      <div class="p-body">
+        <p class="what">ثلاثة محرّكات جديدة: Copilot ثم Claude ثم Gemini — من أرخصها وأسرعها إلى أكثرها تحفّظاً.</p>
+        <ul>
+          <li><b>Copilot</b> — <span class="lt">serp/bing/organic/live/advanced</span>، نفس حساب DataForSEO ونفس نمط المحلّل. ‏$0.002 للسؤال.</li>
+          <li><b>Claude</b> — واجهة Anthropic بالبحث الحيّ. ثاني أهمّ سطحٍ في B2B.</li>
+          <li><b>Gemini</b> — يُبنى ويُترك خلف علمٍ حتى يُثبَّت على ردٍّ حيّ.</li>
+        </ul>
+        <p class="why"><b>لماذا أولاً:</b> المصفوفة بعمودين لا تُبهر أحداً. سبعةُ أعمدة هي التي تجعل الشاشة الثانية مختلفة عن كل أداةٍ رآها.</p>
+      </div>
+    </article>
+
+    <article class="phase" data-p="2">
+      <div class="p-hd"><span class="n">المرحلة 2</span><h3>المصفوفة</h3><span class="cost">~5 ساعات · بلا مفاتيح</span></div>
+      <div class="p-body">
+        <p class="what">الشبكة أعلى هذه الوثيقة: صفٌّ لمتجرك وصفٌّ لكل منافس، وعمودٌ لكل سطح.</p>
+        <ul>
+          <li><span class="lt">summarizeByEngine()</span> في <span class="lt">packages/visibility</span> — تجميعٌ حسب المحرّك</li>
+          <li>‏<span class="lt">ShareOfVoice</span> يحمل تفصيلاً لكل محرّك بدل رقمٍ واحد</li>
+          <li>لسانٌ رابع في الواجهة يعرض الشبكة</li>
+        </ul>
+        <p class="why"><b>وهذه أرخص مرحلة وأعلاها أثراً:</b> البيانات موجودة كلّها — كلُّ إجابةٍ تحمل محرّكها ومنافسيها منذ اليوم الأول. لا جمعَ بياناتٍ جديد، حسبةٌ وعرضٌ فقط.</p>
+      </div>
+    </article>
+
+    <article class="phase" data-p="3">
+      <div class="p-hd"><span class="n">المرحلة 3</span><h3>الخصم</h3><span class="cost">~4 ساعات</span></div>
+      <div class="p-body">
+        <p class="what">ملفٌّ لكل منافس: أين يظهر، وبأي سؤال، وما الذي يملكه ولا تملكه.</p>
+        <ul>
+          <li>نطاقه، وحضوره عبر الأسطح السبعة، والأسئلة التي يفوز بها</li>
+          <li>مقارنةُ جاهزيته بجاهزيتك على القواعد العشرين — <b>من مصادر عامة</b></li>
+          <li>«يظهر في ستّة وأنت في واحد، والفرق هذه القواعد الأربع»</li>
+        </ul>
+        <p class="why"><b>هنا يتحوّل التقرير إلى خطّة:</b> لم يعد «أنت غائب» بل «هذا ما يفعله من يسبقك، وهذه المسافة بينكما بالقواعد».</p>
+      </div>
+    </article>
+
+    <article class="phase" data-p="4">
+      <div class="p-hd"><span class="n">المرحلة 4</span><h3>التغيّر</h3><span class="cost">يحتاج #5 Postgres</span></div>
+      <div class="p-body">
+        <p class="what">المصفوفة نفسها، أسبوعاً بعد أسبوع. وهذا هو المُباع.</p>
+        <ul>
+          <li>لقطةٌ أسبوعية تُخزَّن، والفرق بينها وبين سابقتها</li>
+          <li>«دخلتَ Copilot» · «خرجتَ من AI Mode» · «منافسٌ جديد ظهر»</li>
+          <li>تنبيهٌ عند التغيّر لا تقريرٌ دوريّ يُهمَل</li>
+        </ul>
+        <p class="why"><b>الفحص يُري اللحظة، والمتابعة تُري الحركة.</b> ولا تُبنى قبل تخزينٍ يبقى — فهي تالية لـ#5 لا سابقةٌ له.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ═══ ما يجعلها قوية ═══ -->
+<section>
+  <div class="eyebrow">الفرق</div>
+  <h2>لماذا يصعب نسخ هذا</h2>
+  <p class="lede">
+    أدواتُ الجاهزية التقنية كثيرةٌ ومجانية. وما يلي ليس أصعب برمجةً — بل أصعبُ
+    التزاماً، لأن كلَّ بندٍ منه يمنعك من ادّعاءٍ مريح.
+  </p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>ما نفعله</th><th>ما يفعله غيرنا عادةً</th></tr></thead>
+      <tbody>
+        <tr><td class="name">سبعةُ أسطحٍ كلٌّ باسمه</td><td>سطحٌ واحد، أو «الذكاء الاصطناعي» بلا تسمية</td></tr>
+        <tr><td class="name">نصُّ الإجابة حرفياً</td><td>درجةٌ مجرّدة أو ملخّصٌ مُعاد صياغته</td></tr>
+        <tr><td class="name">اسمُ المنافس يُتحقَّق من وروده حرفياً</td><td>يُؤخذ ما يقوله النموذج بلا تحقّق</td></tr>
+        <tr><td class="name">فحصٌ أمنيٌّ سلبيٌّ مع الدليل مطموساً</td><td>لا يوجد</td></tr>
+        <tr><td class="name">‏«لا نقيس هذا» مكتوبةٌ في الموقع</td><td>ادّعاءُ تغطيةٍ شاملة</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-block-start:1.5rem;margin-block-end:0">
+    السطر الأخير هو أصعبها. الاعتراف بالحدّ يبني ثقةً أكثر ممّا يبنيه ادّعاءُ
+    الشمول — وهو أيضاً ما يجعل بقيّة الأرقام قابلةً للتصديق.
+  </p>
+</section>
+
+<footer class="foot">
+  <span>البوّابات والتواريخ · <span class="lt">docs/09-roadmap</span></span>
+  <span>الحالة والمهام · <span class="lt">docs/07-launch-path</span></span>
+  <span>سجلّ الأخطاء · <span class="lt">docs/LESSONS.md</span></span>
+  <span>اللوحة الحيّة · <span class="lt">team/BOARD.md</span></span>
+</footer>
+
+</div>
+</body>
+</html>

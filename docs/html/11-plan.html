@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>خطة وكيل تشيك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--ground:#e9e8e4;--sheet:#fff;--sheet-2:#f4f3f0;--rule:#d5d3cc;--rule-soft:#e2e0da;--ink:#171412;--ink-2:#3b3733;--muted:#6d6862;--faint:#9a948c;--rival:#d8452c;--rival-mark:#fbe3dd;--rival-deep:#a8321f;--present:#1a6f52;--present-mark:#dcefe6;--caution:#9a6a10;--caution-mark:#f7ecd6;--lift:0 1px 2px rgb(23 20 18/5%),0 10px 28px -16px rgb(23 20 18/28%);--face:'Readex Pro','Segoe UI',Tahoma,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme='light']){--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}}
+:root[data-theme='dark']{--ground:#12100f;--sheet:#1b1917;--sheet-2:#232120;--rule:#35322f;--rule-soft:#2a2825;--ink:#f1efec;--ink-2:#cfcbc6;--muted:#9b958e;--faint:#726c65;--rival:#ff7259;--rival-mark:#38190f;--rival-deep:#ff9581;--present:#4fbc91;--present-mark:#10281f;--caution:#d59f3c;--caution-mark:#2e2312;--lift:0 1px 2px rgb(0 0 0/50%),0 10px 28px -16px rgb(0 0 0/90%)}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;direction:rtl;background:var(--ground);color:var(--ink);font-family:var(--face);font-weight:300;font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;line-height:1.2;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+.lt{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.page{max-width:60rem;margin-inline:auto;padding-inline:clamp(1.1rem,4vw,2.75rem);padding-block:clamp(2.25rem,6vw,4.5rem) 4rem}
+
+.head{padding-block-end:2rem;border-block-end:1px solid var(--rule)}
+.kicker{font-family:var(--mono);font-size:.68rem;letter-spacing:.26em;color:var(--faint);margin-block-end:1.75rem}
+.head h1{font-size:clamp(1.9rem,4.6vw,3rem);font-weight:200;letter-spacing:-.035em;max-width:20ch;margin-block-end:1rem}
+.head h1 em{font-style:normal;font-weight:500}
+.head .lede{color:var(--ink-2);max-width:56ch}
+
+.rule-note{margin-block-start:1.5rem;background:var(--sheet);border:1px solid var(--rule);border-inline-start:4px solid var(--present);border-radius:4px;padding:1rem 1.2rem;font-size:.92rem;color:var(--ink-2);line-height:1.8}
+.rule-note b{color:var(--ink);font-weight:600}
+
+section{padding-block:clamp(2.25rem,5vw,3.25rem);border-block-end:1px solid var(--rule)}
+section:last-of-type{border-block-end:none}
+.eyebrow{font-family:var(--mono);font-size:.63rem;letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-block-end:.8rem}
+section>h2{font-size:clamp(1.3rem,2.9vw,1.8rem);margin-block-end:.7rem}
+section>.lede{color:var(--ink-2);max-width:58ch;margin-block-end:1.6rem}
+
+.tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-block-end:1.75rem}
+.track{background:var(--sheet);padding:1rem 1.15rem 1.15rem;display:flex;flex-direction:column;gap:.4rem}
+.track .who{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.track h3{font-size:1rem;font-weight:500}
+.track p{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+.phase{background:var(--sheet);border:1px solid var(--rule);border-inline-start-width:4px;border-radius:4px;box-shadow:var(--lift);overflow:hidden;margin-block-end:1.1rem}
+.phase[data-t='guard']{border-inline-start-color:var(--rival)}
+.phase[data-t='tool']{border-inline-start-color:var(--present)}
+.phase[data-t='sell']{border-inline-start-color:var(--caution)}
+.p-hd{padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.7rem;border-block-end:1px solid var(--rule);background:var(--sheet-2)}
+.p-hd .n{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;color:var(--faint)}
+.p-hd h3{font-size:1.08rem;font-weight:600}
+.p-hd .who{margin-inline-start:auto;font-family:var(--mono);font-size:.64rem;color:var(--ink);background:var(--sheet);border:1px solid var(--rule);border-radius:3px;padding:.14rem .5rem;white-space:nowrap}
+.p-gate{padding:.7rem 1.2rem;font-size:.83rem;color:var(--muted);border-block-end:1px solid var(--rule);background:var(--sheet-2)}
+.p-gate b{color:var(--ink-2);font-weight:500}
+
+.tasks{list-style:none;margin:0;padding:0}
+.tasks li{padding:.9rem 1.2rem;border-block-end:1px solid var(--rule-soft);display:grid;grid-template-columns:1.4rem minmax(0,1fr);gap:.85rem;align-items:start}
+.tasks li:last-child{border-block-end:0}
+.tasks .box{font-family:var(--mono);color:var(--faint);line-height:1.6;font-size:1rem}
+.tasks .t{display:grid;gap:.35rem;min-width:0}
+.tasks .t>b{font-size:.94rem;font-weight:500;color:var(--ink);line-height:1.6}
+.tasks .t>b .id{font-family:var(--mono);font-size:.72rem;color:var(--muted);font-weight:400}
+.done{font-size:.84rem;color:var(--present);border-inline-start:2px solid var(--present);padding-inline-start:.7rem;line-height:1.7}
+.done b{font-weight:500}
+.note{font-size:.82rem;color:var(--muted);line-height:1.65}
+
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--sheet)}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:30rem}
+th{text-align:right;font-family:var(--mono);font-size:.58rem;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:.65rem .85rem;background:var(--sheet-2);border-block-end:1px solid var(--rule);white-space:nowrap}
+td{padding:.62rem .85rem;border-block-end:1px solid var(--rule-soft);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-block-end:none}
+td.name{color:var(--ink);font-weight:500;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:left;direction:ltr;unicode-bidi:isolate}
+
+.final{background:var(--sheet);border:1px solid var(--present);border-radius:4px;padding:1.35rem 1.5rem;box-shadow:var(--lift)}
+.final h3{font-size:1.05rem;margin-block-end:.9rem}
+.final ul{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}
+.final li{display:grid;grid-template-columns:1.3rem minmax(0,1fr);gap:.7rem;font-size:.92rem;color:var(--ink-2);align-items:start}
+.final li .c{color:var(--present);font-family:var(--mono);line-height:1.6}
+.final li b{color:var(--ink);font-weight:500}
+
+.foot{margin-block-start:2.75rem;padding-block-start:1.5rem;border-block-start:1px solid var(--rule);font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--faint);display:flex;flex-wrap:wrap;gap:.45rem 1.4rem}
+@media print{.phase,.final,.track{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="head">
+  <div class="kicker">وكيل تشيك · خطة التنفيذ · 2 سبتمبر 2026</div>
+  <h1>ستُّ مراحل، و<em>شرطُ إنجازٍ</em> لكلِّ بند.</h1>
+  <p class="lede">
+    هذه ليست خارطةً تُقرأ بل قائمةً تُشطَب. كلُّ بندٍ فيها له شرطُ إنجازٍ
+    <b>لا يحتمل الرأي</b> — أمرٌ يُنفَّذ أو دليلٌ يُعرَض. فحين نقول «انتهت هذه
+    المرحلة» تكون جملةً صحيحة، لا شعوراً بالتقدّم.
+  </p>
+
+  <div class="rule-note">
+    <b>القاعدة الحاكمة لهذه الوثيقة:</b> بندٌ بلا شرط إنجازٍ قابلٍ للفحص لا
+    يدخل الخطة. و«أنجزتُه» بلا الأمر الذي يُثبته ليس إنجازاً — وهذا تعريف
+    «منجَز» في <span class="lt">team/PROTOCOL.md</span> مطبَّقاً على المشروع كلّه.
+  </div>
+</header>
+
+<!-- ═══ المسارات ═══ -->
+<section>
+  <div class="eyebrow">البنية</div>
+  <h2>ثلاثة مسارات تجري معاً — لا بالتتابع</h2>
+  <p class="lede">
+    الخطأ الشائع أن تُصفَّ المراحل في طابور. هذه ثلاثة مسارات متوازية، ولكلٍّ
+    مالكه — والانتظار بينها هو ما يضيّع الأسابيع.
+  </p>
+
+  <div class="tracks">
+    <div class="track"><span class="who">codex</span><h3>مسار الحماية</h3><p>يحجز الرابط العام وحده. لا يمنع البناء ولا البيع اليدوي.</p></div>
+    <div class="track"><span class="who">claude</span><h3>مسار الأداة</h3><p>يُبنى بلا مفاتيح ويُضاء بها. لا ينتظر شيئاً ليبدأ.</p></div>
+    <div class="track"><span class="who">الرئيس</span><h3>مسار البيع</h3><p>مفتاحٌ واحد يكفي لأوّل محادثة. وهو ما يُثبت أن أحداً يدفع.</p></div>
+  </div>
+
+  <div class="rule-note" style="border-inline-start-color:var(--rival)">
+    <b>وأهمّ حقيقةٍ في الخطة كلّها:</b> أوّل لحظةِ بيعٍ لا تُشترى بكود. المصفوفة
+    بلا مفاتيح شبكةٌ فارغة، <b>وعمودٌ واحد حقيقيٌّ يبيع بينما أربعةٌ فارغةٌ لا
+    تبيع</b>. المفتاح الأوّل يحجز مسار البيع كلَّه، ولا يحجزه الكود.
+  </div>
+</section>
+
+<!-- ═══ الأساس ═══ -->
+<section>
+  <div class="eyebrow">المرحلة صفر · منجَزة</div>
+  <h2>ما نقف عليه اليوم</h2>
+  <p class="lede">أرقامٌ مقيسة من المستودع لا مستعادة — تُعاد بأمرٍ واحد.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>البند</th><th>الحالة</th><th>يُثبته</th></tr></thead>
+      <tbody>
+        <tr><td class="name">محرّك الفحص</td><td class="num">209 اختباراً · 0 فشل</td><td class="lt">pnpm test</td></tr>
+        <tr><td class="name">الأنواع</td><td class="num">0 أخطاء</td><td class="lt">pnpm typecheck</td></tr>
+        <tr><td class="name">قواعد الجاهزية</td><td class="num">20</td><td class="lt">ACTIVE_RULES.length</td></tr>
+        <tr><td class="name">الفحوصات الأمنية</td><td class="num">9 أنواع</td><td class="lt">packages/security</td></tr>
+        <tr><td class="name">المحرّكات المبنيّة</td><td class="num">4</td><td class="lt">buildEngines</td></tr>
+        <tr><td class="name">الواجهة</td><td class="num">3 ألسنة · تشخيصٌ كامل</td><td>فحص <span class="lt">salla.com</span> = 4/20</td></tr>
+        <tr><td class="name">سجلّ الأخطاء</td><td class="num">26 درساً</td><td class="lt">docs/LESSONS.md</td></tr>
+        <tr><td class="name">الجسر</td><td class="num">يعمل من الطرفين</td><td class="lt">team/bin/bridge log</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ المراحل ═══ -->
+<section>
+  <div class="eyebrow">المراحل</div>
+  <h2>ستٌّ — كلٌّ ببوّابةٍ وشرطِ إنجاز</h2>
+  <p class="lede">
+    «البوّابة» شرطُ البدء، والمربّعات شرطُ الانتهاء. ولا تُشطب مربّعة إلا
+    بالدليل المكتوب تحتها.
+  </p>
+
+  <!-- 1 -->
+  <article class="phase" data-t="guard">
+    <div class="p-hd"><span class="n">المرحلة 1</span><h3>القياس والحماية</h3><span class="who">codex</span></div>
+    <div class="p-gate"><b>البوّابة:</b> لا شيء — تبدأ الآن. <b>وتحجز:</b> الرابط العام والمرحلة 4.</div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>قياس زمن المسار <span class="id">#9</span></b>
+        <span class="done"><b>يُنجَز حين:</b> جدولُ p50/p95 لكل مرحلة على <b>عشرة نطاقات حقيقية</b> منشورٌ في الجسر، ومعه حكمٌ صريح: هل الجزء الخالي من المفاتيح قريبٌ من سقف Vercel؟ وتوصيةٌ في العامل/الطابور.</span>
+        <span class="note">الجزء الخالي من المفاتيح لا ينتظر شيئاً — فحص <span class="lt">quick</span> يعطي 29 نتيجة حقيقية اليوم.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>Redis مشترك <span class="id">#3</span></b>
+        <span class="done"><b>يُنجَز حين:</b> اختبارات <span class="lt">limits</span> الأربعة والعشرون تنجح على التنفيذ الجديد <b>بلا تعديل أيٍّ منها</b>، ويُضاف اختبارٌ يُثبت أن عمليتين مختلفتين تتشاركان العدّاد.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>Turnstile على <span class="lt">/api/scan</span> <span class="id">#4</span></b>
+        <span class="done"><b>يُنجَز حين:</b> طلبٌ بلا رمزٍ صالح يعيد 403 <b>ولا يستهلك حصة الزائر</b> — واختبارٌ يُثبت الأمرين.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>سقف إنفاقٍ لكل فحص</b>
+        <span class="done"><b>يُنجَز حين:</b> فحصٌ يتجاوز سقفه يتوقّف ويُسجَّل، ولا يستنزف سقف الشهر. واختبارٌ يُثبته.</span>
+        <span class="note"><span class="lt">MAX_MONTHLY_SPEND_USD</span> شهريٌّ وحده — وبسبعة محرّكات لا يكفي.</span>
+      </div></li>
+    </ul>
+  </article>
+
+  <!-- 2 -->
+  <article class="phase" data-t="tool">
+    <div class="p-hd"><span class="n">المرحلة 2</span><h3>المصفوفة</h3><span class="who">claude</span></div>
+    <div class="p-gate"><b>البوّابة:</b> لا شيء — <b>ولا تحتاج مفاتيح.</b> تجري بالتوازي مع المرحلة 1.</div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>الحسبة والعقد — <span class="lt">summarizeByEngine</span> <span class="id">#10</span></b>
+        <span class="done"><b>يُنجَز حين:</b> ثلاثة اختباراتٍ تمرّ: ثلاثُ إجاباتٍ من ثلاثة محرّكات تعطي ثلاثة صفوف · <b>محرّكٌ ساقطٌ يعطي «لم يُقَس» لا «لم يُذكر»</b> · اسمٌ باختلاف تهجئةٍ يُوحَّد. واختبارات <span class="lt">visibility</span> التسعة عشر تنجح بلا تعديل.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>اللسان الرابع في الواجهة <span class="id">#11</span></b>
+        <span class="done"><b>يُنجَز حين:</b> لقطةٌ من <b>فحصٍ حقيقيّ</b> في الـPR تُظهر الشبكة، وصفُّ المتجر مميَّزٌ بصرياً، و«لم يُقَس» يظهر مختلفاً عن «لم يُذكر» — في الوضعين وعلى 1440 و390.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>وسمُ التغطية صريح</b>
+        <span class="done"><b>يُنجَز حين:</b> الشاشة تقول «التغطية الحالية 4/7» ويتحدّث الرقم تلقائياً عند إضافة عمود.</span>
+      </div></li>
+    </ul>
+  </article>
+
+  <!-- 3 -->
+  <article class="phase" data-t="sell">
+    <div class="p-hd"><span class="n">المرحلة 3</span><h3>أوّل بيع</h3><span class="who">الرئيس</span></div>
+    <div class="p-gate"><b>البوّابة:</b> مفتاح <span class="lt">OPENAI_API_KEY</span> — <b>وهو البند الذي يحجز الإيراد كلَّه.</b></div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>المفاتيح في Vercel</b>
+        <span class="done"><b>يُنجَز حين:</b> شريط «وضع تجريبي» <b>اختفى</b> من الموقع الحيّ، وفحصٌ واحد يعطي جواباً حرفياً حقيقياً.</span>
+        <span class="note">‏<span class="lt">OPENAI_API_KEY</span> أوّلاً. الباقي يُضاف لاحقاً — عمودٌ واحد يكفي للبيع.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>ثلاثون متجراً في ثلاث فئات</b>
+        <span class="done"><b>يُنجَز حين:</b> ثلاثون تقريراً مقروءاً سطراً سطراً، <b>وقائمةٌ مكتوبة بالقواعد التي أعطت نتيجةً خاطئة</b> — وتصحيحها.</span>
+        <span class="note">ثلاثُ فئاتٍ لا فئةٌ واحدة: تختبر أن الرسالة تصمد عبر القطاعات. اقتراح codex، وهو أدقّ من العشرين.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>ثلاث محادثات تاجرٍ مباشرة</b>
+        <span class="done"><b>يُنجَز حين:</b> ثلاثةُ اعتراضاتٍ <b>مكتوبةٍ حرفياً</b> كما قالها التجّار — لا ملخّصةً.</span>
+        <span class="note">الاعتراض الحرفيّ هو ما يُصحّح المنتج. والملخّص يُخفيه.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>أوّل مشترك يدفع</b>
+        <span class="done"><b>يُنجَز حين:</b> تحويلٌ بنكيٌّ وصل. <b>لا بوّابة دفع، ولا اشتراك آليّ.</b></span>
+      </div></li>
+    </ul>
+  </article>
+
+  <!-- 4 -->
+  <article class="phase" data-t="tool">
+    <div class="p-hd"><span class="n">المرحلة 4</span><h3>المرآة تتعدّد</h3><span class="who">claude</span></div>
+    <div class="p-gate"><b>البوّابة:</b> المرحلة 2 مكتملة، <b>و#9 أعطى حكمه</b> — إن كانت المهلة تنكسر فالعامل يسبق هذه المرحلة.</div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>Copilot <span class="id">#12</span></b>
+        <span class="done"><b>يُنجَز حين:</b> محلّلٌ خالصٌ باختباراتٍ تغطّي الشكل السليم وغير المتوقّع والفارغ والمصادر بأشكالها · <span class="lt">available:false</span> بلا مفتاح · <b>ردٌّ حيٌّ واحد محفوظٌ كعيّنة</b> · العمود يظهر ووسمُ التغطية يتحدّث.</span>
+        <span class="note">اقرأ عقد مسار Bing أوّلاً — هل يكفي <span class="lt">parseDataForSeo</span> أم يلزم محلّلٌ مستقل؟</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>Claude <span class="id">#12</span></b>
+        <span class="done"><b>نفس الشروط الخمسة.</b></span>
+        <span class="note">‏18.5% من إحالات B2B — وعملاؤنا تجار.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>Gemini خلف علم <span class="id">#12</span></b>
+        <span class="done"><b>يُنجَز حين:</b> يُبنى ويُختبَر، <b>ولا يحمل اسمه في التقرير</b> حتى يُثبَّت على ردٍّ حيّ.</span>
+      </div></li>
+    </ul>
+  </article>
+
+  <!-- 5 -->
+  <article class="phase" data-t="guard">
+    <div class="p-hd"><span class="n">المرحلة 5</span><h3>الاحتفاظ</h3><span class="who">codex + claude</span></div>
+    <div class="p-gate"><b>البوّابة:</b> أوّل مشترك دفع. <b>قبله لا تُبنى</b> — لا يُبنى ما يخدم عميلاً لم يوجد.</div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>Postgres <span class="id">#5</span></b>
+        <span class="done"><b>يُنجَز حين:</b> فحصٌ يبقى موجوداً بعد إعادة تشغيل الخادم، ولا قيمة سرٍّ كاملةٍ في أيّ عمود — واختبارٌ يُثبت الثانية.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>Sentry <span class="id">#6</span></b>
+        <span class="done"><b>يُنجَز حين:</b> فحصٌ فاشلٌ يظهر بالنطاق والخطوة، واختبارٌ يُثبت أن <span class="lt">beforeSend</span> يطمس قيمةً تشبه مفتاحاً.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>المتابعة الأسبوعية</b>
+        <span class="done"><b>يُنجَز حين:</b> لقطتان أسبوعيّتان مخزَّنتان، والفرقُ بينهما يُعرَض: «دخلتَ Copilot» · «خرجتَ من AI Mode».</span>
+        <span class="note">هويةٌ ثابتة للمنافس والمحرّك — وإلّا حُسب اختلافُ تهجئةٍ تغيُّراً.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>ملفّ المنافس</b>
+        <span class="done"><b>يُنجَز حين:</b> مقارنةُ جاهزيةٍ بسقفٍ لعدد المنافسين وكاشٍ وحدِّ ميزانية، والنصّ يقول <b>«اختلافاتٌ مرصودة» لا «هذا سبب تفوّقه»</b>.</span>
+      </div></li>
+    </ul>
+  </article>
+
+  <!-- 6 -->
+  <article class="phase" data-t="sell">
+    <div class="p-hd"><span class="n">المرحلة 6</span><h3>الدفع والتوسّع</h3><span class="who">codex</span></div>
+    <div class="p-gate"><b>البوّابة:</b> العميل العاشر. <b>وقبله التحويل اليدويّ.</b></div>
+    <ul class="tasks">
+      <li><span class="box">☐</span><div class="t">
+        <b>دول Lemon Squeezy من المصدر الرسمي</b>
+        <span class="done"><b>يُنجَز حين:</b> قائمةٌ مكتوبة، وحكمٌ صريح في سوريا والعراق.</span>
+        <span class="note">أن يُروَّج لسوقٍ لا يمكن التحصيل منه خسارةٌ صامتة.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>تكامل Lemon Squeezy</b>
+        <span class="done"><b>يُنجَز حين:</b> التحقّق من التوقيع قبل أيّ أثر · <span class="lt">idempotency</span> على معرّف الحدث · آلةُ حالاتٍ تمنع الرجوع الخاطئ · اختباراتُ <span class="lt">replay</span> و<span class="lt">duplicate</span> و<span class="lt">refund</span> و<span class="lt">cancel</span>.</span>
+      </div></li>
+      <li><span class="box">☐</span><div class="t">
+        <b>الأفلييت</b>
+        <span class="done"><b>يُنجَز حين:</b> ثلاثةُ مشتركين خالصين موجودون <b>قبل</b> فتحه — 30% متكرّرة لمن يجلب زائراً لا يدفع خسارةٌ صافية.</span>
+      </div></li>
+    </ul>
+  </article>
+</section>
+
+<!-- ═══ النهاية ═══ -->
+<section>
+  <div class="eyebrow">التعريف</div>
+  <h2>متى نقول «خرجنا بأداةٍ قوية»</h2>
+  <p class="lede">
+    لا بعدد الميزات. هذه ستّةٌ، وكلٌّ منها قابلٌ للفحص — فإمّا أن تكون صحيحةً
+    كلُّها أو لا نقولها.
+  </p>
+
+  <div class="final">
+    <h3>الأداة قويةٌ حين تصحّ هذه الستّ معاً</h3>
+    <ul>
+      <li><span class="c">✓</span><span><b>سبعةُ أسطحٍ مقيسة</b>، كلٌّ باسمه في التقرير — لا رقمٌ واحدٌ اسمه «الذكاء الاصطناعي»</span></li>
+      <li><span class="c">✓</span><span><b>ثلاثون متجراً فُحصت وقُرئت</b>، والقواعد التي أخطأت صُحّحت</span></li>
+      <li><span class="c">✓</span><span><b>خمسةُ مشتركين يدفعون للمتابعة</b> — لا للتشخيص</span></li>
+      <li><span class="c">✓</span><span><b>الحماية قائمة:</b> حدٌّ مشترك · إثباتُ إنسان · سقفٌ لكلّ فحصٍ وللشهر</span></li>
+      <li><span class="c">✓</span><span><b>الاحتفاظ قائم:</b> تخزينٌ يبقى · مراقبةٌ ترى الفشل · تنبيهٌ عند التغيّر</span></li>
+      <li><span class="c">✓</span><span><b>صفرُ رقمٍ بلا مصدر، وصفرُ ادّعاءِ تغطيةٍ لا نملكها</b></span></li>
+    </ul>
+  </div>
+
+  <div class="rule-note" style="margin-block-start:1.5rem">
+    <b>والسادسة أصعبها.</b> ليست ميزةً تُبنى بل التزامٌ يُحفَظ في كلِّ سطرٍ
+    يُكتب — ومنها وحدها تُصدَّق الخمسُ الأخرى. Adobe تملك بياناتٍ أكثر منّا
+    ولا تملك أن تبيع لصاحب متجرٍ بـ149 ريالاً يقرأ تقريره بالعربية. <b>هناك
+    موقعنا، لا في عدد المحرّكات.</b>
+  </div>
+</section>
+
+<footer class="foot">
+  <span>المهامّ الحيّة · <span class="lt">github issues #3–#12</span></span>
+  <span>اللوحة · <span class="lt">team/BOARD.md</span></span>
+  <span>سجلّ الأخطاء · <span class="lt">docs/LESSONS.md</span></span>
+  <span>المصفوفة · <span class="lt">docs/10-engine-matrix</span></span>
+</footer>
+
+</div>
+</body>
+</html>

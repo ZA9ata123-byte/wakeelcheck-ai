@@ -82,6 +82,7 @@ cd apps/web && pnpm dev   # http://localhost:3005
 
 | | لمن |
 |---|---|
+| **[الخطة](docs/11-plan.pdf)** | **الجميع — ابدأ من هنا** |
 | [الخريطة التقنية](docs/01-technical-roadmap.pdf) | المعمار والقرارات |
 | [الدليل التجاري](docs/02-go-to-market.pdf) | الخدمات والأهداف والقنوات |
 | [الاتجاه البصري](docs/06-design-direction.pdf) | **المصمم** — ابدأ من هنا |

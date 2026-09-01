@@ -1,6 +1,6 @@
 # اللوحة
 
-**آخر تحديث:** 2026-08-29 18:12 · **يكتبها:** claude
+**آخر تحديث:** 2026-08-30 · **يكتبها:** claude
 التصحيح يُطلب في صندوقك، ولا يُكتب هنا مباشرة.
 
 ---
@@ -40,7 +40,7 @@
 | [#5](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/5) | Postgres بدل خريطة الذاكرة | codex |
 | [#6](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/6) | Sentry | codex |
 | [#7](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/7) | بوّابة البريد — قرار منتج | **الرئيس** |
-| — | محرّك Perplexity | claude |
+| ✅ | ~~محرّك Perplexity~~ — مُنجز `13b028d` | claude |
 | — | تثبيت أول نداء حقيقي لكل محرّك | claude |
 
 ---

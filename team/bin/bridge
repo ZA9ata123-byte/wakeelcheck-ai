@@ -44,6 +44,7 @@ usage() {
   bridge close <من> <MESSAGE-ID>      يغلق رسالة في صندوقك
   bridge board                        يعرض اللوحة
   bridge ask <من> <السؤال>            يرفع الأمر للرئيس ويوقف الانتظار
+  bridge lesson <من> <العنوان>        يضيف درساً إلى docs/LESSONS.md
   bridge wake claude                  يوقظ claude بلا واجهة على الرسائل المفتوحة
   bridge log [عدد]                    آخر الأحداث عبر الصناديق
 
@@ -150,6 +151,41 @@ cmd_ask() {
   printf '\033[33m⏸  توقّف — القرار للرئيس.\033[0m\n'
 }
 
+cmd_lesson() {
+  local who="${1:?من}"; shift
+  local title="$*"
+  valid_member "$who" || die "عضو غير معروف: $who"
+  [ -z "$title" ] && die "العنوان فارغ"
+
+  local f="$ROOT/docs/LESSONS.md"
+  [ -f "$f" ] || die "لا ملف دروس في $f"
+
+  local body; body="$(cat)"
+  [ -z "${body//[[:space:]]/}" ] && die "الجسد فارغ — درس بلا محتوى لا يُضاف"
+
+  # الرقم والإدراج كلاهما في python: `$(...)` في bash يحذف الأسطر الجديدة
+  # الأخيرة فيلتصق الفاصل بآخر سطر — L-025.
+  local num
+  num="$(python3 - "$f" "$title" "$(date +%F)" "$who" "$body" <<'PY_INNER'
+import io, re, sys
+path, title, day, who, body = sys.argv[1:6]
+s = io.open(path, encoding='utf-8').read()
+
+nums = [int(n) for n in re.findall(r'^### L-(\d+)', s, re.M)]
+num = 'L-%03d' % (max(nums) + 1 if nums else 1)
+
+entry = "### %s · %s\n`%s` · %s\n\n%s\n\n---\n\n" % (num, title, day, who, body.rstrip())
+anchor = '## كيف يُضاف درس'
+i = s.index(anchor) if anchor in s else len(s)
+io.open(path, 'w', encoding='utf-8').write(s[:i] + entry + s[i:])
+print(num)
+PY_INNER
+)"
+
+  ok "$num أُضيف"
+  dim "  docs/LESSONS.md"
+}
+
 cmd_wake() {
   local who="${1:?من}"
   [ "$who" = "claude" ] || die "الإيقاظ الآلي متاح لـclaude وحده (codex بلا CLI هنا)"
@@ -215,6 +251,7 @@ case "${1:-}" in
   close) shift; cmd_close "$@" ;;
   board) shift; cmd_board "$@" ;;
   ask)   shift; cmd_ask   "$@" ;;
+  lesson) shift; cmd_lesson "$@" ;;
   wake)  shift; cmd_wake  "$@" ;;
   log)   shift; cmd_log   "$@" ;;
   ""|-h|--help|help) usage ;;

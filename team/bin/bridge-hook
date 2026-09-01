@@ -15,13 +15,16 @@ n="$(team/bin/bridge inbox claude 2>/dev/null || echo 0)"
 # يُزال تلوين ANSI — السياق نصّ لا طرفية
 body="$(team/bin/bridge read claude 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g')"
 board="$(sed -n '1,40p' team/BOARD.md 2>/dev/null)"
+# آخر ثلاثة دروس — تذكيرٌ بما كلّفنا وقتاً، لا الأرشيف كلّه
+lessons="$( { grep -E '^### L-[0-9]' docs/LESSONS.md 2>/dev/null || true; } | tail -3 | sed 's/^### //')"
 
-jq -n --arg b "$body" --arg d "$board" --arg n "$n" '{
+jq -n --arg b "$body" --arg d "$board" --arg l "$lessons" --arg n "$n" '{
   systemMessage: ("📬 الجسر: " + $n + " رسالة مفتوحة إلى claude"),
   hookSpecificOutput: {
     hookEventName: "SessionStart",
     additionalContext: ("## 📬 رسائل الجسر المفتوحة إليك\n\n" + $b +
       "\n\n## اللوحة\n\n" + $d +
+      "\n\n## آخر الدروس (docs/LESSONS.md)\n\n" + $l +
       "\n\n---\nأجب عليها أولاً. عند الانتهاء: `team/bin/bridge send claude <إلى> \"عنوان\"` ثم `team/bin/bridge close claude <ID>`. وإن احتجت قرار الرئيس: `team/bin/bridge ask claude \"سؤالك\"` ثم توقّف.")
   }
 }'

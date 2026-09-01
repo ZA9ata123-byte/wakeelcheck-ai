@@ -13,7 +13,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { EngineAnswer, ScanResult } from '@wakeelcheck/core';
-import { copy, type Locale } from '@/lib/i18n';
+import { copy, type Copy, type Locale } from '@/lib/i18n';
 import {
   ArrowNext,
   Check,
@@ -29,6 +29,15 @@ import {
 } from '@/components/icons';
 
 type Phase = 'idle' | 'running' | 'result' | 'failed';
+type Tab = 'evidence' | 'readiness' | 'security';
+
+/** اسم الشدّة بلغة الزائر — الشدّة نفسها محسوبة في packages/security. */
+function severityLabel(sev: string, t: Copy): string {
+  if (sev === 'critical') return t.sevCritical;
+  if (sev === 'high') return t.sevHigh;
+  if (sev === 'medium') return t.sevMedium;
+  return t.sevLow;
+}
 
 const ROBOTS_FIX = 'User-agent: GPTBot\nAllow: /';
 
@@ -84,6 +93,9 @@ export default function Experience({ locale }: { locale: Locale }) {
   const [demo, setDemo] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<Tab>('evidence');
+  const [allRules, setAllRules] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const timers = useRef<number[]>([]);
   const clearTimers = useCallback(() => {
@@ -156,6 +168,8 @@ export default function Experience({ locale }: { locale: Locale }) {
         const result = await poll(scanId);
         clearTimers();
         setScan(result);
+        setTab('evidence');
+        setAllRules(false);
         setPhase('result');
       } catch {
         clearTimers();
@@ -172,6 +186,19 @@ export default function Experience({ locale }: { locale: Locale }) {
   const question = scan?.questions.find((q) => q.id === answer?.questionId)?.text ?? null;
   const s = scan === null ? null : score(scan);
   const sov = scan?.shareOfVoice ?? null;
+
+  const rules = scan?.rules ?? [];
+  const findings = scan?.security ?? [];
+  // الراسبة أولاً: التاجر جاء ليعرف ما ينقصه، لا ليطمئنّ على ما نجح.
+  const failedRules = rules.filter((r) => !r.passed);
+  const shownRules = allRules ? [...failedRules, ...rules.filter((r) => r.passed)] : failedRules;
+
+  const copyFix = (text: string, key: string): void => {
+    void navigator.clipboard?.writeText(text).then(() => {
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(null), 1800);
+    });
+  };
 
   return (
     <main id="top">
@@ -429,57 +456,136 @@ export default function Experience({ locale }: { locale: Locale }) {
           </article>
         </div>
 
-        <div className="report-tabs" id="report">
-          <button type="button" className="active">
-            <Search size={17} /> {t.navReport}
-          </button>
-          <button type="button">
-            <Check size={17} /> {t.readinessTitle}
-          </button>
-          <button type="button">
-            <Shield size={17} /> {t.securityTab}
-          </button>
-          <button type="button">
-            <External size={17} /> {t.paidName}
-          </button>
+        <div className="report-tabs" id="report" role="tablist">
+          {(['evidence', 'readiness', 'security'] as const).map((key) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={tab === key}
+              className={tab === key ? 'active' : ''}
+              onClick={() => setTab(key)}
+            >
+              {key === 'evidence' && <Search size={17} />}
+              {key === 'readiness' && <Check size={17} />}
+              {key === 'security' && <Shield size={17} />}
+              {key === 'evidence' ? t.tabEvidence : key === 'readiness' ? t.tabReadiness : t.tabSecurity}
+              {key === 'readiness' && s !== null && <span className="tab-n lt">{s.passed}/{s.total}</span>}
+              {key === 'security' && findings.length > 0 && (
+                <span className="tab-n lt" data-alarm="yes">{findings.length}</span>
+              )}
+            </button>
+          ))}
         </div>
       </section>
 
-      {/* ── التقرير ───────────────────────────────────── */}
+      {/* ── التقرير: ثلاثة ألسنة على نتيجة واحدة ───────── */}
       <section className="report-section" id="diagnosis">
-        <div className="report-copy">
-          <span className="mono-label">{t.reportKicker}</span>
-          <h2>{t.reportTitle}</h2>
-          <p>{t.reportLede}</p>
-          <a href="#pricing">
-            {t.seeMonitoring} <ArrowNext size={16} />
-          </a>
-        </div>
-
-        <div className="readiness-panel">
-          <header>
-            <span>{t.readinessTitle}</span>
-            <b dir="ltr">{s === null ? '— / 20' : `${s.passed} / ${s.total}`}</b>
-          </header>
-          <div className="score-line">
-            <span style={{ width: `${s?.pct ?? 0}%` }} />
+        {tab === 'evidence' && (
+          <div className="report-copy report-wide">
+            <span className="mono-label">{t.reportKicker}</span>
+            <h2>{t.reportTitle}</h2>
+            <p>{t.reportLede}</p>
+            <a href="#pricing">
+              {t.seeMonitoring} <ArrowNext size={16} />
+            </a>
           </div>
-          <ul>
-            {(scan?.rules ?? []).slice(0, 4).map((rule) => (
-              <li key={rule.key}>
-                <span className={`rule-state ${rule.passed ? 'passed' : 'failed'}`}>
-                  {rule.passed ? t.rulePassed : t.ruleFailed}
-                </span>
-                <div>
-                  <b>{rule.key}</b>
-                  <small>{locale === 'ar' ? rule.detail.ar : rule.detail.en}</small>
-                </div>
-                <code dir="ltr">weight {rule.weight}</code>
-              </li>
-            ))}
-            {scan === null && <li className="rules-empty">{t.rulesEmpty}</li>}
-          </ul>
-        </div>
+        )}
+
+        {tab === 'readiness' && (
+          <div className="panel-wide">
+            <div className="panel-head">
+              <span className="mono-label">{t.reportKicker}</span>
+              <h2>{t.rulesTitle}</h2>
+              <p>{t.rulesLede}</p>
+            </div>
+
+            <div className="readiness-panel">
+              <header>
+                <span>{t.readinessTitle}</span>
+                <b dir="ltr">{s === null ? '— / 20' : `${s.passed} / ${s.total}`}</b>
+              </header>
+              <div className="score-line">
+                <span style={{ width: `${s?.pct ?? 0}%` }} />
+              </div>
+
+              {rules.length === 0 ? (
+                <p className="panel-empty">{t.emptyScan}</p>
+              ) : (
+                <>
+                  <ul className="rule-list">
+                    {shownRules.map((rule) => (
+                      <li key={rule.key} data-passed={rule.passed}>
+                        <span className={`rule-state ${rule.passed ? 'passed' : 'failed'}`}>
+                          {rule.passed ? t.rulePassed : t.ruleFailed}
+                        </span>
+                        <div className="rule-body">
+                          <b>{locale === 'ar' ? rule.detail.ar : rule.detail.en}</b>
+                          <small className="lt">{rule.key}</small>
+                          {rule.evidence.length > 0 && (
+                            <code className="rule-ev lt">{rule.evidence}</code>
+                          )}
+                          {typeof rule.fixSnippet === 'string' && rule.fixSnippet.length > 0 && (
+                            <div className="rule-fix">
+                              <div className="fix-head">
+                                <span>{t.fixTitle}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => copyFix(rule.fixSnippet ?? '', rule.key)}
+                                >
+                                  <CopyIcon size={13} />{' '}
+                                  {copiedKey === rule.key ? t.copiedFix : t.copyFix}
+                                </button>
+                              </div>
+                              <pre dir="ltr">
+                                <code>{rule.fixSnippet}</code>
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                        <code className="rule-w lt">{rule.weight}</code>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {failedRules.length < rules.length && (
+                    <button className="rule-toggle" type="button" onClick={() => setAllRules(!allRules)}>
+                      {allRules ? t.showLessRules : t.showAllRules}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tab === 'security' && (
+          <div className="panel-wide">
+            <div className="panel-head">
+              <span className="mono-label">{t.reportKicker}</span>
+              <h2>{t.secTitle}</h2>
+              <p>{t.secLede}</p>
+            </div>
+
+            <div className="findings">
+              {findings.length === 0 ? (
+                <p className="panel-empty">{scan === null ? t.emptyScan : t.secNone}</p>
+              ) : (
+                findings.map((f, i) => (
+                  <article className="finding" data-sev={f.severity} key={`${f.kind}-${i}`}>
+                    <div className="f-head">
+                      <span className="sev">{severityLabel(f.severity, t)}</span>
+                      <h3>{locale === 'ar' ? f.title.ar : f.title.en}</h3>
+                      <span className="kind lt">{f.kind}</span>
+                    </div>
+                    <p className="f-detail">{locale === 'ar' ? f.detail.ar : f.detail.en}</p>
+                    <code className="f-ev lt">{f.evidence}</code>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ── السعر ─────────────────────────────────────── */}

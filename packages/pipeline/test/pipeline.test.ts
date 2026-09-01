@@ -135,12 +135,13 @@ test('a store that is mentioned is recorded as such', async () => {
 
 // ── الخطط ────────────────────────────────────────────────────
 
-test('a quick scan asks one engine and skips the rule audit', async () => {
+test('a quick scan asks one engine but still carries the full diagnosis', async () => {
   const { result } = await runScan({ url: 'daralanaqa.sa', kind: 'quick' }, deps());
 
+  // محرّك واحد يفصل المجاني عن المدفوع — لا حجبُ التشخيص.
   assert.deepEqual([...new Set(result.answers.map((a) => a.engine))], ['chatgpt']);
-  assert.equal(result.rules.length, 0, 'the free scan creates pain, it does not solve it');
-  assert.ok(result.security.length > 0, 'but it still carries one alarm');
+  assert.ok(result.rules.length > 0, 'the diagnosis is evidence — it is shown, not withheld');
+  assert.ok(result.security.length > 0, 'and the security findings with it');
 });
 
 test('a full scan asks every engine for every question', async () => {

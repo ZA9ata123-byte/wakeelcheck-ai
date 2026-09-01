@@ -1146,7 +1146,9 @@ html[lang='en'] mark.rival::after {
   background: var(--present-wash);
 }
 
-.readiness-panel li div {
+/* كان `.readiness-panel li div` — محدِّدٌ على العنصر يطابق كل div في الصف،
+   فيغلب `.fix-head` ويحوّلها من flex إلى grid. صار على الصنف المقصود. */
+.readiness-panel li > .rule-body {
   display: grid;
   gap: 3px;
   min-width: 0;
@@ -1565,5 +1567,287 @@ html[lang='en'] mark.rival::after {
   }
   mark.rival::after {
     transform: scaleX(1) rotate(-1deg);
+  }
+}
+
+/* ── التقرير: ثلاثة ألسنة على نتيجة واحدة ─────────────── */
+
+.tab-n {
+  margin-inline-start: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--sheet-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.report-tabs button.active .tab-n {
+  color: var(--present);
+  border-color: var(--present-line);
+  background: var(--present-wash);
+}
+
+.tab-n[data-alarm='yes'] {
+  color: var(--rival-deep);
+  background: var(--rival-wash);
+  border-color: var(--rival);
+}
+
+/* لسانٌ واحد ظاهر: العرض كامل لا نصفان */
+.report-section:has(.panel-wide),
+.report-section:has(.report-wide) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.panel-wide {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+}
+
+.panel-head {
+  max-width: 62ch;
+}
+
+.panel-head h2 {
+  margin: 14px 0 12px;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.3;
+}
+
+.panel-head p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.panel-empty {
+  padding: 34px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ── قائمة القواعد ─────────────────────────────────────── */
+
+.rule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rule-list li {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.rule-list li:last-child {
+  border-bottom: 0;
+}
+
+.rule-body {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.rule-body > b {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.rule-body > small {
+  font-size: 10px;
+  color: var(--faint);
+}
+
+.rule-ev {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--sheet-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 9px;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.rule-w {
+  color: var(--faint);
+  font-size: 11px;
+  padding-top: 3px;
+}
+
+.rule-fix {
+  margin-top: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fix-head {
+  padding: 7px 11px;
+  background: var(--sheet-2);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.fix-head button {
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.fix-head button:hover {
+  color: var(--present);
+}
+
+.rule-fix pre {
+  margin: 0;
+  padding: 11px 13px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  overflow-x: auto;
+}
+
+.rule-toggle {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: var(--sheet-2);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.rule-toggle:hover {
+  color: var(--present);
+}
+
+/* ── نتائج الأمن ───────────────────────────────────────── */
+
+.findings {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.finding {
+  background: var(--sheet);
+  border: 1px solid var(--line);
+  border-inline-start-width: 4px;
+  border-radius: 8px;
+  padding: 15px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--lift-sm);
+}
+
+.finding[data-sev='critical'],
+.finding[data-sev='high'] {
+  border-inline-start-color: var(--rival);
+}
+
+.finding[data-sev='medium'] {
+  border-inline-start-color: var(--caution);
+}
+
+.finding[data-sev='low'] {
+  border-inline-start-color: var(--line-strong);
+}
+
+.f-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.f-head h3 {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.f-head .sev {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.finding[data-sev='critical'] .sev,
+.finding[data-sev='high'] .sev {
+  background: var(--rival-wash);
+  color: var(--rival-deep);
+}
+
+.finding[data-sev='medium'] .sev {
+  background: var(--caution-code);
+  color: var(--band-code);
+}
+
+.finding[data-sev='low'] .sev {
+  background: var(--sheet-2);
+  color: var(--muted);
+}
+
+.f-head .kind {
+  margin-inline-start: auto;
+  font-size: 10px;
+  color: var(--faint);
+}
+
+.f-detail {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.8;
+}
+
+.f-ev {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--sheet-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 7px 10px;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+@media (max-width: 720px) {
+  .rule-list li {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+  .rule-w {
+    display: none;
+  }
+  .f-head .kind {
+    margin-inline-start: 0;
+    width: 100%;
   }
 }

@@ -58,8 +58,10 @@ export interface ScanPlan {
 }
 
 export const PLANS: Record<ScanKind, ScanPlan> = {
-  // المجاني: سؤالان ومحرك واحد وإنذار أمني واحد. وظيفته خلق الألم لا حلّه.
-  quick: { questions: 2, engines: ['chatgpt'], productPages: 2, security: true, readiness: false },
+  // المجاني: تشخيصٌ كامل — عشرون قاعدة وفحصٌ أمني وسؤالان على محرّك واحد.
+  // التشخيص هو ما يُري التاجر أن المشكلة حقيقية؛ والمُباع هو المتابعة:
+  // ما الذي تغيّر الأسبوع الماضي. إخفاء التشخيص يُخفي الدليل لا يبيعه.
+  quick: { questions: 2, engines: ['chatgpt'], productPages: 2, security: true, readiness: true },
   full: {
     questions: 10,
     engines: ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity'],

@@ -159,6 +159,7 @@ export function startScan(url: string, kind: ScanKind): StartedScan {
     openaiApiKey: process.env['OPENAI_API_KEY'] ?? null,
     dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
     dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
+    perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
   });
 
   const deps = buildDeps(llm, demo, engines);

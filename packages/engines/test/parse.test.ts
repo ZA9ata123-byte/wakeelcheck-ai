@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   aiModeEngine,
   buildEngines,
+  parsePerplexityResponse,
   chatGptEngine,
   parseDataForSeo,
   parseOpenAiResponse,
@@ -141,16 +142,100 @@ test('DataForSEO needs both halves of its credentials', () => {
 });
 
 test('buildEngines returns only what is actually configured', () => {
-  const none = buildEngines({ openaiApiKey: null, dataforseoLogin: null, dataforseoPassword: null });
+  const none = buildEngines({
+    openaiApiKey: null,
+    dataforseoLogin: null,
+    dataforseoPassword: null,
+    perplexityApiKey: null,
+  });
   assert.deepEqual(none, [], 'nothing configured means nothing claimed');
 
   const partial = buildEngines({
     openaiApiKey: 'sk-test',
     dataforseoLogin: null,
     dataforseoPassword: null,
+    perplexityApiKey: null,
   });
   assert.deepEqual(partial.map((e) => e.engine), ['chatgpt']);
 
-  const all = buildEngines({ openaiApiKey: 'sk-test', dataforseoLogin: 'l', dataforseoPassword: 'p' });
-  assert.deepEqual(all.map((e) => e.engine), ['chatgpt', 'ai_overviews', 'ai_mode']);
+  const all = buildEngines({
+    openaiApiKey: 'sk-test',
+    dataforseoLogin: 'l',
+    dataforseoPassword: 'p',
+    perplexityApiKey: 'pplx-test',
+  });
+  assert.deepEqual(all.map((e) => e.engine), ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity']);
+
+  // مفتاح Perplexity وحده يكفي لإدراجه — ولا يجرّ معه محرّكاً آخر
+  const onlyPplx = buildEngines({
+    openaiApiKey: null,
+    dataforseoLogin: null,
+    dataforseoPassword: null,
+    perplexityApiKey: 'pplx-test',
+  });
+  assert.deepEqual(onlyPplx.map((e) => e.engine), ['perplexity']);
+});
+
+// ── Perplexity ──────────────────────────────────────────────
+
+test('perplexity: the answer is read from the message content', () => {
+  const { text, citedUrls } = parsePerplexityResponse({
+    choices: [{ message: { role: 'assistant', content: 'أفضل متجر عبايات هو بيت الأناقة.' } }],
+    citations: ['https://baitalabaya.sa/'],
+  });
+  assert.equal(text, 'أفضل متجر عبايات هو بيت الأناقة.');
+  assert.deepEqual(citedUrls, ['https://baitalabaya.sa/']);
+});
+
+test('perplexity: search_results is read as a source shape too', () => {
+  const { citedUrls } = parsePerplexityResponse({
+    choices: [{ message: { content: 'جواب.' } }],
+    search_results: [
+      { title: 'متجر', url: 'https://a.sa/', date: '2026-08-01' },
+      { title: 'آخر', url: 'https://b.sa/' },
+    ],
+  });
+  assert.deepEqual(citedUrls, ['https://a.sa/', 'https://b.sa/']);
+});
+
+test('perplexity: the two source shapes merge without duplicates', () => {
+  const { citedUrls } = parsePerplexityResponse({
+    choices: [{ message: { content: 'جواب.' } }],
+    citations: ['https://a.sa/', 'https://b.sa/'],
+    search_results: [{ url: 'https://b.sa/' }, { url: 'https://c.sa/' }],
+  });
+  assert.deepEqual(citedUrls, ['https://a.sa/', 'https://b.sa/', 'https://c.sa/']);
+});
+
+test('perplexity: with no declared sources the links come from the text', () => {
+  const { citedUrls } = parsePerplexityResponse({
+    choices: [{ message: { content: 'انظر https://noura.sa/ للتفاصيل.' } }],
+  });
+  assert.deepEqual(citedUrls, ['https://noura.sa/']);
+});
+
+test('perplexity: a non-string url is ignored, not trusted', () => {
+  const { citedUrls } = parsePerplexityResponse({
+    choices: [{ message: { content: 'جواب.' } }],
+    citations: ['https://ok.sa/', 42, null, 'ftp://no.sa/'],
+  });
+  assert.deepEqual(citedUrls, ['https://ok.sa/']);
+});
+
+test('perplexity: an unexpected shape yields empty rather than throwing', () => {
+  assert.deepEqual(parsePerplexityResponse(null), { text: '', citedUrls: [] });
+  assert.deepEqual(parsePerplexityResponse('نص'), { text: '', citedUrls: [] });
+  assert.deepEqual(parsePerplexityResponse({}), { text: '', citedUrls: [] });
+  assert.deepEqual(parsePerplexityResponse({ choices: 'ليست مصفوفة' }), { text: '', citedUrls: [] });
+});
+
+test('perplexity: an empty answer is empty — it is not passed off as a result', () => {
+  assert.deepEqual(parsePerplexityResponse({ choices: [{ message: { content: '' } }] }), {
+    text: '',
+    citedUrls: [],
+  });
+  assert.deepEqual(parsePerplexityResponse({ choices: [{ message: {} }] }), {
+    text: '',
+    citedUrls: [],
+  });
 });

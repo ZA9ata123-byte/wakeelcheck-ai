@@ -238,12 +238,124 @@ export function aiModeEngine(opts: DataForSeoOptions): EngineClient {
   return dataForSeoEngine('ai_mode', '/v3/serp/google/ai_mode/live/advanced', opts);
 }
 
+// ── Perplexity ──────────────────────────────────────────────
+
+/**
+ * ردّ Perplexity متوافق مع شكل OpenAI للمحادثات، ويضيف مصادره.
+ *
+ * المصادر مرّت بثلاثة أشكال عبر الإصدارات: `citations` كمصفوفة نصوص،
+ * ثم `search_results` كمصفوفة كائنات، وقد ترد الاثنتان معاً. نقرأ ما
+ * نجده ونسقط إلى الروابط الظاهرة في النص — فتغيّر حقل يُفقدنا مصادر
+ * إجابة، لا الإجابة نفسها.
+ */
+export function parsePerplexityResponse(payload: unknown): {
+  text: string;
+  citedUrls: string[];
+} {
+  const empty = { text: '', citedUrls: [] };
+  if (payload === null || typeof payload !== 'object') return empty;
+
+  const root = payload as Record<string, unknown>;
+
+  const choices = root['choices'];
+  if (!Array.isArray(choices)) return empty;
+
+  const parts: string[] = [];
+  for (const choice of choices) {
+    if (choice === null || typeof choice !== 'object') continue;
+    const message = (choice as { message?: unknown }).message;
+    if (message === null || typeof message !== 'object') continue;
+    const content = (message as { content?: unknown }).content;
+    if (typeof content === 'string' && content.length > 0) parts.push(content);
+  }
+
+  const text = parts.join('\n').trim();
+  if (text.length === 0) return empty;
+
+  const urls = new Set<string>();
+
+  const citations = root['citations'];
+  if (Array.isArray(citations)) {
+    for (const url of citations) {
+      if (typeof url === 'string' && url.startsWith('http')) urls.add(url);
+    }
+  }
+
+  const results = root['search_results'];
+  if (Array.isArray(results)) {
+    for (const item of results) {
+      const url = (item as { url?: unknown })?.url;
+      if (typeof url === 'string' && url.startsWith('http')) urls.add(url);
+    }
+  }
+
+  // لا مصادر مُعلنة: الروابط الظاهرة في النص أفضل من لا شيء.
+  if (urls.size === 0) return { text, citedUrls: urlsIn(text) };
+
+  return { text, citedUrls: [...urls] };
+}
+
+export interface PerplexityOptions {
+  apiKey: string | null;
+  model?: string;
+  /** دولاراً لكل مليون رمز. يُمرَّر صراحةً حتى يُصحَّح من الفاتورة لا من الذاكرة. */
+  pricing?: { input: number; output: number };
+}
+
+export function perplexityEngine(opts: PerplexityOptions): EngineClient {
+  const model = opts.model ?? 'sonar';
+
+  return {
+    engine: 'perplexity',
+    available: opts.apiKey !== null,
+
+    async ask(question, locale) {
+      if (opts.apiKey === null) throw new UpstreamError('perplexity', 'missing PERPLEXITY_API_KEY');
+
+      const res = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${opts.apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: 'user',
+              content: `${question}\n\n(أجب بلغة السؤال ولهجته، وبإيجاز كما تجيب متسوّقاً.)\nlocale: ${locale}`,
+            },
+          ],
+        }),
+        signal: AbortSignal.timeout(90_000),
+      });
+
+      if (!res.ok) throw new UpstreamError('perplexity', `HTTP ${res.status}`);
+
+      const payload: unknown = await res.json();
+      const { text, citedUrls } = parsePerplexityResponse(payload);
+      if (text.length === 0) throw new UpstreamError('perplexity', 'empty answer');
+
+      const usage = (payload as { usage?: { prompt_tokens?: number; completion_tokens?: number } })
+        .usage;
+      // الافتراضي تقديريّ ويجب أن يُصحَّح من أول فاتورة — القاعدة 06.
+      const price = opts.pricing ?? { input: 1, output: 1 };
+      const costMicros = Math.round(
+        (usage?.prompt_tokens ?? 0) * price.input + (usage?.completion_tokens ?? 0) * price.output
+      );
+
+      return { text, citedUrls, costMicros };
+    },
+  };
+}
+
 // ── التجميع ──────────────────────────────────────────────────
 
 export interface EngineEnv {
   openaiApiKey: string | null;
   dataforseoLogin: string | null;
   dataforseoPassword: string | null;
+  perplexityApiKey: string | null;
 }
 
 /** المحرّكات المتاحة فعلاً. غير المُعدّ لا يُدرج، فلا يُسأل ولا يُدَّعى. */
@@ -254,5 +366,6 @@ export function buildEngines(env: EngineEnv): EngineClient[] {
     chatGptEngine({ apiKey: env.openaiApiKey }),
     aiOverviewsEngine(dfs),
     aiModeEngine(dfs),
+    perplexityEngine({ apiKey: env.perplexityApiKey }),
   ].filter((client) => client.available);
 }

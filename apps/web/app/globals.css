@@ -1851,3 +1851,163 @@ html[lang='en'] mark.rival::after {
     width: 100%;
   }
 }
+
+/* ── المصفوفة ───────────────────────────────────────────── */
+
+.matrix-coverage {
+  margin: 0 0 14px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* الجدول يمرّر داخل حاويته — الصفحة لا تُمرَّر جانبياً أبداً. */
+.matrix-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--sheet);
+}
+
+.matrix {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.matrix-head-cell {
+  padding: 12px 10px;
+  background: var(--sheet-2);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.matrix-name {
+  padding: 12px 14px;
+  text-align: start;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+
+.matrix-body-cell {
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.matrix-sum {
+  padding: 12px 14px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+
+.matrix-cell {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* ثلاث حالات، وكلٌّ لها شكلٌ لا لونٌ فقط — «لم يُقَس» شرطة باهتة
+   على أرضية محايدة، فلا تُقرأ غياباً. */
+.matrix-state-mentioned .matrix-cell {
+  background: var(--present-wash);
+  color: var(--present);
+}
+
+.matrix-state-absent .matrix-cell {
+  background: var(--rival-wash);
+  color: var(--rival-deep);
+}
+
+.matrix-state-not_measured .matrix-cell {
+  background: var(--sheet-2);
+  color: var(--faint);
+  border: 1px dashed var(--line-strong);
+}
+
+/* صفُّ المتجر: هو ما جاء التاجر ليراه. */
+.matrix-you .matrix-name {
+  color: var(--rival-deep);
+  font-weight: 650;
+}
+
+.matrix-you .matrix-name,
+.matrix-you .matrix-body-cell,
+.matrix-you .matrix-sum {
+  background: var(--rival-wash);
+  border-bottom: 1px solid var(--rival);
+}
+
+.matrix-you .matrix-sum {
+  color: var(--rival-deep);
+  font-weight: 650;
+}
+
+.matrix-note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+/* نصٌّ لقارئ الشاشة: الرمز وحده لا يكفي. */
+.matrix-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.panel-empty {
+  padding: 26px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--sheet);
+}
+
+@media (max-width: 720px) {
+  .matrix { font-size: 12px; }
+  .matrix-name { padding-inline: 10px; }
+  .matrix-body-cell,
+  .matrix-head-cell { padding-inline: 6px; }
+}
+
+/* في صفّ المتجر تتساوى أرضية الخانة مع أرضية الصفّ فتذوب الشارة.
+   نرفعها على سطحٍ خاص بها ونُبقي المعنى في اللون. */
+.matrix-you .matrix-cell {
+  background: var(--sheet);
+  box-shadow: 0 0 0 1px var(--rival);
+}
+
+.matrix-you .matrix-state-mentioned .matrix-cell {
+  color: var(--present);
+  box-shadow: 0 0 0 1px var(--present);
+}
+
+.matrix-you .matrix-state-not_measured .matrix-cell {
+  color: var(--faint);
+  box-shadow: none;
+}

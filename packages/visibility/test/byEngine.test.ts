@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Engine } from '@wakeelcheck/core';
-import { summarizeByEngine } from '../src/mentions.ts';
+import { buildMatrix, summarizeByEngine } from '../src/mentions.ts';
 
 /** إجابة مختصرة — الحقول التي يقرأها التجميع وحدها. */
 function answer(
@@ -169,4 +169,79 @@ test('النطاق يُلتقط من أول ذِكر يحمله', () => {
   );
 
   assert.equal(rows[0]?.ranked[0]?.domain, 'baitalabaya.sa');
+});
+
+// ── المصفوفة ─────────────────────────────────────────────────
+
+test('المصفوفة تبدأ بصفّ المتجر ثم المنافسين', () => {
+  const rows = buildMatrix(
+    summarizeByEngine([answer('chatgpt', true, [{ name: 'بيت الأناقة' }])], ['chatgpt']),
+    'متجرك'
+  );
+
+  assert.equal(rows[0]?.isStore, true);
+  assert.equal(rows[0]?.name, 'متجرك');
+  assert.equal(rows[1]?.isStore, false);
+});
+
+test('اسم باختلاف تهجئة بين محرّكين يعطي صفّاً واحداً', () => {
+  const rows = buildMatrix(
+    summarizeByEngine(
+      [
+        answer('chatgpt', false, [{ name: 'بيت الأناقة' }]),
+        answer('ai_overviews', false, [{ name: 'بيت الاناقه' }]),
+      ],
+      ['chatgpt', 'ai_overviews']
+    ),
+    'متجرك'
+  );
+
+  // لو انقسم، لبدا منافسَين اثنين وهو واحد.
+  assert.equal(rows.length, 2);
+  assert.deepEqual(rows[1]?.cells.map((c) => c.state), ['mentioned', 'mentioned']);
+  assert.equal(rows[1]?.present, 2);
+});
+
+test('عمود لم يُقَس يجعل كل خاناته not_measured — لا غياب من سطح لم يُسأل', () => {
+  const rows = buildMatrix(
+    summarizeByEngine([answer('chatgpt', false, [{ name: 'أناقتي' }])], ['chatgpt', 'ai_mode']),
+    'متجرك'
+  );
+
+  const rival = rows[1];
+  assert.equal(rival?.cells[0]?.state, 'mentioned');
+  assert.equal(rival?.cells[1]?.state, 'not_measured');
+
+  // المقام لا يحسب ما لم يُقَس: 1/1 لا 1/2.
+  assert.equal(rival?.measured, 1);
+  assert.equal(rival?.present, 1);
+});
+
+test('المنافس الأكثر حضوراً يتصدّر', () => {
+  const rows = buildMatrix(
+    summarizeByEngine(
+      [
+        answer('chatgpt', false, [{ name: 'قليل' }, { name: 'كثير' }]),
+        answer('ai_mode', false, [{ name: 'كثير' }]),
+      ],
+      ['chatgpt', 'ai_mode']
+    ),
+    'متجرك'
+  );
+
+  assert.deepEqual(rows.slice(1).map((r) => r.name), ['كثير', 'قليل']);
+});
+
+test('صفّ المتجر يعكس حالة كل عمود كما هي', () => {
+  const rows = buildMatrix(
+    summarizeByEngine(
+      [answer('chatgpt', true), answer('ai_overviews', false)],
+      ['chatgpt', 'ai_overviews', 'ai_mode']
+    ),
+    'متجرك'
+  );
+
+  assert.deepEqual(rows[0]?.cells.map((c) => c.state), ['mentioned', 'absent', 'not_measured']);
+  assert.equal(rows[0]?.present, 1);
+  assert.equal(rows[0]?.measured, 2);
 });

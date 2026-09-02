@@ -7,7 +7,14 @@
  * الفعلي في النص قبل قبوله.
  */
 
-import type { CompetitorMention, Engine, EngineRow, StoreProfile } from '@wakeelcheck/core';
+import type {
+  CompetitorMention,
+  Engine,
+  EngineCoverage,
+  EngineRow,
+  MatrixRow,
+  StoreProfile,
+} from '@wakeelcheck/core';
 import { parseJson, type LlmProvider } from '@wakeelcheck/llm';
 
 // ── تطبيع عربي ───────────────────────────────────────────────
@@ -295,4 +302,79 @@ export function summarizeByEngine(
         .map((c) => ({ name: c.name, domain: c.domain, position: 1 })),
     };
   });
+}
+
+
+/**
+ * يبني شبكة المصفوفة من مخرَج `summarizeByEngine`.
+ *
+ * صفٌّ للمتجر ثمّ صفٌّ لكل منافس، وعمودٌ لكل محرّك. البنية هنا لا في
+ * المكوّن، لأنّ توحيد الهوية عبر المحرّكات منطقٌ يستحقّ اختباراً:
+ * «بيت الأناقة» من محرّك و«بيت الاناقه» من آخر صفٌّ واحد لا صفّان.
+ *
+ * وحالة الخانة تأتي من حالة العمود أولاً: عمودٌ لم يُقَس تكون كلّ خاناته
+ * `not_measured` — لا نقول عن منافسٍ إنّه غائبٌ من سطحٍ لم نسأله أصلاً.
+ */
+export function buildMatrix(
+  byEngine: readonly EngineRow[],
+  storeLabel: string
+): MatrixRow[] {
+  const engines = byEngine.map((r) => r.engine);
+
+  const storeRow: MatrixRow = {
+    name: storeLabel,
+    domain: null,
+    isStore: true,
+    cells: byEngine.map((r) => ({ engine: r.engine, state: r.coverage })),
+    present: byEngine.filter((r) => r.coverage === 'mentioned').length,
+    measured: byEngine.filter((r) => r.coverage !== 'not_measured').length,
+  };
+
+  // اتحاد المنافسين بمفتاح موحَّد، مع الاحتفاظ بأول تهجئة ظهرت.
+  const identity = new Map<string, { name: string; domain: string | null; at: Set<string> }>();
+
+  for (const row of byEngine) {
+    for (const competitor of row.ranked) {
+      const key = normalizeArabic(competitor.name);
+      const existing = identity.get(key);
+      if (existing === undefined) {
+        identity.set(key, {
+          name: competitor.name,
+          domain: competitor.domain,
+          at: new Set([row.engine]),
+        });
+      } else {
+        existing.at.add(row.engine);
+        existing.domain ??= competitor.domain;
+      }
+    }
+  }
+
+  const rivalRows: MatrixRow[] = [...identity.values()].map((c) => {
+    const cells = engines.map((engine) => {
+      const column = byEngine.find((r) => r.engine === engine);
+      // حالة العمود تسبق حضور الاسم: لا غيابَ من سطحٍ لم يُسأل.
+      const state: EngineCoverage =
+        column === undefined || column.coverage === 'not_measured'
+          ? 'not_measured'
+          : c.at.has(engine)
+            ? 'mentioned'
+            : 'absent';
+      return { engine, state };
+    });
+
+    return {
+      name: c.name,
+      domain: c.domain,
+      isStore: false,
+      cells,
+      present: cells.filter((x) => x.state === 'mentioned').length,
+      measured: cells.filter((x) => x.state !== 'not_measured').length,
+    };
+  });
+
+  // الأكثر حضوراً أولاً — التاجر يريد أن يعرف من يتصدّر عليه.
+  rivalRows.sort((a, b) => b.present - a.present);
+
+  return [storeRow, ...rivalRows];
 }

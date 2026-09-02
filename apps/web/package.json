@@ -10,15 +10,16 @@
   },
   "dependencies": {
     "@wakeelcheck/core": "workspace:*",
+    "@wakeelcheck/engines": "workspace:*",
     "@wakeelcheck/fetcher": "workspace:*",
     "@wakeelcheck/limits": "workspace:*",
     "@wakeelcheck/llm": "workspace:*",
     "@wakeelcheck/pipeline": "workspace:*",
+    "@wakeelcheck/security": "workspace:*",
+    "@wakeelcheck/visibility": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@wakeelcheck/engines": "workspace:*",
-    "@wakeelcheck/security": "workspace:*"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

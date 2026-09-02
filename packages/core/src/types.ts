@@ -98,6 +98,30 @@ export interface EngineRow {
   ranked: readonly CompetitorMention[];
 }
 
+/** حالة خانة واحدة في المصفوفة. */
+export interface MatrixCell {
+  engine: Engine;
+  state: EngineCoverage;
+}
+
+/**
+ * صفٌّ في المصفوفة — المتجر أو منافس، وحضورُه عبر الأسطح.
+ *
+ * الهوية موحَّدة عبر المحرّكات: «بيت الأناقة» و«بيت الاناقه» صفٌّ واحد،
+ * وإلّا ظهر الاسم مرّتين وبدا منافسَين اثنين.
+ */
+export interface MatrixRow {
+  name: string;
+  domain: string | null;
+  /** صفُّ المتجر يُميَّز بصرياً — هو ما جاء التاجر ليراه. */
+  isStore: boolean;
+  cells: readonly MatrixCell[];
+  /** كم عموداً ظهر فيه. */
+  present: number;
+  /** كم عموداً قِيس فعلاً — مقام النسبة، فلا يُحسب ما لم يُقَس. */
+  measured: number;
+}
+
 export interface ShareOfVoice {
   /** كم مرة ذُكر المتجر من إجمالي الإجابات. */
   store: number;

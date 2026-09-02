@@ -12,7 +12,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { EngineAnswer, ScanResult } from '@wakeelcheck/core';
+import type { EngineAnswer, MatrixRow, ScanResult } from '@wakeelcheck/core';
+import { buildMatrix } from '@wakeelcheck/visibility';
 import { copy, type Copy, type Locale } from '@/lib/i18n';
 import {
   ArrowNext,
@@ -23,13 +24,14 @@ import {
   Copy as CopyIcon,
   External,
   Globe,
+  Grid,
   Menu,
   Search,
   Shield,
 } from '@/components/icons';
 
 type Phase = 'idle' | 'running' | 'result' | 'failed';
-type Tab = 'evidence' | 'readiness' | 'security';
+type Tab = 'evidence' | 'matrix' | 'readiness' | 'security';
 
 /** اسم الشدّة بلغة الزائر — الشدّة نفسها محسوبة في packages/security. */
 function severityLabel(sev: string, t: Copy): string {
@@ -186,6 +188,12 @@ export default function Experience({ locale }: { locale: Locale }) {
   const question = scan?.questions.find((q) => q.id === answer?.questionId)?.text ?? null;
   const s = scan === null ? null : score(scan);
   const sov = scan?.shareOfVoice ?? null;
+
+  // البنية من الحزمة: توحيد الهوية عبر المحرّكات منطقٌ مُختبَر، لا شيفرة عرض.
+  const matrix: MatrixRow[] =
+    sov === null || sov.byEngine.length === 0 ? [] : buildMatrix(sov.byEngine, t.matrixYou);
+  const columns = sov?.byEngine.map((r) => r.engine) ?? [];
+  const measuredColumns = sov?.byEngine.filter((r) => r.coverage !== 'not_measured').length ?? 0;
 
   const rules = scan?.rules ?? [];
   const findings = scan?.security ?? [];
@@ -457,7 +465,7 @@ export default function Experience({ locale }: { locale: Locale }) {
         </div>
 
         <div className="report-tabs" id="report" role="tablist">
-          {(['evidence', 'readiness', 'security'] as const).map((key) => (
+          {(['evidence', 'matrix', 'readiness', 'security'] as const).map((key) => (
             <button
               key={key}
               type="button"
@@ -467,9 +475,21 @@ export default function Experience({ locale }: { locale: Locale }) {
               onClick={() => setTab(key)}
             >
               {key === 'evidence' && <Search size={17} />}
+              {key === 'matrix' && <Grid size={17} />}
               {key === 'readiness' && <Check size={17} />}
               {key === 'security' && <Shield size={17} />}
-              {key === 'evidence' ? t.tabEvidence : key === 'readiness' ? t.tabReadiness : t.tabSecurity}
+              {key === 'evidence'
+                ? t.tabEvidence
+                : key === 'matrix'
+                  ? t.matrixTab
+                  : key === 'readiness'
+                    ? t.tabReadiness
+                    : t.tabSecurity}
+              {key === 'matrix' && matrix.length > 0 && (
+                <span className="tab-n lt">
+                  {matrix[0]?.present ?? 0}/{matrix[0]?.measured ?? 0}
+                </span>
+              )}
               {key === 'readiness' && s !== null && <span className="tab-n lt">{s.passed}/{s.total}</span>}
               {key === 'security' && findings.length > 0 && (
                 <span className="tab-n lt" data-alarm="yes">{findings.length}</span>
@@ -489,6 +509,81 @@ export default function Experience({ locale }: { locale: Locale }) {
             <a href="#pricing">
               {t.seeMonitoring} <ArrowNext size={16} />
             </a>
+          </div>
+        )}
+
+        {tab === 'matrix' && (
+          <div className="panel-wide">
+            <div className="panel-head">
+              <span className="mono-label">{t.reportKicker}</span>
+              <h2>{t.matrixTitle}</h2>
+              <p>{t.matrixLede}</p>
+            </div>
+
+            {matrix.length === 0 ? (
+              <p className="panel-empty">{t.matrixEmpty}</p>
+            ) : (
+              <>
+                {/* التغطية صريحة: لا نُوهم بسبعة أسطح ونعرض أربعة. */}
+                <p className="matrix-coverage lt">
+                  {t.matrixCoverage} {measuredColumns}/7
+                </p>
+
+                <div className="matrix-scroll">
+                  <table className="matrix">
+                    <thead>
+                      <tr>
+                        <th className="matrix-head-cell matrix-name" scope="col" />
+                        {columns.map((engine) => (
+                          <th key={engine} className="matrix-head-cell" scope="col">
+                            {engineLabel(engine)}
+                          </th>
+                        ))}
+                        <th className="matrix-head-cell matrix-sum" scope="col">
+                          {t.matrixPresence}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {matrix.map((row) => (
+                        <tr key={row.name} className={row.isStore ? 'matrix-you' : undefined}>
+                          <th className="matrix-name" scope="row">
+                            {row.name}
+                          </th>
+                          {row.cells.map((cell) => (
+                            <td
+                              key={cell.engine}
+                              className={`matrix-body-cell matrix-state-${cell.state}`}
+                            >
+                              <span className="matrix-cell">
+                                {cell.state === 'mentioned'
+                                  ? '✓'
+                                  : cell.state === 'absent'
+                                    ? '✕'
+                                    : '—'}
+                              </span>
+                              <span className="matrix-sr">
+                                {cell.state === 'mentioned'
+                                  ? t.cellMentioned
+                                  : cell.state === 'absent'
+                                    ? t.cellAbsent
+                                    : t.cellNotMeasured}
+                              </span>
+                            </td>
+                          ))}
+                          <td className="matrix-sum lt">
+                            {row.present}/{row.measured}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* القاعدة 06 مكتوبةً للتاجر لا مفترَضةً عليه. */}
+                <p className="matrix-note">{t.notMeasuredNote}</p>
+              </>
+            )}
           </div>
         )}
 

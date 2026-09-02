@@ -174,7 +174,7 @@ export function startScan(url: string, kind: ScanKind): StartedScan {
     answers: [],
     security: [],
     rules: [],
-    shareOfVoice: { store: 0, top: null, total: 0 },
+    shareOfVoice: { store: 0, top: null, total: 0, byEngine: [] },
   });
 
   void runScan({ url, kind }, { ...deps, newId: () => scanId })
@@ -189,7 +189,7 @@ export function startScan(url: string, kind: ScanKind): StartedScan {
         answers: [],
         security: [],
         rules: [],
-        shareOfVoice: { store: 0, top: null, total: 0 },
+        shareOfVoice: { store: 0, top: null, total: 0, byEngine: [] },
         error: err instanceof Error ? err.message : 'scan failed',
       });
     });

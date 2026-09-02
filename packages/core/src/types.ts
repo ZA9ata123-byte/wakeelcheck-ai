@@ -77,6 +77,51 @@ export interface EngineAnswer {
   costMicros: number;
 }
 
+/**
+ * حالة المتجر عند محرّك واحد.
+ *
+ * ثلاث حالات لا اثنتان. `not_measured` ليست `absent`: محرّك سقط اليوم
+ * يترك ثقباً، وعرضه كغياب يجعل التاجر يقرأ عطلاً عندنا غياباً عنده —
+ * خرق صامت للقاعدة 06.
+ */
+export type EngineCoverage = 'mentioned' | 'absent' | 'not_measured';
+
+/** صفٌّ واحد في المصفوفة — محرّك واحد وما ظهر فيه. */
+export interface EngineRow {
+  engine: Engine;
+  coverage: EngineCoverage;
+  /** كم إجابة من هذا المحرّك ذُكر فيها المتجر. */
+  storeMentions: number;
+  /** كم إجابة عادت من هذا المحرّك. صفر ⇒ `not_measured`. */
+  answers: number;
+  /** المنافسون في إجابات هذا المحرّك وحده، مرتّبون تنازلياً. */
+  ranked: readonly CompetitorMention[];
+}
+
+/** حالة خانة واحدة في المصفوفة. */
+export interface MatrixCell {
+  engine: Engine;
+  state: EngineCoverage;
+}
+
+/**
+ * صفٌّ في المصفوفة — المتجر أو منافس، وحضورُه عبر الأسطح.
+ *
+ * الهوية موحَّدة عبر المحرّكات: «بيت الأناقة» و«بيت الاناقه» صفٌّ واحد،
+ * وإلّا ظهر الاسم مرّتين وبدا منافسَين اثنين.
+ */
+export interface MatrixRow {
+  name: string;
+  domain: string | null;
+  /** صفُّ المتجر يُميَّز بصرياً — هو ما جاء التاجر ليراه. */
+  isStore: boolean;
+  cells: readonly MatrixCell[];
+  /** كم عموداً ظهر فيه. */
+  present: number;
+  /** كم عموداً قِيس فعلاً — مقام النسبة، فلا يُحسب ما لم يُقَس. */
+  measured: number;
+}
+
 export interface ShareOfVoice {
   /** كم مرة ذُكر المتجر من إجمالي الإجابات. */
   store: number;
@@ -84,6 +129,13 @@ export interface ShareOfVoice {
   top: CompetitorMention | null;
   /** إجمالي الإجابات المفحوصة. */
   total: number;
+  /**
+   * تفصيل لكل محرّك — إضافةً إلى الإجمالي أعلاه لا بدلاً منه.
+   *
+   * الترتيب هو ترتيب المحرّكات المطلوبة في الخطة، فيبقى العمود في مكانه
+   * حتى حين لا يعود منه شيء.
+   */
+  byEngine: readonly EngineRow[];
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -103,3 +103,10 @@ export const External = (p: IconProps) => (
     <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
   </Svg>
 );
+
+export const Grid = (p: IconProps) => (
+  <Svg {...p}>
+    <rect width="18" height="18" x="3" y="3" rx="2" />
+    <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+  </Svg>
+);

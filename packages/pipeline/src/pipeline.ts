@@ -26,6 +26,7 @@ import {
   extractCompetitors,
   generateQuestions,
   summarize,
+  summarizeByEngine,
 } from '@wakeelcheck/visibility';
 
 /** ما يُجمع من الشبكة للفحص الأمني — يُحقن جاهزاً. */
@@ -109,7 +110,7 @@ function emptyResult(id: string, kind: ScanKind): ScanResult {
     answers: [],
     security: [],
     rules: [],
-    shareOfVoice: { store: 0, top: null, total: 0 },
+    shareOfVoice: { store: 0, top: null, total: 0, byEngine: [] },
   };
 }
 
@@ -261,6 +262,9 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
         store: summary.storeMentions,
         top: top === undefined ? null : { name: top.name, domain: top.domain, position: 1 },
         total: summary.total,
+        // المحرّكات المطلوبة لا العائدة: العمود يبقى في مكانه حتى حين
+        // لا يعود منه شيء، ويحمل حينها «لم يُقَس» لا «لم يُذكر».
+        byEngine: summarizeByEngine(answers, plan.engines),
       },
     },
     costMicros,

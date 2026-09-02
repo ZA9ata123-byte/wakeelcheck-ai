@@ -75,6 +75,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -123,6 +128,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -171,6 +181,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -219,6 +234,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -539,11 +559,95 @@
     "shareOfVoice": {
       "store": 0,
       "top": {
-        "name": "أناقتي",
-        "domain": "anaqati.sa",
+        "name": "بيت الأناقة",
+        "domain": "baitalabaya.sa",
         "position": 1
       },
-      "total": 8
+      "total": 8,
+      "byEngine": [
+        {
+          "engine": "chatgpt",
+          "coverage": "absent",
+          "storeMentions": 0,
+          "answers": 2,
+          "ranked": [
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
+              "position": 1
+            },
+            {
+              "name": "لمسة رقي",
+              "domain": null,
+              "position": 1
+            },
+            {
+              "name": "أناقتي",
+              "domain": "anaqati.sa",
+              "position": 1
+            }
+          ]
+        },
+        {
+          "engine": "ai_overviews",
+          "coverage": "absent",
+          "storeMentions": 0,
+          "answers": 2,
+          "ranked": [
+            {
+              "name": "أناقتي",
+              "domain": "anaqati.sa",
+              "position": 1
+            },
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
+              "position": 1
+            }
+          ]
+        },
+        {
+          "engine": "ai_mode",
+          "coverage": "absent",
+          "storeMentions": 0,
+          "answers": 2,
+          "ranked": [
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
+              "position": 1
+            },
+            {
+              "name": "لمسة رقي",
+              "domain": null,
+              "position": 1
+            },
+            {
+              "name": "أناقتي",
+              "domain": "anaqati.sa",
+              "position": 1
+            }
+          ]
+        },
+        {
+          "engine": "perplexity",
+          "coverage": "absent",
+          "storeMentions": 0,
+          "answers": 2,
+          "ranked": [
+            {
+              "name": "أناقتي",
+              "domain": "anaqati.sa",
+              "position": 1
+            },
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
+              "position": 1
+            }
+          ]
+        }
+      ]
     }
   }
 }

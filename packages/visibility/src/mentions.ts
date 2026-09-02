@@ -7,7 +7,14 @@
  * الفعلي في النص قبل قبوله.
  */
 
-import type { CompetitorMention, StoreProfile } from '@wakeelcheck/core';
+import type {
+  CompetitorMention,
+  Engine,
+  EngineCoverage,
+  EngineRow,
+  MatrixRow,
+  StoreProfile,
+} from '@wakeelcheck/core';
 import { parseJson, type LlmProvider } from '@wakeelcheck/llm';
 
 // ── تطبيع عربي ───────────────────────────────────────────────
@@ -62,6 +69,70 @@ const LETTER = /[\p{L}\p{N}]/u;
  * `\b` في JS لا يتعامل مع العربية، فنفحص المحرف المجاور يدوياً. بلا هذا
  * يطابق «دار» داخل «مدارس» ويُنتج ذكراً وهمياً.
  */
+/**
+ * اللواصق السابقة في العربية — مسرودة صراحةً لا مولَّدة بنمط.
+ *
+ * القائمة تُراجَع بالعين، والنمط لا يُراجَع. وكلّ إضافة هنا توسّع ما
+ * يُقبَل، فالصراحة أهمّ من الإيجاز.
+ *
+ * ما بعد الاسم لا يدخل هذه القائمة: «داري» ليست «دار».
+ */
+const PROCLITICS = new Set([
+  'و', 'ف', 'ب', 'ل', 'ك',
+  'ال', 'وال', 'فال', 'بال', 'كال',
+  'وبال', 'فبال', 'وكال', 'فكال',
+  'لل', 'ولل', 'فلل',
+  'وب', 'ول', 'وك', 'فب', 'فل', 'فك',
+]);
+
+/** اللواصق التي تحمل أل التعريف — أأمنها، لأنّ «ال» نادراً ما تكون من بنية الكلمة. */
+const WITH_ARTICLE = new Set([
+  'ال', 'وال', 'فال', 'بال', 'كال',
+  'وبال', 'فبال', 'وكال', 'فكال',
+  'لل', 'ولل', 'فلل',
+]);
+
+/**
+ * هل ما قبل الاسم لاصقةٌ سابقة لا جزءٌ من كلمة؟
+ *
+ * ثلاثة شروط معاً:
+ * ① ما بين حدّ الكلمة وبداية الاسم لاصقةٌ من القائمة أعلاه.
+ * ② اللاصقة نفسها على حدّ كلمة — وإلّا فنحن داخل كلمة أطول («لمدارس»).
+ * ③ اللاصقة الحاملة لأل التعريف تكفي وحدها؛ أمّا الحرف المفرد فيحتاج
+ *    اسماً من كلمتين أو أطول من أربعة أحرف.
+ *
+ * الشرط ③ هو ما يمنع التصادم: «وردة» كلمةٌ قائمة والواو من بنيتها، ولو
+ * قبلناها بلا شرط لطابقت «ردة». والاسم القصير من كلمة واحدة هو موضع
+ * التصادم، فيبقى خارج التسامح.
+ */
+function precededByProclitic(haystack: string, at: number, needle: string): boolean {
+  if (at === 0) return false;
+
+  let start = at;
+  while (start > 0 && LETTER.test(haystack[start - 1] ?? '')) start -= 1;
+
+  // ② اللاصقة نفسها لا بدّ أن تبدأ عند حدّ.
+  if (start === at) return false;
+
+  const prefix = haystack.slice(start, at);
+  if (!PROCLITICS.has(prefix)) return false;
+
+  if (WITH_ARTICLE.has(prefix)) return true;
+
+  // ③ الحرف المفرد وما يشبهه: تسامحٌ للأسماء المميّزة وحدها.
+  return needle.includes(' ') || needle.length > 4;
+}
+
+/**
+ * هل يرد الاسم في النص كلمةً قائمة؟
+ *
+ * `\b` لا تعمل مع العربية، فالحدّ يُفحص يدوياً. والسوابق الملتصقة جزءٌ
+ * من تعريف الحدّ لا استثناءٌ عليه: «وبيت الأناقة» تحمل «بيت الأناقة»،
+ * وإسقاطها كان يُنقص عدد المنافسين فيبدو المتجر أحسن حالاً ممّا هو —
+ * L-027.
+ *
+ * الاتجاه عند الشكّ واحد: نُسقط ولا نخترع. القاعدة 06.
+ */
 export function containsTerm(haystack: string, needle: string): boolean {
   if (needle.length < 3) return false;
 
@@ -74,7 +145,12 @@ export function containsTerm(haystack: string, needle: string): boolean {
     const afterIndex = at + needle.length;
     const after = afterIndex >= haystack.length ? '' : (haystack[afterIndex] ?? '');
 
-    if (!LETTER.test(before) && !LETTER.test(after)) return true;
+    // ما بعد الاسم يبقى تحت الشرط الأصلي في الحالتين.
+    if (!LETTER.test(after)) {
+      if (!LETTER.test(before)) return true;
+      if (precededByProclitic(haystack, at, needle)) return true;
+    }
+
     from = at + 1;
   }
 }
@@ -228,4 +304,146 @@ export function summarize(
     total: answers.length,
     ranked: [...counts.values()].sort((a, b) => b.mentions - a.mentions),
   };
+}
+
+/**
+ * الحضور لكل محرّك على حدة — أساس المصفوفة.
+ *
+ * البيانات كلّها موجودة أصلاً: كلّ `EngineAnswer` تحمل `engine`
+ * و`storeMentioned` و`competitors`. هذا تجميعٌ لا جمعُ بياناتٍ جديد.
+ *
+ * **مصدر «لم يُقَس».** الإصدار اقترح ربطها بـ`warnings`، وفضّلتُ الفرق بين
+ * `planned` و`answers`: المحرّك المطلوب الذي لم تعد منه إجابة واحدة لم
+ * يُقَس، سواءٌ سقط أو لم يُعَدّ أصلاً. هذا فرقٌ بنيوي، بينما `warnings`
+ * نصٌّ حرّ تحليلُه هشّ وينكسر بتغيير صياغة رسالة.
+ *
+ * والترتيب هو ترتيب `planned` لا ترتيب وصول الإجابات، فيبقى كلّ عمود في
+ * مكانه بين فحص وآخر.
+ */
+export function summarizeByEngine(
+  answers: readonly {
+    engine: Engine;
+    storeMentioned: boolean;
+    competitors: readonly CompetitorMention[];
+  }[],
+  planned: readonly Engine[]
+): EngineRow[] {
+  return planned.map((engine) => {
+    const mine = answers.filter((a) => a.engine === engine);
+
+    // لا إجابة ⇒ ثقب. عرضه غياباً يجعل التاجر يقرأ عطلاً عندنا
+    // غياباً عنده — القاعدة 06.
+    if (mine.length === 0) {
+      return { engine, coverage: 'not_measured', storeMentions: 0, answers: 0, ranked: [] };
+    }
+
+    // نفس مفتاح الهوية المستعمل في summarize: اختلاف التهجئة ليس منافساً
+    // جديداً، وإلّا حُسب في المرحلة 4 تغيُّراً أسبوعياً وهو الاسم نفسه.
+    const counts = new Map<string, { name: string; domain: string | null; mentions: number }>();
+
+    for (const a of mine) {
+      const withinAnswer = new Set<string>();
+
+      for (const competitor of a.competitors) {
+        const key = normalizeArabic(competitor.name);
+        if (withinAnswer.has(key)) continue;
+        withinAnswer.add(key);
+
+        const existing = counts.get(key);
+        if (existing === undefined) {
+          counts.set(key, { name: competitor.name, domain: competitor.domain, mentions: 1 });
+        } else {
+          existing.mentions++;
+          existing.domain ??= competitor.domain;
+        }
+      }
+    }
+
+    const storeMentions = mine.filter((a) => a.storeMentioned).length;
+
+    return {
+      engine,
+      coverage: storeMentions > 0 ? 'mentioned' : 'absent',
+      storeMentions,
+      answers: mine.length,
+      ranked: [...counts.values()]
+        .sort((a, b) => b.mentions - a.mentions)
+        .map((c) => ({ name: c.name, domain: c.domain, position: 1 })),
+    };
+  });
+}
+
+
+/**
+ * يبني شبكة المصفوفة من مخرَج `summarizeByEngine`.
+ *
+ * صفٌّ للمتجر ثمّ صفٌّ لكل منافس، وعمودٌ لكل محرّك. البنية هنا لا في
+ * المكوّن، لأنّ توحيد الهوية عبر المحرّكات منطقٌ يستحقّ اختباراً:
+ * «بيت الأناقة» من محرّك و«بيت الاناقه» من آخر صفٌّ واحد لا صفّان.
+ *
+ * وحالة الخانة تأتي من حالة العمود أولاً: عمودٌ لم يُقَس تكون كلّ خاناته
+ * `not_measured` — لا نقول عن منافسٍ إنّه غائبٌ من سطحٍ لم نسأله أصلاً.
+ */
+export function buildMatrix(
+  byEngine: readonly EngineRow[],
+  storeLabel: string
+): MatrixRow[] {
+  const engines = byEngine.map((r) => r.engine);
+
+  const storeRow: MatrixRow = {
+    name: storeLabel,
+    domain: null,
+    isStore: true,
+    cells: byEngine.map((r) => ({ engine: r.engine, state: r.coverage })),
+    present: byEngine.filter((r) => r.coverage === 'mentioned').length,
+    measured: byEngine.filter((r) => r.coverage !== 'not_measured').length,
+  };
+
+  // اتحاد المنافسين بمفتاح موحَّد، مع الاحتفاظ بأول تهجئة ظهرت.
+  const identity = new Map<string, { name: string; domain: string | null; at: Set<string> }>();
+
+  for (const row of byEngine) {
+    for (const competitor of row.ranked) {
+      const key = normalizeArabic(competitor.name);
+      const existing = identity.get(key);
+      if (existing === undefined) {
+        identity.set(key, {
+          name: competitor.name,
+          domain: competitor.domain,
+          at: new Set([row.engine]),
+        });
+      } else {
+        existing.at.add(row.engine);
+        existing.domain ??= competitor.domain;
+      }
+    }
+  }
+
+  const rivalRows: MatrixRow[] = [...identity.values()].map((c) => {
+    const cells = engines.map((engine) => {
+      const column = byEngine.find((r) => r.engine === engine);
+      // حالة العمود تسبق حضور الاسم: لا غيابَ من سطحٍ لم يُسأل.
+      const state: EngineCoverage =
+        column === undefined || column.coverage === 'not_measured'
+          ? 'not_measured'
+          : c.at.has(engine)
+            ? 'mentioned'
+            : 'absent';
+      return { engine, state };
+    });
+
+    return {
+      name: c.name,
+      domain: c.domain,
+      isStore: false,
+      cells,
+      present: cells.filter((x) => x.state === 'mentioned').length,
+      measured: cells.filter((x) => x.state !== 'not_measured').length,
+    };
+  });
+
+  // الأكثر حضوراً أولاً — التاجر يريد أن يعرف من يتصدّر عليه.
+  rivalRows.sort((a, b) => b.present - a.present);
+
+  return [storeRow, ...rivalRows];
 }

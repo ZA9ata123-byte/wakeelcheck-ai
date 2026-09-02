@@ -12,7 +12,14 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import type { ScanResult, SecurityFinding, RuleResult, EngineAnswer } from '../packages/core/src/index.ts';
+import type {
+  EngineAnswer,
+  ObservedDifference,
+  RivalProfile,
+  RuleResult,
+  ScanResult,
+  SecurityFinding,
+} from '../packages/core/src/index.ts';
 
 interface Specimen {
   generatedAt: string;
@@ -24,6 +31,7 @@ interface Specimen {
 
 const spec = JSON.parse(readFileSync('docs/specimen/report.json', 'utf8')) as Specimen;
 const r = spec.result;
+const rivals = r.rivals ?? null;
 
 // ── أدوات ────────────────────────────────────────────────────
 
@@ -130,6 +138,44 @@ function findingRow(f: SecurityFinding): string {
       <p class="f-d">${esc(f.detail.ar)}</p>
       <p class="f-e lt">${esc(f.evidence)}</p>
     </div>`;
+}
+
+function skipWhy(reason: string): string {
+  return reason === 'no_domain'
+    ? 'ذُكر بلا نطاق'
+    : reason === 'unreachable'
+      ? 'نطاقه لم يستجب'
+      : 'خارج السقف';
+}
+
+/** بطاقة منافس: رقمه، وما سبقك فيه، وما سبقتَه فيه. */
+function rivalCard(rv: RivalProfile): string {
+  const diffs = (list: readonly ObservedDifference[], withEvidence: boolean): string =>
+    list.length === 0
+      ? '<p class="lede" style="margin:0">— لا شيء</p>'
+      : list
+          .map(
+            (d) =>
+              `<div class="fh"><span>${esc(d.detail.ar)}</span>` +
+              (withEvidence
+                ? `<span class="lt" dir="ltr">${esc(d.evidence)}</span>`
+                : `<span class="lt">${esc(d.ruleKey)}</span>`) +
+              '</div>'
+          )
+          .join('');
+
+  return `<div class="fix">
+    <div class="fh">
+      <span><strong>${esc(rv.name)}</strong> <span class="lt">${esc(rv.domain)}</span></span>
+      <span class="lt" dir="ltr">${rv.score}% · ${rv.present}/${rv.measured}</span>
+    </div>
+    <div style="padding:10px 0">
+      <div class="eyebrow">ضبطه ولم يضبطه المتجر — ${rv.ahead.length}</div>
+      ${diffs(rv.ahead, true)}
+      <div class="eyebrow" style="margin-top:12px">ضبطه المتجر ولم يضبطه — ${rv.behind.length}</div>
+      ${diffs(rv.behind, false)}
+    </div>
+  </div>`;
 }
 
 const fixes = r.rules.filter((x) => !x.passed && typeof x.fixSnippet === 'string' && x.fixSnippet.length > 0);
@@ -320,10 +366,32 @@ td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:left
 </section>
 
 ${
+  rivals === null || rivals.profiled.length === 0
+    ? ''
+    : `<section>
+  <div class="eyebrow">04 · المنافسون</div>
+  <h2>${rivals.profiled.length} منافساً فُحص بنفس القواعد</h2>
+  <p class="lede">
+    من سبق المتجر في الإجابات فُحص بنفس القواعد وبنفس الميزان. ما يظهر
+    <strong>اختلاف مرصود</strong> لا سبب مُثبَت: أن يضبط منافسٌ قاعدةً وأن يظهر
+    أمامك واقعتان رأيناهما، وأنّ الأولى صنعت الثانية ادّعاءٌ لم يُقَس.
+  </p>
+  ${rivals.profiled.map(rivalCard).join('')}
+  ${
+    rivals.skipped.length === 0
+      ? ''
+      : `<p class="lede" style="margin:0">لم يُفحص: ${rivals.skipped
+          .map((m) => `${esc(m.name)} <span class="lt">(${skipWhy(m.reason)})</span>`)
+          .join(' · ')}</p>`
+  }
+</section>`
+}
+
+${
   fixes.length === 0
     ? ''
     : `<section>
-  <div class="eyebrow">04 · الإصلاح</div>
+  <div class="eyebrow">05 · الإصلاح</div>
   <h2>كود جاهز للصق</h2>
   <p class="lede">
     كل قاعدة راسبة لها إصلاح حقيقي تُرفَق به. قاعدة بلا إصلاح تُنتج ضجيجاً في

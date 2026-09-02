@@ -264,6 +264,14 @@ export interface ScanResult {
   security: SecurityFinding[];
   rules: RuleResult[];
   shareOfVoice: ShareOfVoice;
+  /**
+   * ملفّ المنافسين — اختياري عمداً.
+   *
+   * فحص المنافسين زياراتُ شبكة إضافية، وموضعُ تشغيلها (نفس الطلب أو طلبٌ
+   * ثانٍ أو عامل) قرارٌ ينتظر قياس مهلة Vercel (#9). فالحقل غيابُه حالةٌ
+   * مشروعة تعني «لم يُطلب بعد» لا «لا منافس له».
+   */
+  rivals?: RivalReport;
   error?: string;
 }
 

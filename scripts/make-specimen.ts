@@ -17,7 +17,13 @@
 
 import { writeFileSync } from 'node:fs';
 import type { FetchResult } from '../packages/core/src/index.ts';
-import { runScan, type PipelineDeps, type SecurityCollected } from '../packages/pipeline/src/index.ts';
+import {
+  profileRivals,
+  runScan,
+  type PipelineDeps,
+  type SecurityCollected,
+} from '../packages/pipeline/src/index.ts';
+import { buildMatrix } from '../packages/visibility/src/index.ts';
 import { fakeProvider } from '../packages/llm/src/index.ts';
 
 const DOMAIN = 'nourabaya.sa';
@@ -110,15 +116,106 @@ function page(url: string, body: string): FetchResult {
   return { status: 200, headers: HEADERS, body, ttfbMs: 340, finalUrl: url, redirects: 0 };
 }
 
+// ── المنافسان ────────────────────────────────────────────────
+
+/**
+ * بيت الأناقة: منافس مضبوط. مخطّط منتج كامل وسعر متّسق وrobots يرحّب.
+ * هو ما يجعل عمود «سبقك فيه» غير فارغ في النموذج.
+ */
+const RIVAL_ONE_HOME = `<!doctype html>
+<html lang="ar" dir="rtl"><head>
+  <title>بيت الأناقة — عبايات الرياض</title>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization",
+   "name":"بيت الأناقة","url":"https://baitalabaya.sa"}
+  </script>
+</head><body>
+  <h1>بيت الأناقة</h1>
+  <img src="/img/hero.jpg" alt="واجهة المتجر">
+  <a href="/products/abaya-royal">عباية ملكية</a>
+</body></html>`;
+
+const RIVAL_ONE_PRODUCT = `<!doctype html>
+<html lang="ar" dir="rtl"><head>
+  <title>عباية ملكية — بيت الأناقة</title>
+  <meta property="og:price:amount" content="389.00">
+  <meta property="og:price:currency" content="SAR">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Product","name":"عباية ملكية",
+   "brand":{"@type":"Brand","name":"بيت الأناقة"},
+   "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"212"},
+   "offers":{"@type":"Offer","price":"389.00","priceCurrency":"SAR",
+             "availability":"https://schema.org/InStock"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[]}
+  </script>
+</head><body>
+  <h1>عباية ملكية</h1>
+  <img src="/img/royal-1.jpg" alt="عباية ملكية أمامية">
+  <img src="/img/royal-2.jpg" alt="عباية ملكية خلفية">
+</body></html>`;
+
+const RIVAL_ONE_ROBOTS = `User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+Sitemap: https://baitalabaya.sa/sitemap.xml
+`;
+
+/**
+ * أناقتي: منافس أضعف — يحجب GPTBot وبلا مخطّط منتج.
+ * وجودُه يمنع النموذج من الإيحاء بأن كل منافس متفوّق في كل شيء.
+ */
+const RIVAL_TWO_HOME = `<!doctype html>
+<html lang="ar" dir="rtl"><head><title>أناقتي</title></head>
+<body><h1>أناقتي</h1><h1>العروض</h1>
+<img src="/img/a.jpg">
+<a href="/products/abaya-basic">عباية بسيطة</a>
+</body></html>`;
+
+const RIVAL_TWO_PRODUCT = `<!doctype html>
+<html lang="ar" dir="rtl"><head><title>عباية بسيطة — أناقتي</title></head>
+<body><h1>عباية بسيطة</h1><img src="/img/b.jpg"></body></html>`;
+
+const RIVAL_TWO_ROBOTS = `User-agent: GPTBot
+Disallow: /
+
+User-agent: *
+Allow: /
+`;
+
 const PAGES: Record<string, string> = {
   [`https://${DOMAIN}/`]: HOME,
   [`https://${DOMAIN}/products/abaya-classic`]: PRODUCT_A,
   [`https://${DOMAIN}/products/abaya-summer`]: PRODUCT_B,
+
+  'https://baitalabaya.sa/': RIVAL_ONE_HOME,
+  'https://baitalabaya.sa/products/abaya-royal': RIVAL_ONE_PRODUCT,
+  'https://anaqati.sa/': RIVAL_TWO_HOME,
+  'https://anaqati.sa/products/abaya-basic': RIVAL_TWO_PRODUCT,
 };
 
 const TEXTS: Record<string, string> = {
   [`https://${DOMAIN}/robots.txt`]: ROBOTS,
   [`https://${DOMAIN}/sitemap.xml`]: SITEMAP,
+
+  'https://baitalabaya.sa/robots.txt': RIVAL_ONE_ROBOTS,
+  'https://anaqati.sa/robots.txt': RIVAL_TWO_ROBOTS,
 };
 
 /**
@@ -219,6 +316,24 @@ const { result, costMicros, warnings } = await runScan(
   deps
 );
 
+// ── ملفّ المنافسين ───────────────────────────────────────────
+//
+// يُستدعى صراحةً بعد الفحص، لا داخله: زيارة كل منافس تضيف زمناً، وموضع
+// تشغيلها ينتظر قياس مهلة Vercel (#9). النموذج يُظهر الشكل النهائي.
+
+const matrix = buildMatrix(result.shareOfVoice.byEngine, 'متجرك');
+const wSumAll = result.rules.reduce((a, r) => a + r.weight, 0);
+const wGotAll = result.rules.reduce((a, r) => a + (r.passed ? r.weight : 0), 0);
+
+const rivals = await profileRivals(
+  matrix,
+  result.rules,
+  wSumAll === 0 ? 0 : Math.round((wGotAll / wSumAll) * 100),
+  { fetchPage: deps.fetchPage, fetchText: deps.fetchText }
+);
+
+result.rivals = rivals;
+
 const out = {
   generatedAt: NOW.toISOString(),
   note:
@@ -241,5 +356,14 @@ console.log(`الأمن          ${result.security.length} نتيجة`);
 console.log(`الإجابات       ${result.answers.length}`);
 console.log(`حصة الصوت      ${result.shareOfVoice.store} / ${result.shareOfVoice.total}`);
 console.log(`التكلفة        $${(costMicros / 1e6).toFixed(4)}`);
+console.log(
+  `المنافسون      ${rivals.profiled.length} مفحوص · ${rivals.skipped.length} متروك · سقف ${rivals.cap}`
+);
+for (const r of rivals.profiled) {
+  console.log(
+    `  ${r.name.padEnd(14)} ${String(r.score).padStart(3)}%  ` +
+      `سبقك في ${r.ahead.length} · سبقتَه في ${r.behind.length}`
+  );
+}
 if (warnings.length > 0) console.log(`تحذيرات        ${warnings.join(' · ')}`);
 console.log('\n→ docs/specimen/report.json');

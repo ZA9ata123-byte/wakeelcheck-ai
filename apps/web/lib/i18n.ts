@@ -73,6 +73,26 @@ export const copy = {
     cellAbsent: 'لم يُذكر',
     cellNotMeasured: 'لم يُقَس',
     notMeasuredNote: '«لم يُقَس» ليست غياباً — السطح لم يُسأل اليوم، ولا نعرض ما لم نقسه.',
+    // ── ملفّ المنافس ─────────────────────────────────────────
+    rivalTab: 'المنافسون',
+    rivalTitle: 'ماذا يفعلون ولا تفعله؟',
+    rivalLede:
+      'فحصنا من سبقك في الإجابات بنفس القواعد التي فُحصت بها. ما تراه اختلافٌ رصدناه، لا سبباً أثبتناه.',
+    rivalEmpty: 'شغّل فحصاً لنرى من يسبقك، وبأيّ اختلاف.',
+    rivalAhead: 'ضبطه ولم تضبطه',
+    rivalBehind: 'ضبطتَه ولم يضبطه',
+    rivalScore: 'جاهزيته',
+    rivalYouScore: 'جاهزيتك',
+    rivalSeen: 'ظهر في',
+    rivalNothingAhead: 'لا شيء ضبطه وفاتك — أنت أمامه في كل ما قِسناه.',
+    rivalNothingBehind: 'لا شيء ضبطتَه وفاته.',
+    rivalCapNote: 'فحصنا أعلى المنافسين حضوراً فقط',
+    rivalSkippedTitle: 'لم نفحصهم',
+    rivalNoDomain: 'ذُكر بلا نطاق — لا موقع نفحصه',
+    rivalOverCap: 'خارج السقف',
+    rivalUnreachable: 'نطاقه لم يستجب',
+    rivalCausality:
+      'هذه اختلافات مرصودة بين متجرك ومتجره. أنّ أحدها سبب ظهوره أمامك احتمالٌ لم نقسه، ولا ندّعيه.',
     // ── الشاشة الجديدة (اتجاه المصمم) ────────────────────────
     tabEvidence: 'الدليل',
     tabReadiness: 'الجاهزية',
@@ -225,6 +245,26 @@ export const copy = {
     cellAbsent: 'Not named',
     cellNotMeasured: 'Not measured',
     notMeasuredNote: '“Not measured” is not absence — that surface was not asked today, and we do not show what we did not measure.',
+    // ── the rival profile ────────────────────────────────────
+    rivalTab: 'Rivals',
+    rivalTitle: 'What do they do that you don’t?',
+    rivalLede:
+      'We scanned whoever came ahead of you in the answers, with the same rules we scanned you with. What you see is a difference we observed, not a cause we proved.',
+    rivalEmpty: 'Run a scan to see who is ahead of you, and by what difference.',
+    rivalAhead: 'They have it, you don’t',
+    rivalBehind: 'You have it, they don’t',
+    rivalScore: 'Their readiness',
+    rivalYouScore: 'Yours',
+    rivalSeen: 'Named in',
+    rivalNothingAhead: 'Nothing they have that you lack — you are ahead on everything we measured.',
+    rivalNothingBehind: 'Nothing you have that they lack.',
+    rivalCapNote: 'We scanned only the most-present rivals',
+    rivalSkippedTitle: 'Not scanned',
+    rivalNoDomain: 'Named without a domain — no site to scan',
+    rivalOverCap: 'Beyond the cap',
+    rivalUnreachable: 'Their domain did not respond',
+    rivalCausality:
+      'These are differences observed between your store and theirs. That one of them is why they rank ahead is a possibility we did not measure, and do not claim.',
     // ── the new screen (designer's direction) ────────────────
     tabEvidence: 'Evidence',
     tabReadiness: 'Readiness',

@@ -130,5 +130,15 @@ export async function profileRivals(
     });
   }
 
-  return { profiled, skipped: missed, cap, storeScore };
+  // ترتيب الاختيار يجيب «من يسبقك في الظهور» — وهو سؤال الفحص. أمّا ترتيب
+  // التقرير فيجيب «ممّن تتعلّم أكثر»: الأكثر سبقاً أولاً، لأن قائمة إصلاحك
+  // تُبنى منه. وعند التساوي يعود الحضور حكماً، ثم الاسم فيثبت الترتيب.
+  const ranked = profiled.sort(
+    (a, b) =>
+      b.ahead.length - a.ahead.length ||
+      b.present - a.present ||
+      a.name.localeCompare(b.name, 'ar')
+  );
+
+  return { profiled: ranked, skipped: missed, cap, storeScore };
 }

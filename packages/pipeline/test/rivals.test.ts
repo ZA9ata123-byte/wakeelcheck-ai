@@ -189,3 +189,28 @@ test('بلا منافسين لا شبكة ولا انكسار', async () => {
   assert.deepEqual(report.profiled, []);
   assert.deepEqual(report.skipped, []);
 });
+
+test('التقرير يبدأ بمن تتعلّم منه أكثر', async () => {
+  // منافسان: واحد مضبوط وآخر ضعيف. الأكثر سبقاً يتصدّر مهما كان اسمه.
+  const deps = rivalDeps({
+    async fetchPage(url) {
+      if (url.includes('weak.sa')) return page('<html><body><h1>ضعيف</h1></body></html>', url);
+      return url.includes('/products/') ? page(RIVAL_PRODUCT, url) : page(RIVAL_HOME, url);
+    },
+    async fetchText(url) {
+      if (!url.endsWith('/robots.txt')) return null;
+      return url.includes('weak.sa') ? 'User-agent: GPTBot\nDisallow: /\n' : 'User-agent: *\nAllow: /\n';
+    },
+  });
+
+  const report = await profileRivals(
+    [row('ضعيف', 5, 'weak.sa'), row('قويّ', 4, 'anaqa.sa')],
+    STORE_ALL_FAILING,
+    20,
+    deps
+  );
+
+  const [first, second] = report.profiled;
+  assert.equal(first?.domain, 'anaqa.sa', 'الأكثر سبقاً أولاً وإن كان أقل حضوراً');
+  assert.ok((first?.ahead.length ?? 0) > (second?.ahead.length ?? 0));
+});

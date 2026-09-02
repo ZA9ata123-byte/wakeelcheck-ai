@@ -28,10 +28,11 @@ import {
   Menu,
   Search,
   Shield,
+  Users,
 } from '@/components/icons';
 
 type Phase = 'idle' | 'running' | 'result' | 'failed';
-type Tab = 'evidence' | 'matrix' | 'readiness' | 'security';
+type Tab = 'evidence' | 'matrix' | 'rivals' | 'readiness' | 'security';
 
 /** اسم الشدّة بلغة الزائر — الشدّة نفسها محسوبة في packages/security. */
 function severityLabel(sev: string, t: Copy): string {
@@ -71,6 +72,7 @@ function engineLabel(engine: string): string {
   if (engine === 'ai_overviews') return 'AI Overviews';
   if (engine === 'ai_mode') return 'AI Mode';
   if (engine === 'perplexity') return 'Perplexity';
+  if (engine === 'copilot') return 'Copilot';
   return engine;
 }
 
@@ -194,6 +196,10 @@ export default function Experience({ locale }: { locale: Locale }) {
     sov === null || sov.byEngine.length === 0 ? [] : buildMatrix(sov.byEngine, t.matrixYou);
   const columns = sov?.byEngine.map((r) => r.engine) ?? [];
   const measuredColumns = sov?.byEngine.filter((r) => r.coverage !== 'not_measured').length ?? 0;
+
+  // اختياري في العقد: غيابُه «لم يُطلب بعد» لا «لا منافس له».
+  const rivalReport = scan?.rivals ?? null;
+  const profiledRivals = rivalReport?.profiled ?? [];
 
   const rules = scan?.rules ?? [];
   const findings = scan?.security ?? [];
@@ -465,7 +471,7 @@ export default function Experience({ locale }: { locale: Locale }) {
         </div>
 
         <div className="report-tabs" id="report" role="tablist">
-          {(['evidence', 'matrix', 'readiness', 'security'] as const).map((key) => (
+          {(['evidence', 'matrix', 'rivals', 'readiness', 'security'] as const).map((key) => (
             <button
               key={key}
               type="button"
@@ -476,19 +482,25 @@ export default function Experience({ locale }: { locale: Locale }) {
             >
               {key === 'evidence' && <Search size={17} />}
               {key === 'matrix' && <Grid size={17} />}
+              {key === 'rivals' && <Users size={17} />}
               {key === 'readiness' && <Check size={17} />}
               {key === 'security' && <Shield size={17} />}
               {key === 'evidence'
                 ? t.tabEvidence
                 : key === 'matrix'
                   ? t.matrixTab
-                  : key === 'readiness'
-                    ? t.tabReadiness
-                    : t.tabSecurity}
+                  : key === 'rivals'
+                    ? t.rivalTab
+                    : key === 'readiness'
+                      ? t.tabReadiness
+                      : t.tabSecurity}
               {key === 'matrix' && matrix.length > 0 && (
                 <span className="tab-n lt">
                   {matrix[0]?.present ?? 0}/{matrix[0]?.measured ?? 0}
                 </span>
+              )}
+              {key === 'rivals' && profiledRivals.length > 0 && (
+                <span className="tab-n lt">{profiledRivals.length}</span>
               )}
               {key === 'readiness' && s !== null && <span className="tab-n lt">{s.passed}/{s.total}</span>}
               {key === 'security' && findings.length > 0 && (
@@ -582,6 +594,115 @@ export default function Experience({ locale }: { locale: Locale }) {
 
                 {/* القاعدة 06 مكتوبةً للتاجر لا مفترَضةً عليه. */}
                 <p className="matrix-note">{t.notMeasuredNote}</p>
+              </>
+            )}
+          </div>
+        )}
+
+        {tab === 'rivals' && (
+          <div className="panel-wide">
+            <div className="panel-head">
+              <span className="mono-label">{t.reportKicker}</span>
+              <h2>{t.rivalTitle}</h2>
+              <p>{t.rivalLede}</p>
+            </div>
+
+            {profiledRivals.length === 0 ? (
+              <p className="panel-empty">{t.rivalEmpty}</p>
+            ) : (
+              <>
+                <div className="rival-list">
+                  {profiledRivals.map((rival) => (
+                    <article key={rival.domain} className="rival-card">
+                      <header className="rival-head">
+                        <div className="rival-id">
+                          <h3 className="rival-name">{rival.name}</h3>
+                          <span className="rival-domain">{rival.domain}</span>
+                        </div>
+                        <div className="rival-figures">
+                          <span className="rival-seen">
+                            {t.rivalSeen}{' '}
+                            <span dir="ltr">
+                              {rival.present}/{rival.measured}
+                            </span>
+                          </span>
+                          <span className="rival-score">
+                            <span className="rival-score-label">{t.rivalScore}</span>{' '}
+                            <span dir="ltr">{rival.score}%</span>
+                            <span className="rival-mine">
+                              {' · '}
+                              {t.rivalYouScore}{' '}
+                              <span dir="ltr">{rivalReport?.storeScore ?? 0}%</span>
+                            </span>
+                          </span>
+                        </div>
+                      </header>
+
+                      <div className="rival-cols">
+                        <section className="rival-col rival-col-ahead">
+                          <h4 className="rival-col-title">{t.rivalAhead}</h4>
+                          {rival.ahead.length === 0 ? (
+                            <p className="rival-none">{t.rivalNothingAhead}</p>
+                          ) : (
+                            <ul className="rival-diffs">
+                              {rival.ahead.map((diff) => (
+                                <li key={diff.ruleKey} className="rival-diff">
+                                  <span className="rival-diff-text">
+                                    {locale === 'ar' ? diff.detail.ar : diff.detail.en}
+                                  </span>
+                                  <code className="rival-diff-evidence" dir="ltr">
+                                    {diff.evidence}
+                                  </code>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </section>
+
+                        <section className="rival-col rival-col-behind">
+                          <h4 className="rival-col-title">{t.rivalBehind}</h4>
+                          {rival.behind.length === 0 ? (
+                            <p className="rival-none">{t.rivalNothingBehind}</p>
+                          ) : (
+                            <ul className="rival-diffs">
+                              {rival.behind.map((diff) => (
+                                <li key={diff.ruleKey} className="rival-diff">
+                                  <span className="rival-diff-text">
+                                    {locale === 'ar' ? diff.detail.ar : diff.detail.en}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </section>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                {/* من لم يُفحص يُذكر بسببه — القاعدة 06 على من غاب كما على من حضر. */}
+                {(rivalReport?.skipped.length ?? 0) > 0 && (
+                  <div className="rival-skipped">
+                    <h4 className="rival-skipped-title">{t.rivalSkippedTitle}</h4>
+                    <ul className="rival-skipped-list">
+                      {rivalReport?.skipped.map((miss) => (
+                        <li key={`${miss.name}-${miss.reason}`} className="rival-skipped-row">
+                          <span className="rival-skipped-name">{miss.name}</span>
+                          <span className="rival-skipped-why">
+                            {miss.reason === 'no_domain'
+                              ? t.rivalNoDomain
+                              : miss.reason === 'unreachable'
+                                ? t.rivalUnreachable
+                                : `${t.rivalOverCap} (${t.rivalCapNote} — ${rivalReport.cap})`}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* لا ننسب سبقاً إلى قاعدة — القاعدة 06 على السببية. */}
+                <p className="matrix-note">{t.rivalCausality}</p>
               </>
             )}
           </div>

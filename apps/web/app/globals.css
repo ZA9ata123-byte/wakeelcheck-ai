@@ -2011,3 +2011,190 @@ html[lang='en'] mark.rival::after {
   color: var(--faint);
   box-shadow: none;
 }
+
+/* ── ملفّ المنافس ──────────────────────────────────────── */
+/*
+ * لا محدِّد على عنصر هنا — L-025: `li span` يغلب صنفاً يُضاف بعده،
+ * فيضيع التنسيق بلا خطأ. كل قاعدة على صنف صريح.
+ */
+
+.rival-list {
+  display: grid;
+  gap: 16px;
+}
+
+.rival-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--sheet);
+  padding: 20px;
+}
+
+.rival-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rival-id {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.rival-name {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.rival-domain {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.rival-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.rival-seen {
+  color: var(--muted);
+}
+
+.rival-score {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.rival-score-label,
+.rival-mine {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.rival-cols {
+  display: grid;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+@media (min-width: 760px) {
+  .rival-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rival-col-title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* لونٌ يفصل الاتجاهين بلا أن يحكم: ما فاتك يُقرأ أولاً. */
+.rival-col-ahead {
+  border-inline-start: 2px solid var(--rival);
+  padding-inline-start: 12px;
+}
+
+.rival-col-behind {
+  border-inline-start: 2px solid var(--present-line);
+  padding-inline-start: 12px;
+}
+
+.rival-diffs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.rival-diff {
+  display: grid;
+  gap: 4px;
+}
+
+.rival-diff-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+/*
+ * الدليل حرفيّ كما خرج من القاعدة — يُعرض ولا يُعاد صوغه (القاعدة 05).
+ * ولأنه تقنيّ لاتينيّ داخل صفحة عربية، يحتاج عزلاً: بلا `unicode-bidi`
+ * يقلب المحرّك `@type organization found` إلى `type organization found@`،
+ * فيقرأ التاجر دليلاً مشوّهاً ويظنّه خطأ عندنا.
+ */
+.rival-diff-evidence {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  background: var(--sheet-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 7px;
+  overflow-wrap: anywhere;
+}
+
+.rival-none {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.rival-skipped {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background: var(--sheet-2);
+}
+
+.rival-skipped-title {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rival-skipped-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.rival-skipped-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.rival-skipped-name {
+  color: var(--ink);
+}
+
+.rival-skipped-why {
+  color: var(--muted);
+}

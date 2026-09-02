@@ -133,6 +133,8 @@ const productSchemaRules: Rule[] = PRODUCT_SCHEMAS.map(({ key, type, weight, ar,
   key,
   weight,
   active: true,
+  // `passed` أدناه يشترط `!onHome` صراحةً: بلا صفحة منتج لا سبيل للنجاح.
+  needs: 'products',
   evaluate(ctx) {
     const { facts, onHome } = productFacts(ctx);
     const hits = facts.filter((f) => f.types.has(type)).length;
@@ -383,3 +385,13 @@ export const ACTIVE_RULES: readonly Rule[] = [
   singleH1,
   imageAlt,
 ];
+
+/**
+ * مفاتيح القواعد التي لا تُقاس بلا صفحة منتج.
+ *
+ * مشتقّة من السجلّ نفسه لا مكتوبة يدوياً: قائمةٌ ثانية تتأخّر عن الأولى.
+ * ويحرس `test/needs.test.ts` أنّ الوسم مطابق للواقع لا للنيّة.
+ */
+export const PRODUCT_RULE_KEYS: ReadonlySet<string> = new Set(
+  ACTIVE_RULES.filter((r) => r.needs === 'products').map((r) => r.key)
+);

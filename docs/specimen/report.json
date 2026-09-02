@@ -648,6 +648,166 @@
           ]
         }
       ]
+    },
+    "rivals": {
+      "profiled": [
+        {
+          "name": "بيت الأناقة",
+          "domain": "baitalabaya.sa",
+          "present": 4,
+          "measured": 4,
+          "score": 94,
+          "ahead": [
+            {
+              "ruleKey": "robots.gptbot",
+              "weight": 10,
+              "detail": {
+                "ar": "ChatGPT مسموح له صراحةً بقراءة متجرك",
+                "en": "ChatGPT is explicitly welcomed"
+              },
+              "evidence": "User-agent: GPTBot → welcomed"
+            },
+            {
+              "ruleKey": "schema.product",
+              "weight": 10,
+              "detail": {
+                "ar": "مخطط المنتج موجود في صفحات منتجاتك",
+                "en": "Product schema found on product pages"
+              },
+              "evidence": "1/1 of 1 product page(s) carry @type product"
+            },
+            {
+              "ruleKey": "consistency.price",
+              "weight": 9,
+              "detail": {
+                "ar": "الأسعار متطابقة بين Schema و OpenGraph و HTML",
+                "en": "Price matches across Schema, OpenGraph and HTML"
+              },
+              "evidence": "1 product page(s) — schema=389.00 og=389.00 microdata=—"
+            },
+            {
+              "ruleKey": "schema.rating",
+              "weight": 7,
+              "detail": {
+                "ar": "مخطط التقييمات موجود في صفحات منتجاتك",
+                "en": "AggregateRating schema found on product pages"
+              },
+              "evidence": "1/1 of 1 product page(s) carry @type aggregaterating"
+            },
+            {
+              "ruleKey": "schema.organization",
+              "weight": 7,
+              "detail": {
+                "ar": "هوية المتجر معرّف برمجياً",
+                "en": "Organization schema present"
+              },
+              "evidence": "@type organization found"
+            },
+            {
+              "ruleKey": "schema.brand",
+              "weight": 5,
+              "detail": {
+                "ar": "مخطط العلامة موجود في صفحات منتجاتك",
+                "en": "Brand schema found on product pages"
+              },
+              "evidence": "1/1 of 1 product page(s) carry @type brand"
+            },
+            {
+              "ruleKey": "schema.breadcrumb",
+              "weight": 5,
+              "detail": {
+                "ar": "مسار التصفح معرّف برمجياً",
+                "en": "BreadcrumbList schema present"
+              },
+              "evidence": "@type breadcrumblist found"
+            },
+            {
+              "ruleKey": "semantic.image_alt",
+              "weight": 5,
+              "detail": {
+                "ar": "100% من الصور تحمل نصاً بديلاً — الوكيل يقرأ الصور عبره",
+                "en": "100% of images carry alt text"
+              },
+              "evidence": "2/2 images on 1 product page(s)"
+            }
+          ],
+          "behind": [
+            {
+              "ruleKey": "machine.sitemap",
+              "weight": 6,
+              "detail": {
+                "ar": "خريطة الموقع متاحة",
+                "en": "sitemap.xml is reachable"
+              },
+              "evidence": "HEAD https://nourabaya.sa/sitemap.xml → 200"
+            }
+          ]
+        },
+        {
+          "name": "أناقتي",
+          "domain": "anaqati.sa",
+          "present": 4,
+          "measured": 4,
+          "score": 32,
+          "ahead": [],
+          "behind": [
+            {
+              "ruleKey": "schema.offer",
+              "weight": 10,
+              "detail": {
+                "ar": "مخطط العرض والسعر موجود في صفحات منتجاتك",
+                "en": "Offer schema found on product pages"
+              },
+              "evidence": "1/2 of 2 product page(s) carry @type offer"
+            },
+            {
+              "ruleKey": "consistency.availability",
+              "weight": 7,
+              "detail": {
+                "ar": "حالة التوفر معلنة برمجياً",
+                "en": "Availability is declared"
+              },
+              "evidence": "1/2 of 2 product page(s) declare availability"
+            },
+            {
+              "ruleKey": "consistency.currency",
+              "weight": 6,
+              "detail": {
+                "ar": "العملة معلنة برمجياً",
+                "en": "Currency is declared"
+              },
+              "evidence": "2/2 of 2 product page(s) declare currency"
+            },
+            {
+              "ruleKey": "machine.sitemap",
+              "weight": 6,
+              "detail": {
+                "ar": "خريطة الموقع متاحة",
+                "en": "sitemap.xml is reachable"
+              },
+              "evidence": "HEAD https://nourabaya.sa/sitemap.xml → 200"
+            },
+            {
+              "ruleKey": "robots.sitemap_listed",
+              "weight": 5,
+              "detail": {
+                "ar": "خريطة الموقع مذكورة في robots.txt",
+                "en": "Sitemap declared in robots.txt"
+              },
+              "evidence": "https://nourabaya.sa/sitemap.xml"
+            }
+          ]
+        }
+      ],
+      "skipped": [
+        {
+          "name": "لمسة رقي",
+          "domain": null,
+          "reason": "no_domain"
+        }
+      ],
+      "cap": 3,
+      "storeScore": 56
     }
   }
 }

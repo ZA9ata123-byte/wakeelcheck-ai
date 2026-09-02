@@ -75,6 +75,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -123,6 +128,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -171,6 +181,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -219,6 +234,11 @@
             "name": "أناقتي",
             "domain": "anaqati.sa",
             "position": 1
+          },
+          {
+            "name": "بيت الأناقة",
+            "domain": "baitalabaya.sa",
+            "position": 2
           }
         ],
         "capturedAt": "2026-08-28T09:14:00.000Z",
@@ -539,8 +559,8 @@
     "shareOfVoice": {
       "store": 0,
       "top": {
-        "name": "أناقتي",
-        "domain": "anaqati.sa",
+        "name": "بيت الأناقة",
+        "domain": "baitalabaya.sa",
         "position": 1
       },
       "total": 8,
@@ -578,6 +598,11 @@
               "name": "أناقتي",
               "domain": "anaqati.sa",
               "position": 1
+            },
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
+              "position": 1
             }
           ]
         },
@@ -613,6 +638,11 @@
             {
               "name": "أناقتي",
               "domain": "anaqati.sa",
+              "position": 1
+            },
+            {
+              "name": "بيت الأناقة",
+              "domain": "baitalabaya.sa",
               "position": 1
             }
           ]

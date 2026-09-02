@@ -69,6 +69,70 @@ const LETTER = /[\p{L}\p{N}]/u;
  * `\b` في JS لا يتعامل مع العربية، فنفحص المحرف المجاور يدوياً. بلا هذا
  * يطابق «دار» داخل «مدارس» ويُنتج ذكراً وهمياً.
  */
+/**
+ * اللواصق السابقة في العربية — مسرودة صراحةً لا مولَّدة بنمط.
+ *
+ * القائمة تُراجَع بالعين، والنمط لا يُراجَع. وكلّ إضافة هنا توسّع ما
+ * يُقبَل، فالصراحة أهمّ من الإيجاز.
+ *
+ * ما بعد الاسم لا يدخل هذه القائمة: «داري» ليست «دار».
+ */
+const PROCLITICS = new Set([
+  'و', 'ف', 'ب', 'ل', 'ك',
+  'ال', 'وال', 'فال', 'بال', 'كال',
+  'وبال', 'فبال', 'وكال', 'فكال',
+  'لل', 'ولل', 'فلل',
+  'وب', 'ول', 'وك', 'فب', 'فل', 'فك',
+]);
+
+/** اللواصق التي تحمل أل التعريف — أأمنها، لأنّ «ال» نادراً ما تكون من بنية الكلمة. */
+const WITH_ARTICLE = new Set([
+  'ال', 'وال', 'فال', 'بال', 'كال',
+  'وبال', 'فبال', 'وكال', 'فكال',
+  'لل', 'ولل', 'فلل',
+]);
+
+/**
+ * هل ما قبل الاسم لاصقةٌ سابقة لا جزءٌ من كلمة؟
+ *
+ * ثلاثة شروط معاً:
+ * ① ما بين حدّ الكلمة وبداية الاسم لاصقةٌ من القائمة أعلاه.
+ * ② اللاصقة نفسها على حدّ كلمة — وإلّا فنحن داخل كلمة أطول («لمدارس»).
+ * ③ اللاصقة الحاملة لأل التعريف تكفي وحدها؛ أمّا الحرف المفرد فيحتاج
+ *    اسماً من كلمتين أو أطول من أربعة أحرف.
+ *
+ * الشرط ③ هو ما يمنع التصادم: «وردة» كلمةٌ قائمة والواو من بنيتها، ولو
+ * قبلناها بلا شرط لطابقت «ردة». والاسم القصير من كلمة واحدة هو موضع
+ * التصادم، فيبقى خارج التسامح.
+ */
+function precededByProclitic(haystack: string, at: number, needle: string): boolean {
+  if (at === 0) return false;
+
+  let start = at;
+  while (start > 0 && LETTER.test(haystack[start - 1] ?? '')) start -= 1;
+
+  // ② اللاصقة نفسها لا بدّ أن تبدأ عند حدّ.
+  if (start === at) return false;
+
+  const prefix = haystack.slice(start, at);
+  if (!PROCLITICS.has(prefix)) return false;
+
+  if (WITH_ARTICLE.has(prefix)) return true;
+
+  // ③ الحرف المفرد وما يشبهه: تسامحٌ للأسماء المميّزة وحدها.
+  return needle.includes(' ') || needle.length > 4;
+}
+
+/**
+ * هل يرد الاسم في النص كلمةً قائمة؟
+ *
+ * `\b` لا تعمل مع العربية، فالحدّ يُفحص يدوياً. والسوابق الملتصقة جزءٌ
+ * من تعريف الحدّ لا استثناءٌ عليه: «وبيت الأناقة» تحمل «بيت الأناقة»،
+ * وإسقاطها كان يُنقص عدد المنافسين فيبدو المتجر أحسن حالاً ممّا هو —
+ * L-027.
+ *
+ * الاتجاه عند الشكّ واحد: نُسقط ولا نخترع. القاعدة 06.
+ */
 export function containsTerm(haystack: string, needle: string): boolean {
   if (needle.length < 3) return false;
 
@@ -81,7 +145,12 @@ export function containsTerm(haystack: string, needle: string): boolean {
     const afterIndex = at + needle.length;
     const after = afterIndex >= haystack.length ? '' : (haystack[afterIndex] ?? '');
 
-    if (!LETTER.test(before) && !LETTER.test(after)) return true;
+    // ما بعد الاسم يبقى تحت الشرط الأصلي في الحالتين.
+    if (!LETTER.test(after)) {
+      if (!LETTER.test(before)) return true;
+      if (precededByProclitic(haystack, at, needle)) return true;
+    }
+
     from = at + 1;
   }
 }

@@ -5,6 +5,7 @@ import {
   buildEngines,
   parsePerplexityResponse,
   chatGptEngine,
+  copilotEngine,
   parseDataForSeo,
   parseOpenAiResponse,
   urlsIn,
@@ -164,7 +165,16 @@ test('buildEngines returns only what is actually configured', () => {
     dataforseoPassword: 'p',
     perplexityApiKey: 'pplx-test',
   });
-  assert.deepEqual(all.map((e) => e.engine), ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity']);
+  // copilot يدخل ببيانات DataForSEO نفسها — سطحُ Bing على الحساب ذاته.
+  // «مبنيّ» لا يعني «مُشغَّل»: `PLANS` لا تُدرجه، ويحرس ذلك
+  // `packages/pipeline/test/plans.test.ts`.
+  assert.deepEqual(all.map((e) => e.engine), [
+    'chatgpt',
+    'ai_overviews',
+    'ai_mode',
+    'perplexity',
+    'copilot',
+  ]);
 
   // مفتاح Perplexity وحده يكفي لإدراجه — ولا يجرّ معه محرّكاً آخر
   const onlyPplx = buildEngines({
@@ -238,4 +248,41 @@ test('perplexity: an empty answer is empty — it is not passed off as a result'
     text: '',
     citedUrls: [],
   });
+});
+
+// ── Copilot ──────────────────────────────────────────────────
+
+test('copilot يُبنى ببيانات DataForSEO نفسها', () => {
+  const engine = copilotEngine({ login: 'user', password: 'pass' });
+
+  assert.equal(engine.engine, 'copilot');
+  assert.equal(engine.available, true);
+});
+
+test('copilot بلا بيانات اعتماد لا يُنادى ولا يدّعي', () => {
+  const engine = copilotEngine({ login: null, password: null });
+
+  assert.equal(engine.available, false);
+});
+
+test('copilot يقرأ ردّ DataForSEO بنفس المحلّل', () => {
+  // السطح يختلف والبنية واحدة: tasks → result → items.
+  const payload = {
+    tasks: [
+      {
+        result: [
+          {
+            items: [
+              { type: 'ai_overview', text: 'أفضل متجر عبايات هو بيت الأناقة.',
+                url: 'https://baitalabaya.sa' },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  const { text, citedUrls } = parseDataForSeo(payload);
+  assert.ok(text.includes('بيت الأناقة'));
+  assert.deepEqual(citedUrls, ['https://baitalabaya.sa']);
 });

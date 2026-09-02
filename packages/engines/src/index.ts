@@ -238,6 +238,24 @@ export function aiModeEngine(opts: DataForSeoOptions): EngineClient {
   return dataForSeoEngine('ai_mode', '/v3/serp/google/ai_mode/live/advanced', opts);
 }
 
+/**
+ * Copilot عبر سطح Bing في DataForSEO.
+ *
+ * لا واجهة استهلاكية لـCopilot: واجهة بحث Bing أُغلقت في أغسطس 2025، وما
+ * تبقّى مؤسسيّ يجيب من بيانات المؤسسة لا من الويب. فالطريق الوحيد سطحُ
+ * Bing عند DataForSEO — **نفس الحساب ونفس بيانات الاعتماد** ونفس المحلّل.
+ *
+ * ⚠️ **المسار غير مثبَّت.** لم يُنادَ بعدُ نداءً حقيقياً واحداً، وDataForSEO
+ * تُصدر مسارات أسطح جديدة أسرع من دورة إصدارنا. لهذا:
+ *   ① يبقى خارج كل `ScanPlan` حتى يُثبَّت — فلا يظهر عموداً ولا يُكلّف،
+ *   ② `path` قابل للضبط فيُصحَّح بلا إصدار.
+ *
+ * القاعدة 06: لا نعرض «Copilot» في تقرير تاجر قبل ردٍّ حيّ واحد يُثبته.
+ */
+export function copilotEngine(opts: DataForSeoOptions): EngineClient {
+  return dataForSeoEngine('copilot', '/v3/serp/bing/organic/live/advanced', opts);
+}
+
 // ── Perplexity ──────────────────────────────────────────────
 
 /**
@@ -367,5 +385,7 @@ export function buildEngines(env: EngineEnv): EngineClient[] {
     aiOverviewsEngine(dfs),
     aiModeEngine(dfs),
     perplexityEngine({ apiKey: env.perplexityApiKey }),
+    // مبنيّ ومتاح ببيانات DataForSEO نفسها، وغير مُدرَج في أي خطّة بعد.
+    copilotEngine(dfs),
   ].filter((client) => client.available);
 }

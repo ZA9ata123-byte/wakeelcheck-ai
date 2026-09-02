@@ -7,7 +7,14 @@
 
 export type Platform = 'salla' | 'zid' | 'shopify' | 'woocommerce' | 'magento' | 'custom';
 
-export type Engine = 'chatgpt' | 'ai_overviews' | 'ai_mode' | 'perplexity';
+/**
+ * الأسطح التي نسأل.
+ *
+ * إضافة عضو هنا **لا تُشغّله**: `ScanPlan.engines` تعدّد صراحةً ما يُسأل،
+ * وما لم يُذكر فيها لا يُنادى ولا يُكلّف ولا يظهر عموداً. يحرس ذلك اختبارٌ
+ * في `packages/pipeline`.
+ */
+export type Engine = 'chatgpt' | 'ai_overviews' | 'ai_mode' | 'perplexity' | 'copilot';
 
 export type ScanKind = 'quick' | 'full' | 'monitor';
 

@@ -72,6 +72,7 @@ function engineLabel(engine: string): string {
   if (engine === 'ai_overviews') return 'AI Overviews';
   if (engine === 'ai_mode') return 'AI Mode';
   if (engine === 'perplexity') return 'Perplexity';
+  if (engine === 'copilot') return 'Copilot';
   return engine;
 }
 

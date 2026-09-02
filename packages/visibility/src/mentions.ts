@@ -7,7 +7,7 @@
  * الفعلي في النص قبل قبوله.
  */
 
-import type { CompetitorMention, StoreProfile } from '@wakeelcheck/core';
+import type { CompetitorMention, Engine, EngineRow, StoreProfile } from '@wakeelcheck/core';
 import { parseJson, type LlmProvider } from '@wakeelcheck/llm';
 
 // ── تطبيع عربي ───────────────────────────────────────────────
@@ -228,4 +228,71 @@ export function summarize(
     total: answers.length,
     ranked: [...counts.values()].sort((a, b) => b.mentions - a.mentions),
   };
+}
+
+/**
+ * الحضور لكل محرّك على حدة — أساس المصفوفة.
+ *
+ * البيانات كلّها موجودة أصلاً: كلّ `EngineAnswer` تحمل `engine`
+ * و`storeMentioned` و`competitors`. هذا تجميعٌ لا جمعُ بياناتٍ جديد.
+ *
+ * **مصدر «لم يُقَس».** الإصدار اقترح ربطها بـ`warnings`، وفضّلتُ الفرق بين
+ * `planned` و`answers`: المحرّك المطلوب الذي لم تعد منه إجابة واحدة لم
+ * يُقَس، سواءٌ سقط أو لم يُعَدّ أصلاً. هذا فرقٌ بنيوي، بينما `warnings`
+ * نصٌّ حرّ تحليلُه هشّ وينكسر بتغيير صياغة رسالة.
+ *
+ * والترتيب هو ترتيب `planned` لا ترتيب وصول الإجابات، فيبقى كلّ عمود في
+ * مكانه بين فحص وآخر.
+ */
+export function summarizeByEngine(
+  answers: readonly {
+    engine: Engine;
+    storeMentioned: boolean;
+    competitors: readonly CompetitorMention[];
+  }[],
+  planned: readonly Engine[]
+): EngineRow[] {
+  return planned.map((engine) => {
+    const mine = answers.filter((a) => a.engine === engine);
+
+    // لا إجابة ⇒ ثقب. عرضه غياباً يجعل التاجر يقرأ عطلاً عندنا
+    // غياباً عنده — القاعدة 06.
+    if (mine.length === 0) {
+      return { engine, coverage: 'not_measured', storeMentions: 0, answers: 0, ranked: [] };
+    }
+
+    // نفس مفتاح الهوية المستعمل في summarize: اختلاف التهجئة ليس منافساً
+    // جديداً، وإلّا حُسب في المرحلة 4 تغيُّراً أسبوعياً وهو الاسم نفسه.
+    const counts = new Map<string, { name: string; domain: string | null; mentions: number }>();
+
+    for (const a of mine) {
+      const withinAnswer = new Set<string>();
+
+      for (const competitor of a.competitors) {
+        const key = normalizeArabic(competitor.name);
+        if (withinAnswer.has(key)) continue;
+        withinAnswer.add(key);
+
+        const existing = counts.get(key);
+        if (existing === undefined) {
+          counts.set(key, { name: competitor.name, domain: competitor.domain, mentions: 1 });
+        } else {
+          existing.mentions++;
+          existing.domain ??= competitor.domain;
+        }
+      }
+    }
+
+    const storeMentions = mine.filter((a) => a.storeMentioned).length;
+
+    return {
+      engine,
+      coverage: storeMentions > 0 ? 'mentioned' : 'absent',
+      storeMentions,
+      answers: mine.length,
+      ranked: [...counts.values()]
+        .sort((a, b) => b.mentions - a.mentions)
+        .map((c) => ({ name: c.name, domain: c.domain, position: 1 })),
+    };
+  });
 }

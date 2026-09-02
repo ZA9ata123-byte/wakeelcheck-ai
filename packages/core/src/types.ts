@@ -122,6 +122,73 @@ export interface MatrixRow {
   measured: number;
 }
 
+/**
+ * لماذا لم يُفحص منافسٌ ظهر في المصفوفة.
+ *
+ * يُذكر ولا يُحذف. منافسٌ سقط بلا سبب معروض يجعل التاجر يقرأ القائمة
+ * كاملةً وهي ناقصة — القاعدة 06 على من غاب كما على من حضر.
+ */
+export type RivalSkipReason =
+  /** اسمٌ بلا نطاق: لا شيء نفحصه. */
+  | 'no_domain'
+  /** تجاوز السقف — السقف يحمي الزمن والميزانية، لا يخفي أحداً. */
+  | 'over_cap'
+  /** النطاق موجود ولم يُجب. */
+  | 'unreachable';
+
+export interface RivalSkipped {
+  name: string;
+  domain: string | null;
+  reason: RivalSkipReason;
+}
+
+/**
+ * اختلافٌ **مرصود** بين المتجر ومنافس — قاعدةٌ ضبطها أحدهما دون الآخر.
+ *
+ * «مرصود» لا «سبب». أن يضبط منافسٌ قاعدةً وأن يظهر في سبعة محرّكات
+ * واقعتان رأيناهما؛ وأنّ الأولى هي ما صنعت الثانية ادّعاءٌ لم نقسه.
+ * القاعدة 06 على السببية كما هي على الأرقام: لا نسبة بلا دليل.
+ *
+ * `evidence` من الطرف الذي **نجح** دائماً — هو وحده عنده ما يُرى.
+ */
+export interface ObservedDifference {
+  ruleKey: string;
+  weight: number;
+  detail: Bilingual;
+  evidence: string;
+}
+
+/** منافسٌ فُحص بنفس القواعد التي فُحص بها المتجر. */
+export interface RivalProfile {
+  name: string;
+  domain: string;
+  /** كم محرّكاً ذكره — وهو سبب اختياره للفحص. */
+  present: number;
+  /** كم محرّكاً قِيس فعلاً، فلا يُقرأ «٣ من ٧» وقد قِيس أربعة. */
+  measured: number;
+  /** جاهزيته بنفس الميزان الموزون — قابلة للمقارنة برقم المتجر. */
+  score: number;
+  /** ما ضبطه ولم يضبطه المتجر، الأثقل وزناً أولاً — ترتيب الإصلاح. */
+  ahead: readonly ObservedDifference[];
+  /** ما ضبطه المتجر ولم يضبطه — يوازن الصورة فلا تُقرأ إدانةً. */
+  behind: readonly ObservedDifference[];
+}
+
+/**
+ * ملفّ المنافسين: من يسبقك، وبأي اختلافٍ مرصود.
+ *
+ * السقف جزءٌ من التقرير لا إعداد مخفيّ: من رأى ثلاثة وجب أن يعرف أنّ
+ * ثلاثة هو ما فُحص، لا ما وُجد.
+ */
+export interface RivalReport {
+  profiled: readonly RivalProfile[];
+  skipped: readonly RivalSkipped[];
+  /** السقف المطبَّق فعلاً. */
+  cap: number;
+  /** درجة المتجر وقت المقارنة — بلا مرجع لا معنى لرقم المنافس. */
+  storeScore: number;
+}
+
 export interface ShareOfVoice {
   /** كم مرة ذُكر المتجر من إجمالي الإجابات. */
   store: number;

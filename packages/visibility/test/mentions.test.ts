@@ -88,7 +88,7 @@ test('competitors are extracted and ordered by first appearance', async () => {
     })
   );
 
-  const found = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
+  const { competitors: found } = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
 
   assert.deepEqual(
     found.map((c) => c.name),
@@ -113,7 +113,7 @@ test('a competitor the model invented is dropped', async () => {
     })
   );
 
-  const found = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
+  const { competitors: found } = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
 
   assert.deepEqual(found.map((c) => c.name), ['بيت العباية']);
 });
@@ -129,7 +129,7 @@ test('the store itself is never listed as its own competitor', async () => {
     })
   );
 
-  const found = await extractCompetitors(text, PROFILE, llm, 'دار الأناقة');
+  const { competitors: found } = await extractCompetitors(text, PROFILE, llm, 'دار الأناقة');
 
   assert.deepEqual(found.map((c) => c.name), ['بيت العباية']);
 });
@@ -144,33 +144,38 @@ test('duplicate names collapse to one mention', async () => {
     })
   );
 
-  assert.equal((await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة')).length, 1);
+  assert.equal((await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة')).competitors.length, 1);
 });
 
 test('a malformed model reply yields no competitors rather than garbage', async () => {
   const llm = scripted('عذراً، لم أفهم الطلب');
-  assert.deepEqual(await extractCompetitors(ANSWER, PROFILE, llm), []);
+  const { competitors, costMicros } = await extractCompetitors(ANSWER, PROFILE, llm);
+
+  assert.deepEqual(competitors, []);
+  // الردّ معطوب والنداء قد وقع — الكلفة تُحسب على ما صُرف لا على ما نجح.
+  assert.ok(costMicros >= 0);
 });
 
 test('JSON wrapped in a code fence is still read', async () => {
   const llm = scripted('```json\n{"competitors":[{"name":"لمسة رقي","domain":null}]}\n```');
-  const found = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
+  const { competitors: found } = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
 
   assert.deepEqual(found.map((c) => c.name), ['لمسة رقي']);
 });
 
 test('JSON preceded by chatter is still read', async () => {
   const llm = scripted('بالتأكيد! إليك النتيجة: {"competitors":[{"name":"أناقتي","domain":null}]}');
-  const found = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
+  const { competitors: found } = await extractCompetitors(ANSWER, PROFILE, llm, 'دار الأناقة');
 
   assert.deepEqual(found.map((c) => c.name), ['أناقتي']);
 });
 
 test('an empty answer costs no model call', async () => {
   const llm = fakeProvider({ fallbackReply: '{"competitors":[{"name":"شيء","domain":null}]}' });
-  const found = await extractCompetitors('   ', PROFILE, llm);
+  const { competitors, costMicros } = await extractCompetitors('   ', PROFILE, llm);
 
-  assert.deepEqual(found, []);
+  assert.deepEqual(competitors, []);
+  assert.equal(costMicros, 0, 'no call, no cost');
   assert.equal(llm.calls.length, 0, 'no request should be sent');
 });
 

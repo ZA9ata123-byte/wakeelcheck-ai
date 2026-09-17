@@ -207,13 +207,26 @@ interface ExtractedShape {
  * تخترع أسماء تبدو معقولة، ومنافس مخترع في تقرير يُقدَّم كدليل يُدمّر
  * مصداقية المنتج كله.
  */
+export interface ExtractedCompetitors {
+  competitors: CompetitorMention[];
+  /**
+   * كلفة نداء الاستخراج.
+   *
+   * تُعاد ولا تُبتلع. الفحص الكامل يستخرج من أربعين إجابة، فأربعون نداءً
+   * لا تُحسب تجعل الرقم المعروض أقلّ ممّا صُرف — وعليه يقف سقفُ الإنفاق.
+   * نفس عقد `buildProfile` و`generateQuestions`.
+   */
+  costMicros: number;
+}
+
 export async function extractCompetitors(
   answerText: string,
   profile: StoreProfile,
   llm: LlmProvider,
   brandName?: string
-): Promise<CompetitorMention[]> {
-  if (answerText.trim().length === 0) return [];
+): Promise<ExtractedCompetitors> {
+  // نصٌّ فارغ لا يُنادى عليه أصلاً — فلا كلفة.
+  if (answerText.trim().length === 0) return { competitors: [], costMicros: 0 };
 
   const response = await llm.complete({
     system: EXTRACT_SYSTEM,
@@ -227,7 +240,9 @@ export async function extractCompetitors(
   try {
     parsed = parseJson<ExtractedShape>(response.text);
   } catch {
-    return []; // ردّ معطوب: لا منافسين خير من منافسين مخترعين
+    // ردّ معطوب: لا منافسين خير من منافسين مخترعين — لكنّ النداء كلّف،
+    // والكلفة تُحسب على ما صُرف لا على ما نجح.
+    return { competitors: [], costMicros: response.costMicros };
   }
 
   const haystack = normalizeArabic(answerText);
@@ -260,9 +275,12 @@ export async function extractCompetitors(
   }
 
   // الترتيب بموضع الظهور، ثم إعادة الترقيم من 1.
-  return out
-    .sort((a, b) => a.position - b.position)
-    .map((mention, index) => ({ ...mention, position: index + 1 }));
+  return {
+    competitors: out
+      .sort((a, b) => a.position - b.position)
+      .map((mention, index) => ({ ...mention, position: index + 1 })),
+    costMicros: response.costMicros,
+  };
 }
 
 // ── حصة الصوت ────────────────────────────────────────────────

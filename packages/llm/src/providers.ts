@@ -31,6 +31,14 @@ export interface FakeOptions {
   fallbackReply?: string;
   /** يرمي خطأً دائماً — لاختبار السقوط. */
   alwaysFail?: string;
+  /**
+   * كلفة يعيدها كلُّ نداء. الافتراضي صفر.
+   *
+   * بلا هذا لا تُختبر محاسبةُ الكلفة أصلاً: كلُّ مسار يمرّ بالمزوّد الوهمي
+   * يقرأ صفراً، فنداءٌ تُبتلع كلفتُه يبدو كنداءٍ بلا كلفة. وعلى هذا الرقم
+   * يقف سقفُ الإنفاق في `scripts/review-batch.ts`.
+   */
+  costMicrosPerCall?: number;
 }
 
 /**
@@ -59,7 +67,7 @@ export function fakeProvider(opts: FakeOptions = {}): FakeProvider {
 
       return {
         text,
-        costMicros: 0,
+        costMicros: opts.costMicrosPerCall ?? 0,
         provider: 'fake',
         inputTokens: estimateTokens(req.system + req.user),
         outputTokens: estimateTokens(text),

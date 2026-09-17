@@ -82,6 +82,20 @@ export const PLANS: Record<ScanKind, ScanPlan> = {
 export interface ScanRequest {
   url: string;
   kind: ScanKind;
+  /**
+   * سقفٌ زمنيّ للفحص بالمللي ثانية. غيابُه يعني بلا سقف.
+   *
+   * من يستدعي الفحص وحده يعرف مهلتَه: مسارُ الويب له سقفُ المنصّة، والعامل
+   * له سقفٌ أوسع. فيُمرَّر ولا يُفترض.
+   *
+   * وأثرُه أن نتوقّف عن **بدء** نداءٍ جديد بعد انقضاء السقف، لا أن نقطع
+   * نداءً جارياً: النداء الجاري دُفع ثمنُه، وقطعُه يُضيّع المال والإجابة
+   * معاً. فقد يتجاوز الفحص السقفَ بمقدار أطولِ نداءٍ واحدٍ في الطريق.
+   *
+   * وما لم يُسأل يبقى **غير مقيس** لا غائباً: عمودٌ لم تعد منه إجابة
+   * يُعرض `not_measured` — القاعدة 06.
+   */
+  budgetMs?: number;
 }
 
 export interface ScanOutcome {
@@ -119,6 +133,13 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
   const id = deps.newId();
   const warnings: string[] = [];
   let costMicros = 0;
+
+  // الساعة محقونة كغيرها. القياس من أول سطر: السقف يشمل الفحص كلّه لا
+  // مرحلةَ المحرّكات وحدها.
+  const startedAt = deps.now().getTime();
+  const budgetMs = req.budgetMs ?? null;
+  const outOfTime = (): boolean =>
+    budgetMs !== null && deps.now().getTime() - startedAt >= budgetMs;
 
   const note = (step: string, err: unknown): void => {
     warnings.push(`${step}: ${err instanceof Error ? err.message : String(err)}`);
@@ -221,6 +242,19 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
   await Promise.all(
     plan.engines.map(async (engine, ei) => {
       for (const [qi, question] of questions.entries()) {
+        // لا نبدأ نداءً لن يُسلَّم. ما بقي من أسئلة هذا المحرّك يبقى غير
+        // مقيس، ويُصرَّح به — ولا يُعرض غياباً.
+        if (outOfTime()) {
+          const left = questions.length - qi;
+          engineWarnings.push({
+            qi,
+            ei,
+            step: `${engine}/budget`,
+            err: new Error(`توقّف عند السقف الزمني — ${left} سؤالاً لم يُسأل`),
+          });
+          break;
+        }
+
         try {
           const reply = await deps.askEngine(engine, question.text, profile.locale);
           costMicros += reply.costMicros;

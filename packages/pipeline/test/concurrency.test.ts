@@ -247,3 +247,65 @@ test('كلفة الاستخراج تُحسب — لا تُبتلع', async () =>
   assert.equal(costMicros, (2 + extractions) * 100);
   assert.ok(result.answers.every((a) => a.costMicros === 100), 'كلّ إجابة تحمل كلفتها');
 });
+
+// ── السقف الزمنيّ ────────────────────────────────────────────
+
+/** ساعةٌ تتقدّم بمقدارٍ ثابت عند كلّ قراءة — حتميّة وبلا انتظارٍ حقيقي. */
+function ticking(startMs: number, stepMs: number): () => Date {
+  let t = startMs;
+  return () => {
+    const at = t;
+    t += stepMs;
+    return new Date(at);
+  };
+}
+
+test('السقف الزمني يوقف ما لم يُسأل ولا يقطع ما يجري', async () => {
+  let asked = 0;
+
+  const { result, warnings } = await runScan(
+    { url: 'daralanaqa.sa', kind: 'full', budgetMs: 1000 },
+    deps({
+      now: ticking(NOW.getTime(), 120),
+      async askEngine() {
+        asked += 1;
+        return { text: ANSWER, citedUrls: [], costMicros: 0 };
+      },
+    })
+  );
+
+  assert.equal(result.status, 'done', 'نتيجةٌ جزئية نتيجة');
+  assert.ok(asked > 0, 'بدأ فعلاً');
+  assert.ok(
+    asked < QUESTIONS.length * PLANS.full.engines.length,
+    `توقّعنا توقّفاً قبل ${QUESTIONS.length * PLANS.full.engines.length} نداءً — وقع ${asked}`
+  );
+  assert.ok(warnings.some((w) => w.includes('السقف الزمني')), warnings.join(' | '));
+});
+
+test('بلا سقف لا يتوقّف شيء', async () => {
+  const { result } = await runScan(
+    { url: 'daralanaqa.sa', kind: 'full' },
+    deps({ now: ticking(NOW.getTime(), 5_000) })
+  );
+
+  assert.equal(
+    result.answers.length,
+    QUESTIONS.length * PLANS.full.engines.length,
+    'ساعةٌ تقفز خمس ثوانٍ لا تقطع شيئاً ما دام السقف غائباً'
+  );
+});
+
+test('ما لم يُسأل يُعرض «لم يُقَس» لا «غائب»', async () => {
+  // سقفٌ ضيّق جداً: لا محرّك يكمل. القاعدة 06 — عطلُنا ليس غيابَه.
+  const { result } = await runScan(
+    { url: 'daralanaqa.sa', kind: 'full', budgetMs: 1 },
+    deps({ now: ticking(NOW.getTime(), 50) })
+  );
+
+  assert.deepEqual(result.answers, []);
+  for (const row of result.shareOfVoice.byEngine) {
+    assert.equal(row.coverage, 'not_measured', `${row.engine} عُرض غياباً وهو لم يُقَس`);
+    assert.equal(row.answers, 0);
+  }
+});

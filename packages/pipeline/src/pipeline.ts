@@ -82,6 +82,20 @@ export const PLANS: Record<ScanKind, ScanPlan> = {
 export interface ScanRequest {
   url: string;
   kind: ScanKind;
+  /**
+   * سقفٌ زمنيّ للفحص بالمللي ثانية. غيابُه يعني بلا سقف.
+   *
+   * من يستدعي الفحص وحده يعرف مهلتَه: مسارُ الويب له سقفُ المنصّة، والعامل
+   * له سقفٌ أوسع. فيُمرَّر ولا يُفترض.
+   *
+   * وأثرُه أن نتوقّف عن **بدء** نداءٍ جديد بعد انقضاء السقف، لا أن نقطع
+   * نداءً جارياً: النداء الجاري دُفع ثمنُه، وقطعُه يُضيّع المال والإجابة
+   * معاً. فقد يتجاوز الفحص السقفَ بمقدار أطولِ نداءٍ واحدٍ في الطريق.
+   *
+   * وما لم يُسأل يبقى **غير مقيس** لا غائباً: عمودٌ لم تعد منه إجابة
+   * يُعرض `not_measured` — القاعدة 06.
+   */
+  budgetMs?: number;
 }
 
 export interface ScanOutcome {
@@ -119,6 +133,13 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
   const id = deps.newId();
   const warnings: string[] = [];
   let costMicros = 0;
+
+  // الساعة محقونة كغيرها. القياس من أول سطر: السقف يشمل الفحص كلّه لا
+  // مرحلةَ المحرّكات وحدها.
+  const startedAt = deps.now().getTime();
+  const budgetMs = req.budgetMs ?? null;
+  const outOfTime = (): boolean =>
+    budgetMs !== null && deps.now().getTime() - startedAt >= budgetMs;
 
   const note = (step: string, err: unknown): void => {
     warnings.push(`${step}: ${err instanceof Error ? err.message : String(err)}`);
@@ -194,37 +215,86 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
   }
 
   // ── 7. سؤال المحرّكات ───────────────────────────────────────
-  const answers: EngineAnswer[] = [];
+  //
+  // مسارٌ لكلّ محرّك: أسئلتُه بالتسلسل، والمسارات تجري معاً.
+  //
+  // كان الترتيب متسلسلاً تماماً — عشرةُ أسئلة × أربعةُ محرّكات = أربعون نداءً
+  // واحداً وراء الآخر، ومعها أربعون نداءَ استخراج. ثمانون رحلةَ شبكة في طلبٍ
+  // واحد، وهو ما يجعل الفحص الكامل مستحيلاً داخل أي مهلة معقولة.
+  //
+  // ولمَ لا نطلق الأربعين معاً؟ لأنّ لكلّ محرّك مزوّداً واحداً: أربعون نداءً
+  // متزامناً تعني أربعين على نفس الحساب، وهو ما يستدعي حدَّ المعدّل ويحرق
+  // الميزانية دفعةً. فالتقسيم بالمحرّك يُبقي نداءً واحداً في الطريق لكلّ
+  // مزوّد — يقسم الزمن على عدد المحرّكات ولا يضاعف الضغط على أحدها.
+  //
+  // والترتيب النهائي يُعاد فرزُه: تمامُ النداءات لا يأتي مرتَّباً، ونتيجةُ
+  // الفحص يجب ألّا تتغيّر بتغيّر سرعة الشبكة.
 
-  for (const question of questions) {
-    for (const engine of plan.engines) {
-      try {
-        const reply = await deps.askEngine(engine, question.text, profile.locale);
-        costMicros += reply.costMicros;
-
-        const competitors = await extractCompetitors(
-          reply.text,
-          profile,
-          deps.llm,
-          brandName ?? undefined
-        );
-
-        answers.push({
-          questionId: question.id,
-          engine,
-          // حرفياً كما خرج — القاعدة الملزمة رقم 05.
-          answerText: reply.text,
-          citedUrls: reply.citedUrls,
-          storeMentioned: detectStoreMention(reply.text, profile, brandName ?? undefined),
-          competitors,
-          capturedAt: deps.now().toISOString(),
-          costMicros: reply.costMicros,
-        });
-      } catch (err) {
-        note(`${engine}/${question.id}`, err);
-      }
-    }
+  interface Slot {
+    qi: number;
+    ei: number;
+    answer: EngineAnswer;
   }
+
+  const slots: Slot[] = [];
+  const engineWarnings: { qi: number; ei: number; step: string; err: unknown }[] = [];
+
+  await Promise.all(
+    plan.engines.map(async (engine, ei) => {
+      for (const [qi, question] of questions.entries()) {
+        // لا نبدأ نداءً لن يُسلَّم. ما بقي من أسئلة هذا المحرّك يبقى غير
+        // مقيس، ويُصرَّح به — ولا يُعرض غياباً.
+        if (outOfTime()) {
+          const left = questions.length - qi;
+          engineWarnings.push({
+            qi,
+            ei,
+            step: `${engine}/budget`,
+            err: new Error(`توقّف عند السقف الزمني — ${left} سؤالاً لم يُسأل`),
+          });
+          break;
+        }
+
+        try {
+          const reply = await deps.askEngine(engine, question.text, profile.locale);
+          costMicros += reply.costMicros;
+
+          const extracted = await extractCompetitors(
+            reply.text,
+            profile,
+            deps.llm,
+            brandName ?? undefined
+          );
+          costMicros += extracted.costMicros;
+
+          slots.push({
+            qi,
+            ei,
+            answer: {
+              questionId: question.id,
+              engine,
+              // حرفياً كما خرج — القاعدة الملزمة رقم 05.
+              answerText: reply.text,
+              citedUrls: reply.citedUrls,
+              storeMentioned: detectStoreMention(reply.text, profile, brandName ?? undefined),
+              competitors: extracted.competitors,
+              capturedAt: deps.now().toISOString(),
+              costMicros: reply.costMicros + extracted.costMicros,
+            },
+          });
+        } catch (err) {
+          // فشلُ نداءٍ واحد لا يُسقط مسارَه ولا بقيّةَ المسارات.
+          engineWarnings.push({ qi, ei, step: `${engine}/${question.id}`, err });
+        }
+      }
+    })
+  );
+
+  const byAskOrder = (a: { qi: number; ei: number }, b: { qi: number; ei: number }): number =>
+    a.qi - b.qi || a.ei - b.ei;
+
+  const answers: EngineAnswer[] = slots.sort(byAskOrder).map((s) => s.answer);
+  for (const w of engineWarnings.sort(byAskOrder)) note(w.step, w.err);
 
   // ── 8. الأمان ───────────────────────────────────────────────
   let security: SecurityFinding[] = [];

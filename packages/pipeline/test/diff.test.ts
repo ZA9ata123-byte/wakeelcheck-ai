@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import type {
   CompetitorMention,
   Engine,
+  EngineAnswer,
   EngineCoverage,
   EngineRow,
   RuleResult,
@@ -34,17 +35,39 @@ function rule(key: string, passed: boolean, weight = 5, ar = key): RuleResult {
   return { key, passed, weight, detail: { ar, en: key }, evidence: '' };
 }
 
-function scan(byEngine: EngineRow[], rules: RuleResult[] = []): ScanResult {
+const Q = 'وش أفضل متجر عبايات في الرياض؟';
+
+/**
+ * فحصٌ كما يُبنى الحقيقيّ: سؤالٌ، ثم إجاباتٌ، ثم ملخّص.
+ *
+ * كان يُبنى من الملخّص وحده بلا إجابات — شيءٌ لا يحدث في الواقع. و`diffScans`
+ * صارت تحكم على الإجابات المشتركة لا على الملخّص، فالتجهيزة تُنشئ لكلّ صفٍّ
+ * مقيس إجابةً على السؤال `Q`. والنيّة في كلّ اختبارٍ أدناه لم تتغيّر.
+ */
+function scan(byEngine: EngineRow[], rules: RuleResult[] = [], question = Q): ScanResult {
+  const answers: EngineAnswer[] = byEngine
+    .filter((r) => r.coverage !== 'not_measured')
+    .map((r) => ({
+      questionId: 'q1',
+      engine: r.engine,
+      answerText: '…',
+      citedUrls: [],
+      storeMentioned: r.coverage === 'mentioned',
+      competitors: [...r.ranked],
+      capturedAt: '2026-10-08T00:00:00Z',
+      costMicros: 0,
+    }));
+
   return {
     id: 'x',
     kind: 'full',
     status: 'done',
     profile: null,
-    questions: [],
-    answers: [],
+    questions: [{ id: 'q1', text: question, intent: 'discovery' }],
+    answers,
     security: [],
     rules,
-    shareOfVoice: { store: 0, top: null, total: 1, byEngine },
+    shareOfVoice: { store: 0, top: null, total: answers.length, byEngine },
   };
 }
 
@@ -234,4 +257,125 @@ test('فحصان فارغان لا ينكسران ولا يُنبّهان', () =
   assert.deepEqual(d.competitors, []);
   assert.deepEqual(d.rules, []);
   assert.equal(d.changed, false);
+});
+
+// ── الشبيه بالشبيه — ما يمنع التنبيه الكاذب الأسبوعيّ ────────
+
+interface Asked {
+  id: string;
+  text: string;
+  engine: Engine;
+  mentioned: boolean;
+  competitors?: string[];
+}
+
+/** فحصٌ بأسئلةٍ وإجاباتٍ صريحة — لاختبار ما سُئل في الفحصين. */
+function asked(items: Asked[]): ScanResult {
+  const questions = [...new Map(items.map((i) => [i.id, { id: i.id, text: i.text, intent: 'discovery' as const }])).values()];
+  const answers: EngineAnswer[] = items.map((i) => ({
+    questionId: i.id,
+    engine: i.engine,
+    answerText: '…',
+    citedUrls: [],
+    storeMentioned: i.mentioned,
+    competitors: (i.competitors ?? []).map((name, n) => mention(name, n + 1)),
+    capturedAt: '2026-10-08T00:00:00Z',
+    costMicros: 0,
+  }));
+  const engines = [...new Set(items.map((i) => i.engine))];
+  const byEngine: EngineRow[] = engines.map((engine) => {
+    const mine = answers.filter((a) => a.engine === engine);
+    return engineRow(engine, mine.some((a) => a.storeMentioned) ? 'mentioned' : 'absent');
+  });
+
+  return { ...scan(byEngine), questions, answers };
+}
+
+test('أسئلةٌ مختلفة لا تُقارَن — ولا خبر', () => {
+  // الأسبوع الماضي ذُكر المتجر في سؤال، وهذا الأسبوع لم يُذكر في سؤالٍ آخر.
+  // الملخّص يقول «اختفى». والحقيقة: سُئل غيرُ ما سُئل.
+  const d = diffScans(
+    asked([{ id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: true }]),
+    asked([{ id: 'q1', text: 'أرخص عباية مع توصيل؟', engine: 'chatgpt', mentioned: false }])
+  );
+
+  assert.equal(d.comparedQuestions, 0);
+  assert.equal(d.engines[0]?.direction, null, 'لا حكم بين سؤالين مختلفين');
+  assert.equal(d.changed, false);
+  // والعرض يبقى حقيقة كلّ فحص كما هي.
+  assert.equal(d.engines[0]?.before, 'mentioned');
+  assert.equal(d.engines[0]?.after, 'absent');
+});
+
+test('السؤال نفسه بمعرّفٍ آخر يُقارَن', () => {
+  // المطابقة على النصّ لا على المعرّف: `q3` أسبوعاً هو `q1` أسبوعاً آخر.
+  const d = diffScans(
+    asked([{ id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: true }]),
+    asked([{ id: 'q3', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: false }])
+  );
+
+  assert.equal(d.comparedQuestions, 1);
+  assert.equal(d.engines[0]?.direction, 'lost');
+});
+
+test('ذِكرٌ في سؤالٍ لم يُسأل هذا الأسبوع ليس اختفاءً', () => {
+  // التنبيه الكاذب الذي كان سيصل كلّ أسبوع: الملخّص «ذُكر ← لم يُذكر»، لأن
+  // السؤال الذي ذُكر فيه لم يُسأل. على المشترك وحده: لم يُذكر ← لم يُذكر.
+  const d = diffScans(
+    asked([
+      { id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: false },
+      { id: 'q2', text: 'عبايات فاخرة بالرياض؟', engine: 'chatgpt', mentioned: true },
+    ]),
+    asked([{ id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: false }])
+  );
+
+  assert.equal(d.engines[0]?.before, 'mentioned', 'الملخّص كان سيقول «اختفى»');
+  assert.equal(d.engines[0]?.direction, 'unchanged', 'والمشترك يقول: لا تغيّر');
+  assert.equal(d.changed, false);
+});
+
+test('منافسٌ في سؤالٍ غير مشترك ليس منافساً جديداً', () => {
+  const d = diffScans(
+    asked([{ id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: false, competitors: ['بيت الأناقة'] }]),
+    asked([
+      { id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned: false, competitors: ['بيت الأناقة'] },
+      { id: 'q2', text: 'سؤالٌ جديد هذا الأسبوع؟', engine: 'chatgpt', mentioned: false, competitors: ['لمسة رقي'] },
+    ])
+  );
+
+  assert.deepEqual(d.competitors, [], '«لمسة رقي» ظهرت في سؤالٍ لم يُسأل قبلاً');
+});
+
+test('النصّ يُطابَق بعد التطبيع — مسافةٌ أو تشكيلٌ لا يصنع سؤالاً آخر', () => {
+  const d = diffScans(
+    asked([{ id: 'q1', text: 'أفضلُ متجرِ عبايات؟', engine: 'chatgpt', mentioned: true }]),
+    asked([{ id: 'q1', text: '  أفضل متجر عبايات؟ ', engine: 'chatgpt', mentioned: true }])
+  );
+
+  assert.equal(d.comparedQuestions, 1);
+  assert.equal(d.engines[0]?.direction, 'unchanged');
+});
+
+test('عدد الأسئلة المشتركة يُحسب مرّةً لكلّ سؤال لا لكلّ محرّك', () => {
+  const both = (mentioned: boolean) =>
+    asked([
+      { id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'chatgpt', mentioned },
+      { id: 'q1', text: 'أفضل متجر عبايات؟', engine: 'perplexity', mentioned },
+      { id: 'q2', text: 'عباية بأقل من 300؟', engine: 'chatgpt', mentioned },
+    ]);
+
+  assert.equal(diffScans(both(true), both(true)).comparedQuestions, 2);
+});
+
+test('القواعد تُقارَن ولو لم يُشترك في سؤال', () => {
+  // جاهزية الموقع لا تتعلّق بما سُئل. خبرُها صحيحٌ وإن لم يُقارَن الظهور.
+  const before = asked([{ id: 'q1', text: 'سؤال أ؟', engine: 'chatgpt', mentioned: true }]);
+  const after = asked([{ id: 'q1', text: 'سؤال ب؟', engine: 'chatgpt', mentioned: true }]);
+  before.rules.push(rule('machine.sitemap', true, 6));
+  after.rules.push(rule('machine.sitemap', false, 6));
+
+  const d = diffScans(before, after);
+  assert.equal(d.comparedQuestions, 0);
+  assert.deepEqual(d.rules.map((r) => r.change), ['regressed']);
+  assert.equal(d.changed, true);
 });

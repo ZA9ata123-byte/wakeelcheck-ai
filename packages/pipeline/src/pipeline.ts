@@ -10,6 +10,7 @@
  */
 
 import type {
+  BuyingQuestion,
   Engine,
   EngineAnswer,
   FetchResult,
@@ -96,6 +97,15 @@ export interface ScanRequest {
    * يُعرض `not_measured` — القاعدة 06.
    */
   budgetMs?: number;
+  /**
+   * أسئلةٌ ثابتة تُسأل بدل توليد غيرها.
+   *
+   * التوليد متنوّعٌ عمداً (`temperature: 0.7`) — مفيدٌ لفحصٍ واحد، ومُفسدٌ
+   * للمتابعة: إجابتا أسبوعين على سؤالين مختلفين لا تُقارَنان، و«اختفيتَ من
+   * ChatGPT» قد تعني فقط أنه سُئل غير ما سُئل. فالمتابعة تحفظ أسئلتها عند
+   * التسجيل وتمرّرها كلّ أسبوع، بمعرّفاتها.
+   */
+  questions?: readonly BuyingQuestion[];
 }
 
 export interface ScanOutcome {
@@ -205,13 +215,18 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
     : [];
 
   // ── 6. الأسئلة ──────────────────────────────────────────────
-  let questions: Awaited<ReturnType<typeof generateQuestions>>['questions'] = [];
-  try {
-    const generated = await generateQuestions(profile, plan.questions, deps.llm);
-    questions = generated.questions;
-    costMicros += generated.costMicros;
-  } catch (err) {
-    note('questions', err);
+  let questions: BuyingQuestion[] = [];
+  if (req.questions !== undefined && req.questions.length > 0) {
+    // ثابتة: لا نداء نموذج، ولا كلفة، والمعرّفات كما حُفظت.
+    questions = req.questions.map((q) => ({ ...q }));
+  } else {
+    try {
+      const generated = await generateQuestions(profile, plan.questions, deps.llm);
+      questions = generated.questions;
+      costMicros += generated.costMicros;
+    } catch (err) {
+      note('questions', err);
+    }
   }
 
   // ── 7. سؤال المحرّكات ───────────────────────────────────────

@@ -1,12 +1,12 @@
 /**
  * تشغيل الفحص وتخزين نتيجته.
  *
- * حالياً في الذاكرة وفي نفس العملية. هذا مقصود ومؤقّت: البنية النهائية
- * (docs/01) تضع الفحص في طابور Redis ويلتقطه عامل على Contabo، لأن الفحص
- * يستغرق عشرات الثواني ودوال Vercel تنتهي مهلتها قبله.
+ * المخزن Redis إن ضُبطت متغيّراته، والذاكرة غير ذلك (`lib/store.ts`). والفحص
+ * يجري داخل الدالة نفسها عبر `after()` — قياس #9 أثبت أن الفحص السريع يدخل
+ * مهلتها، فلا عامل ولا طابور قبل الإطلاق.
  *
- * ما يبقى ثابتاً بين الحالتين هو العقد: POST يُنشئ ويعود فوراً، وGET يسأل.
- * الواجهة لا تتغيّر حين ينتقل التنفيذ إلى العامل.
+ * ما يبقى ثابتاً هو العقد: POST يُنشئ ويعود فوراً، وGET يسأل. الواجهة لا
+ * تتغيّر إن انتقل التنفيذ إلى عاملٍ يوماً.
  */
 
 import { randomUUID } from 'node:crypto';
@@ -14,23 +14,27 @@ import type { Engine, FetchResult, ScanResult } from '@wakeelcheck/core';
 import { safeFetch } from '@wakeelcheck/fetcher';
 import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } from '@wakeelcheck/llm';
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
-import { memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
+import type { KeyValueStore } from '@wakeelcheck/limits';
 import { HARD_DEADLINE_MS, launchScan, withHardDeadline } from './launch';
+import { loadResult, saveResult, storeFromEnv, type StoreKind } from './store';
 import type { StartInput, StartedScan } from './scan-post';
 import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
 import { collectSecurity as collectReal } from '@wakeelcheck/security';
 
-const scans = new Map<string, ScanResult>();
+const shared = storeFromEnv((name) => process.env[name]);
 
-/** مشترك بين الطلبات في عملية واحدة — يصبح Redis في الإنتاج. */
-export const limitStore: KeyValueStore = memoryStore();
+/** الحدود والكاش والإنفاق والنتائج — كلّها في مخزنٍ واحد. */
+export const store: KeyValueStore = shared.store;
 
-export function getScan(id: string): ScanResult | null {
-  return scans.get(id) ?? null;
+/** يُعلَن في `/api/health` ليرى الرئيس أيّ مخزنٍ يعمل فعلاً. */
+export const storeKind: StoreKind = shared.kind;
+
+export function getScan(id: string): Promise<ScanResult | null> {
+  return loadResult(store, id);
 }
 
-export function putScan(result: ScanResult): void {
-  scans.set(result.id, result);
+export function putScan(result: ScanResult): Promise<void> {
+  return saveResult(store, result);
 }
 
 // ── المزوّد ──────────────────────────────────────────────────
@@ -169,7 +173,7 @@ export function startScan(input: StartInput): StartedScan {
 
   const settled = launchScan(
     { ...input, scanId },
-    { deps, demo, store: limitStore, put: putScan }
+    { deps, demo, store, put: putScan }
   );
 
   return { scanId, demo, settled };

@@ -10,6 +10,7 @@ import { fakeProvider } from '@wakeelcheck/llm';
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import { memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
 import { launchScan } from '../lib/launch';
+import { saveResult } from '../lib/store';
 import type { ScanPostDeps, StartInput, StartedScan } from '../lib/scan-post';
 
 export const NOW = new Date('2026-10-08T09:00:00Z');
@@ -102,7 +103,16 @@ export function harness(
       const demo = opts.demo ?? false;
       const settled = launchScan(
         { ...input, scanId },
-        { deps: pipelineDeps(opts), demo, store, put: (r) => scans.set(r.id, r) }
+{
+          deps: pipelineDeps(opts),
+          demo,
+          store,
+          // كما في الإنتاج: النتيجة في المخزن نفسه. والخريطة للقراءة السريعة.
+          put: async (r) => {
+            scans.set(r.id, r);
+            await saveResult(store, r);
+          },
+        }
       );
       return { scanId, demo, settled };
     },

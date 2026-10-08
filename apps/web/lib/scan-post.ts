@@ -10,7 +10,7 @@
 
 import { isWakeelError, type ScanKind } from '@wakeelcheck/core';
 import { normalizeUrl } from '@wakeelcheck/fetcher';
-import { admit, hashIp, type KeyValueStore } from '@wakeelcheck/limits';
+import { StoreUnavailableError, admit, hashIp, type KeyValueStore } from '@wakeelcheck/limits';
 import { SOFT_BUDGET_MS } from './launch';
 
 /**
@@ -83,15 +83,25 @@ export async function handleScanPost(req: Request, deps: ScanPostDeps): Promise<
 
   const cacheTtlHours = envInt(deps.env, 'CACHE_TTL_HOURS', 24);
 
-  const decision = await admit(deps.store, {
-    domain,
-    kind: PUBLIC_KIND,
-    ipHash: hashIp(clientIp(req), deps.env('IP_HASH_SALT') ?? 'dev-salt'),
-    perIpPerDay: envInt(deps.env, 'FREE_SCANS_PER_IP_PER_DAY', 3),
-    maxMonthlyUsd: envInt(deps.env, 'MAX_MONTHLY_SPEND_USD', DEFAULT_MONTHLY_USD),
-    cacheTtlHours,
-    now: deps.now(),
-  });
+  // المخزن الساقط يُغلق الباب ولا يفتحه. لو قُرئ سقوطُه «لا كاش، لا إنفاق،
+  // لا رصيد مستهلك» لصار عطلُ Redis دعوةً مفتوحة لحرق الميزانية.
+  let decision: Awaited<ReturnType<typeof admit>>;
+  try {
+    decision = await admit(deps.store, {
+      domain,
+      kind: PUBLIC_KIND,
+      ipHash: hashIp(clientIp(req), deps.env('IP_HASH_SALT') ?? 'dev-salt'),
+      perIpPerDay: envInt(deps.env, 'FREE_SCANS_PER_IP_PER_DAY', 3),
+      maxMonthlyUsd: envInt(deps.env, 'MAX_MONTHLY_SPEND_USD', DEFAULT_MONTHLY_USD),
+      cacheTtlHours,
+      now: deps.now(),
+    });
+  } catch (err) {
+    if (err instanceof StoreUnavailableError) {
+      return Response.json({ error: 'store_unavailable' }, { status: 503 });
+    }
+    throw err;
+  }
 
   if (decision.reason === 'cached') {
     return Response.json({ scanId: decision.scanId, cached: true }, { status: 200 });

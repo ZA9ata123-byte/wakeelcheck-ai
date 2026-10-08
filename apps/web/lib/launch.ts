@@ -124,7 +124,8 @@ export interface LaunchContext {
   deps: PipelineDeps;
   demo: boolean;
   store: KeyValueStore;
-  put(result: ScanResult): void;
+  /** يحفظ النتيجة — في المخزن المشترك في الإنتاج. */
+  put(result: ScanResult): Promise<void> | void;
   /** `runScan` في الإنتاج. يُستبدل في الاختبار حين يلزم فشلٌ لا ينتجه الخطّ. */
   run?: (req: ScanRequest, deps: PipelineDeps) => Promise<ScanOutcome>;
 }
@@ -155,7 +156,18 @@ function shell(id: string, kind: ScanKind): ScanResult {
  */
 export async function launchScan(input: LaunchInput, ctx: LaunchContext): Promise<void> {
   const run = ctx.run ?? runScan;
-  ctx.put(shell(input.scanId, input.kind));
+
+  // الحفظ قد يسقط حين يصير المخزن شبكةً. لا شيء أفضل يُفعل حينها — لكنّه لا
+  // يُسقط الوعد، ولا يمنع تسجيل الإنفاق إن أمكن.
+  const save = async (result: ScanResult): Promise<void> => {
+    try {
+      await ctx.put(result);
+    } catch {
+      // يُرصد حين يصل Sentry (#6).
+    }
+  };
+
+  await save(shell(input.scanId, input.kind));
 
   let outcome: ScanOutcome;
   try {
@@ -164,7 +176,7 @@ export async function launchScan(input: LaunchInput, ctx: LaunchContext): Promis
       { ...ctx.deps, newId: () => input.scanId }
     );
   } catch (err) {
-    ctx.put({
+    await save({
       ...shell(input.scanId, input.kind),
       status: 'failed',
       error: err instanceof Error ? err.message : 'scan failed',
@@ -172,7 +184,7 @@ export async function launchScan(input: LaunchInput, ctx: LaunchContext): Promis
     return;
   }
 
-  ctx.put(outcome.result);
+  await save(outcome.result);
 
   try {
     // كلُّ ما صُرف يُسجَّل — حتى الفاشل: نداءات التوصيف والأسئلة دُفع ثمنها.

@@ -13,25 +13,8 @@
  * والترتيب ترتيب الأهمية: ما يحتاج تدخّلاً أولاً.
  */
 
-import type { Bilingual, Engine } from '@wakeelcheck/core';
+import type { Bilingual, Digest, DigestTone, Engine } from '@wakeelcheck/core';
 import type { ScanDiff } from './diff.ts';
-
-/**
- * - `alert`: شيءٌ ساء — اختفاء، أو منافسٌ ظهر، أو قاعدةٌ انكسرت.
- * - `good`: تحسّنٌ بلا سوء.
- * - `quiet`: قورن ولم يتغيّر شيء.
- * - `incomparable`: لم يُقارَن الظهور ولم تتغيّر القواعد — لا يُدّعى هدوء.
- */
-export type DigestTone = 'alert' | 'good' | 'quiet' | 'incomparable';
-
-export interface Digest {
-  tone: DigestTone;
-  headline: Bilingual;
-  /** الأخبار، الأهمّ أولاً. فارغةٌ في `quiet` و`incomparable`. */
-  lines: readonly Bilingual[];
-  /** على ماذا بُني الحكم — يُعرض دائماً، فلا يُقرأ الخبر بلا مقامه. */
-  basis: Bilingual;
-}
 
 const ENGINE: Record<Engine, string> = {
   chatgpt: 'ChatGPT',
@@ -146,4 +129,24 @@ export function weeklyDigest(diff: ScanDiff, domain: string): Digest {
         };
 
   return { tone, headline, lines, basis };
+}
+
+/**
+ * نشرة أوّل قياس: لا ماضيَ يُقارَن به.
+ *
+ * لا يُقال فيها «لا تغيّر» ولا «اختفيت» — لم يكن قبلها شيء. تقول ما سيحدث.
+ */
+export function baselineDigest(domain: string, questions: number): Digest {
+  return {
+    tone: 'baseline',
+    headline: {
+      ar: `بدأنا متابعة ${domain}`,
+      en: `We have started monitoring ${domain}`,
+    },
+    lines: [],
+    basis: {
+      ar: `هذا أوّل قياس. نعيد ${countAr(questions, QUESTIONS_AR)} نفسها كلّ أسبوع، ونخبرك بما تغيّر.`,
+      en: `This is the first measurement. We will ask the same ${questions} question${questions === 1 ? '' : 's'} every week and tell you what changed.`,
+    },
+  };
 }

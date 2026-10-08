@@ -71,8 +71,12 @@ export const PLANS: Record<ScanKind, ScanPlan> = {
     security: true,
     readiness: true,
   },
+  // المتابعة: أسئلتها ثابتة تُمرَّر كلّ أسبوع، وهذا العدد لا يُستعمل إلا مرّةً
+  // واحدة — حين لا يكون للمتجر تقريرٌ سابق تُؤخذ أسئلته منه. ثلاثةٌ لا عشرة:
+  // المحرّك الواحد يُسأل بالتسلسل، وعشرة أسئلة على ChatGPT ≈ مئة ثانية لا تدخل
+  // مهلة الدالة. والأسئلة الثلاثة نفسها كلّ أسبوع أصدق من عشرةٍ تتبدّل.
   monitor: {
-    questions: 10,
+    questions: 3,
     engines: ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity'],
     productPages: 5,
     security: true,

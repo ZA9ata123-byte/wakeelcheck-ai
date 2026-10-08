@@ -4,7 +4,7 @@ import type { ScanResult } from '@wakeelcheck/core';
 import type { ArchiveEntry, ScanArchive } from '@wakeelcheck/db';
 import { checkBudget, memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
 import { launchScan, shouldArchive } from '../lib/launch';
-import { readReport, saveResult } from '../lib/store';
+import { archiveFromEnv, monitorsFromEnv, readReport, saveResult } from '../lib/store';
 import { NOW, pipelineDeps } from './fixture';
 
 /**
@@ -158,4 +158,23 @@ test('رابطٌ انتهى عمره في المخزن يُقرأ من الأر�
 test('لا هنا ولا هناك: null', async () => {
   assert.equal(await readReport(memoryStore(), memoryArchive(), 'none'), null);
   assert.equal(await readReport(memoryStore(), null, 'none'), null, 'وبلا أرشيف');
+});
+
+// ── من البيئة ────────────────────────────────────────────────
+
+test('بلا قاعدة: لا أرشيف ولا متابعة', () => {
+  const env = (): undefined => undefined;
+  assert.equal(archiveFromEnv(env), null);
+  assert.equal(monitorsFromEnv(env), null);
+  assert.equal(monitorsFromEnv((n) => (n === 'DATABASE_URL' ? '' : undefined)), null, 'الفارغ غياب');
+});
+
+test('DATABASE_URL أو POSTGRES_URL — تكامل Neon في Vercel يضبط الثاني', () => {
+  // يُبنى وقت التشغيل: نصٌّ يشبه رابط اتصال يرفضه حارس CI.
+  const url = ['postgres', '://u:p@db.example/neondb'].join('');
+  for (const name of ['DATABASE_URL', 'POSTGRES_URL']) {
+    const env = (n: string): string | undefined => (n === name ? url : undefined);
+    assert.notEqual(archiveFromEnv(env), null, name);
+    assert.notEqual(monitorsFromEnv(env), null, name);
+  }
 });

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Engine, EngineAnswer, RuleResult, ScanResult } from '@wakeelcheck/core';
 import { diffScans } from '../src/diff.ts';
-import { countAr, weeklyDigest } from '../src/digest.ts';
+import { baselineDigest, countAr, weeklyDigest } from '../src/digest.ts';
 
 /**
  * النشرة — كلّ جملةٍ فيها ادّعاء.
@@ -232,4 +232,16 @@ test('كلّ سطرٍ بلغتين', () => {
   for (const line of [d.headline, d.basis, ...d.lines]) {
     assert.ok(line.ar.length > 0 && line.en.length > 0, JSON.stringify(line));
   }
+});
+
+// ── أوّل قياس ────────────────────────────────────────────────
+
+test('أوّل قياس: لا يدّعي تغيّراً ولا استقراراً', () => {
+  const d = baselineDigest('noura.sa', 3);
+
+  assert.equal(d.tone, 'baseline');
+  assert.deepEqual(d.lines, [], 'لا ماضيَ يُقال عنه شيء');
+  assert.equal(d.headline.ar, 'بدأنا متابعة noura.sa');
+  assert.equal(d.basis.ar, 'هذا أوّل قياس. نعيد 3 أسئلة نفسها كلّ أسبوع، ونخبرك بما تغيّر.');
+  assert.ok(!/لا تغيّر|اختفى/.test(d.headline.ar + d.basis.ar));
 });

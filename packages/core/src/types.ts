@@ -196,6 +196,27 @@ export interface RivalReport {
   storeScore: number;
 }
 
+/**
+ * نبرة النشرة الأسبوعية.
+ *
+ * - `alert`: شيءٌ ساء — اختفاء، أو منافسٌ ظهر، أو قاعدةٌ انكسرت.
+ * - `good`: تحسّنٌ بلا سوء.
+ * - `quiet`: قورن ولم يتغيّر شيء.
+ * - `incomparable`: لم يُقارَن الظهور ولم تتغيّر القواعد — لا يُدّعى هدوء.
+ * - `baseline`: أوّل قياس — لا ماضيَ يُقارَن به بعد.
+ */
+export type DigestTone = 'alert' | 'good' | 'quiet' | 'incomparable' | 'baseline';
+
+/** ما يقرؤه التاجر عن أسبوعه — تبنيه `weeklyDigest` من `diffScans`. */
+export interface Digest {
+  tone: DigestTone;
+  headline: Bilingual;
+  /** الأخبار، الأهمّ أولاً. */
+  lines: readonly Bilingual[];
+  /** على ماذا بُني الحكم — يُعرض دائماً، فلا يُقرأ الخبر بلا مقامه. */
+  basis: Bilingual;
+}
+
 export interface ShareOfVoice {
   /** كم مرة ذُكر المتجر من إجمالي الإجابات. */
   store: number;
@@ -279,6 +300,8 @@ export interface ScanResult {
    * مشروعة تعني «لم يُطلب بعد» لا «لا منافس له».
    */
   rivals?: RivalReport;
+  /** نشرة المتابعة: ما تغيّر منذ الفحص السابق. لفحوص المتابعة وحدها. */
+  digest?: Digest;
   error?: string;
 }
 

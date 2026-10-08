@@ -10,11 +10,13 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import type { Engine, FetchResult, ScanKind, ScanResult } from '@wakeelcheck/core';
+import type { Engine, FetchResult, ScanResult } from '@wakeelcheck/core';
 import { safeFetch } from '@wakeelcheck/fetcher';
 import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } from '@wakeelcheck/llm';
-import { runScan, type PipelineDeps, type SecurityCollected } from '@wakeelcheck/pipeline';
+import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import { memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
+import { HARD_DEADLINE_MS, launchScan, withHardDeadline } from './launch';
+import type { StartInput, StartedScan } from './scan-post';
 import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
 import { collectSecurity as collectReal } from '@wakeelcheck/security';
 
@@ -142,17 +144,17 @@ function buildDeps(llm: LlmProvider, demo: boolean, engines: EngineClient[]): Pi
 
 // ── التشغيل ──────────────────────────────────────────────────
 
-export interface StartedScan {
-  scanId: string;
-  demo: boolean;
-}
+export type { StartedScan } from './scan-post';
 
 /**
- * يُنشئ فحصاً ويشغّله في الخلفية.
+ * يبني الفحص من البيئة ويُطلقه.
  *
- * لا ننتظره: الفحص عشرات الثواني، والعقد أن POST يعود فوراً بمعرّف.
+ * لا ننتظره هنا: الفحص عشرات الثواني، والعقد أن POST يعود فوراً بمعرّف.
+ * لكنّه لم يعد متروكاً — `settled` يُمرَّر إلى `after()` في المسار، فتبقى
+ * الدالة حيّة حتى يُخزَّن ويُسجَّل إنفاقه. التسوية نفسها في `launch.ts`،
+ * حيث تُختبر بلا شبكة.
  */
-export function startScan(url: string, kind: ScanKind): StartedScan {
+export function startScan(input: StartInput): StartedScan {
   const { llm, demo } = buildLlm();
 
   const engines = buildEngines({
@@ -162,37 +164,13 @@ export function startScan(url: string, kind: ScanKind): StartedScan {
     perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
   });
 
-  const deps = buildDeps(llm, demo, engines);
   const scanId = randomUUID();
+  const deps = withHardDeadline(buildDeps(llm, demo, engines), HARD_DEADLINE_MS);
 
-  putScan({
-    id: scanId,
-    kind,
-    status: 'running',
-    profile: null,
-    questions: [],
-    answers: [],
-    security: [],
-    rules: [],
-    shareOfVoice: { store: 0, top: null, total: 0, byEngine: [] },
-  });
+  const settled = launchScan(
+    { ...input, scanId },
+    { deps, demo, store: limitStore, put: putScan }
+  );
 
-  void runScan({ url, kind }, { ...deps, newId: () => scanId })
-    .then(({ result }) => putScan(result))
-    .catch((err: unknown) => {
-      putScan({
-        id: scanId,
-        kind,
-        status: 'failed',
-        profile: null,
-        questions: [],
-        answers: [],
-        security: [],
-        rules: [],
-        shareOfVoice: { store: 0, top: null, total: 0, byEngine: [] },
-        error: err instanceof Error ? err.message : 'scan failed',
-      });
-    });
-
-  return { scanId, demo };
+  return { scanId, demo, settled };
 }

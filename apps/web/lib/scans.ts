@@ -16,7 +16,7 @@ import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } 
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import type { KeyValueStore } from '@wakeelcheck/limits';
 import { HARD_DEADLINE_MS, launchScan, withHardDeadline } from './launch';
-import { loadResult, saveResult, storeFromEnv, type StoreKind } from './store';
+import { archiveFromEnv, readReport, saveResult, storeFromEnv, type StoreKind } from './store';
 import type { StartInput, StartedScan } from './scan-post';
 import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
 import { collectSecurity as collectReal } from '@wakeelcheck/security';
@@ -29,8 +29,11 @@ export const store: KeyValueStore = shared.store;
 /** يُعلَن في `/api/health` ليرى الرئيس أيّ مخزنٍ يعمل فعلاً. */
 export const storeKind: StoreKind = shared.kind;
 
+/** التقارير الدائمة — `null` بلا قاعدة، فيبقى التقرير يومين في المخزن. */
+export const archive = archiveFromEnv((name) => process.env[name]);
+
 export function getScan(id: string): Promise<ScanResult | null> {
-  return loadResult(store, id);
+  return readReport(store, archive, id);
 }
 
 export function putScan(result: ScanResult): Promise<void> {
@@ -173,7 +176,7 @@ export function startScan(input: StartInput): StartedScan {
 
   const settled = launchScan(
     { ...input, scanId },
-    { deps, demo, store, put: putScan }
+    { deps, demo, store, put: putScan, archive }
   );
 
   return { scanId, demo, settled };

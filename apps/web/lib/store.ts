@@ -15,6 +15,7 @@
  */
 
 import type { ScanResult } from '@wakeelcheck/core';
+import { neonClient, sqlArchive, type ScanArchive } from '@wakeelcheck/db';
 import { memoryStore, redisStore, type KeyValueStore } from '@wakeelcheck/limits';
 
 export type StoreKind = 'redis' | 'memory';
@@ -80,4 +81,34 @@ export async function loadResult(store: KeyValueStore, id: string): Promise<Scan
   } catch {
     return null;
   }
+}
+
+// ── الأرشيف الدائم ──────────────────────────────────────────
+
+/**
+ * الأرشيف من البيئة، أو `null` بلا قاعدة.
+ *
+ * `DATABASE_URL` اسمه المعتاد، و`POSTGRES_URL` ما يضعه تكامل Vercel مع Neon
+ * أيضاً. وبلا أيٍّ منهما يبقى التقرير يومين في المخزن — كما كان.
+ */
+export function archiveFromEnv(env: Env): ScanArchive | null {
+  for (const name of ['DATABASE_URL', 'POSTGRES_URL']) {
+    const url = env(name);
+    if (url !== undefined && url !== '') return sqlArchive(neonClient(url));
+  }
+  return null;
+}
+
+/**
+ * تقريرٌ بمعرّفه: المخزن أولاً — فيه الفحص الجاري والتقرير الحديث — ثم
+ * الأرشيف لما انتهى عمره في المخزن: رابطٌ فُتح بعد أسبوع.
+ */
+export async function readReport(
+  store: KeyValueStore,
+  archive: ScanArchive | null,
+  id: string
+): Promise<ScanResult | null> {
+  const recent = await loadResult(store, id);
+  if (recent !== null) return recent;
+  return archive === null ? null : archive.get(id);
 }

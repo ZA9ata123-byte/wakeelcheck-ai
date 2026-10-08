@@ -92,6 +92,22 @@ function score(result: ScanResult): { pct: number; passed: number; total: number
  */
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
+/** مسار التقرير في الصفحة نفسها — العربية والإنجليزية كلٌّ في مساره. */
+function reportHref(id: string): string {
+  return `${window.location.pathname}?r=${encodeURIComponent(id)}`;
+}
+
+/**
+ * المعرّف من الرابط، أو `null`.
+ *
+ * يُقبل ما يشبه معرّفاً فقط: نصٌّ من الرابط يصل إلى الخادم، فلا يُمرَّر إلا
+ * بعد أن يبدو كما يجب.
+ */
+function reportIdFrom(search: string): string | null {
+  const id = new URLSearchParams(search).get('r');
+  return id !== null && /^[A-Za-z0-9-]{1,64}$/.test(id) ? id : null;
+}
+
 export default function Experience({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const { box: humanBox, take: takeHumanToken } = useTurnstile(TURNSTILE_SITE_KEY, locale);
@@ -106,6 +122,7 @@ export default function Experience({ locale }: { locale: Locale }) {
   const [demo, setDemo] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [tab, setTab] = useState<Tab>('evidence');
   const [allRules, setAllRules] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -129,6 +146,50 @@ export default function Experience({ locale }: { locale: Locale }) {
     }
     throw new Error('timeout');
   }, []);
+
+  // رابط تقرير: `?r=<معرّف>`. يُفتح التقرير مباشرةً بلا فحصٍ جديد ولا كلفة.
+  useEffect(() => {
+    const id = reportIdFrom(window.location.search);
+    if (id === null) return;
+
+    setPhase('running');
+    setShown('…');
+
+    // رابطٌ مُرسَل يشير إلى فحصٍ مضى: إن لم يوجد عند أوّل سؤال فلن يوجد.
+    // الاستطلاع المتكرّر للفحص الجاري وحده — لا لرابطٍ ميت يُنتظر دقيقتين.
+    const open = async (): Promise<ScanResult> => {
+      const res = await fetch(`/api/scan/${encodeURIComponent(id)}`);
+      if (res.status === 404) throw new Error('gone');
+      if (res.ok) {
+        const first = (await res.json()) as ScanResult;
+        if (first.status === 'done') return first;
+        if (first.status === 'failed') throw new Error('failed');
+      }
+      return poll(id);
+    };
+
+    open()
+      .then((result) => {
+        setScan(result);
+        setShown(result.profile?.domain ?? '…');
+        setTab('evidence');
+        setPhase('result');
+      })
+      .catch(() => {
+        setNotice(t.reportGone);
+        setPhase('failed');
+      });
+    // مرّةً عند التحميل: رابطٌ يُفتح لا يتغيّر بعدها.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const copyReportLink = useCallback(() => {
+    if (scan === null) return;
+    void navigator.clipboard?.writeText(`${window.location.origin}${reportHref(scan.id)}`).then(() => {
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 1800);
+    });
+  }, [scan]);
 
   const submit = useCallback(
     async (event: React.FormEvent) => {
@@ -193,6 +254,8 @@ export default function Experience({ locale }: { locale: Locale }) {
         setTab('evidence');
         setAllRules(false);
         setPhase('result');
+        // الرابط في شريط العنوان صار رابط التقرير: يُنسخ ويُرسَل كما هو.
+        window.history.replaceState(null, '', reportHref(scanId));
       } catch {
         clearTimers();
         setNotice(t.unreachable);
@@ -435,9 +498,14 @@ export default function Experience({ locale }: { locale: Locale }) {
                   <span>
                     <Shield size={14} /> {t.evidenceFoot}
                   </span>
-                  <a href="#diagnosis">
-                    {t.seeCause} <ArrowNext size={15} />
-                  </a>
+                  <span className="evidence-actions">
+                    <button type="button" className="report-link" onClick={copyReportLink}>
+                      <CopyIcon size={14} /> {linkCopied ? t.linkCopied : t.copyLink}
+                    </button>
+                    <a href="#diagnosis">
+                      {t.seeCause} <ArrowNext size={15} />
+                    </a>
+                  </span>
                 </footer>
               </>
             )}

@@ -12,6 +12,7 @@ import { isWakeelError, type ScanKind } from '@wakeelcheck/core';
 import { normalizeUrl } from '@wakeelcheck/fetcher';
 import { StoreUnavailableError, admit, hashIp, type KeyValueStore } from '@wakeelcheck/limits';
 import { SOFT_BUDGET_MS } from './launch';
+import { VerificationUnavailableError, type HumanVerifier } from './turnstile';
 
 /**
  * السقف الشهريّ حين لا يُضبط في البيئة.
@@ -43,6 +44,8 @@ export interface ScanPostDeps {
   schedule(task: Promise<void>): void;
   env(name: string): string | undefined;
   now(): Date;
+  /** Turnstile. غيابُه يعني أن التحقّق غير مُعدّ — لا أنه نجح. */
+  verifyHuman?: HumanVerifier | null;
 }
 
 /** عنوان الزائر من ترويسات الوكيل العكسي. */
@@ -60,9 +63,9 @@ function envInt(env: ScanPostDeps['env'], name: string, fallback: number): numbe
 const PUBLIC_KIND: ScanKind = 'quick';
 
 export async function handleScanPost(req: Request, deps: ScanPostDeps): Promise<Response> {
-  let body: { url?: unknown };
+  let body: { url?: unknown; turnstileToken?: unknown };
   try {
-    body = (await req.json()) as { url?: unknown };
+    body = (await req.json()) as { url?: unknown; turnstileToken?: unknown };
   } catch {
     return Response.json({ error: 'invalid_body' }, { status: 400 });
   }
@@ -81,6 +84,32 @@ export async function handleScanPost(req: Request, deps: ScanPostDeps): Promise<
     );
   }
 
+  const ip = clientIp(req);
+
+  // إثبات الإنسان قبل كلّ شيء آخر: برنامجٌ يُرفض هنا لا يحرق رصيد زائرٍ
+  // حقيقيّ يشاركه العنوان، ولا يصل إلى الكاش ولا إلى السقف.
+  if (deps.verifyHuman !== undefined && deps.verifyHuman !== null) {
+    const token = typeof body.turnstileToken === 'string' ? body.turnstileToken : undefined;
+
+    let check: Awaited<ReturnType<HumanVerifier>>;
+    try {
+      check = await deps.verifyHuman(token, ip);
+    } catch (err) {
+      // تعذّر التحقّق يُغلق الباب كما يُغلقه المخزن الساقط.
+      if (err instanceof VerificationUnavailableError) {
+        return Response.json({ error: 'verification_unavailable' }, { status: 503 });
+      }
+      throw err;
+    }
+
+    if (check === 'missing') {
+      return Response.json({ error: 'verification_required' }, { status: 403 });
+    }
+    if (check === 'failed') {
+      return Response.json({ error: 'verification_failed' }, { status: 403 });
+    }
+  }
+
   const cacheTtlHours = envInt(deps.env, 'CACHE_TTL_HOURS', 24);
 
   // المخزن الساقط يُغلق الباب ولا يفتحه. لو قُرئ سقوطُه «لا كاش، لا إنفاق،
@@ -90,7 +119,7 @@ export async function handleScanPost(req: Request, deps: ScanPostDeps): Promise<
     decision = await admit(deps.store, {
       domain,
       kind: PUBLIC_KIND,
-      ipHash: hashIp(clientIp(req), deps.env('IP_HASH_SALT') ?? 'dev-salt'),
+      ipHash: hashIp(ip, deps.env('IP_HASH_SALT') ?? 'dev-salt'),
       perIpPerDay: envInt(deps.env, 'FREE_SCANS_PER_IP_PER_DAY', 3),
       maxMonthlyUsd: envInt(deps.env, 'MAX_MONTHLY_SPEND_USD', DEFAULT_MONTHLY_USD),
       cacheTtlHours,

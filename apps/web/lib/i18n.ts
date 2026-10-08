@@ -38,6 +38,7 @@ export const copy = {
     gateDone: 'وصلنا بريدك. سنرسل التقرير الكامل خلال دقائق.',
     limitHit: 'استهلكت فحوصاتك المجانية اليوم. جرّب غداً أو احصل على التقرير الكامل.',
     unreachable: 'لم نستطع الوصول إلى هذا المتجر. تأكد من الرابط وحاول مجدداً.',
+    humanFailed: 'لم نستطع التأكّد أنك لست برنامجاً آلياً. حدّث الصفحة وحاول مجدداً.',
     measureTitle: 'ما نقيسه — وما لا نقيسه',
     measureLede:
       'أدوات كثيرة تَعِدك بأنها تقيس «كل متصفحات الذكاء الاصطناعي». هذا غير ممكن تقنياً. إليك الحقيقة كاملة.',
@@ -210,6 +211,7 @@ export const copy = {
     gateDone: 'Got it. Your full report is on the way.',
     limitHit: 'You have used today’s free scans. Try tomorrow, or get the full report.',
     unreachable: 'We could not reach that store. Check the address and try again.',
+    humanFailed: 'We could not confirm you are not an automated program. Refresh the page and try again.',
     measureTitle: 'What we measure — and what we do not',
     measureLede:
       'Plenty of tools promise to track "every AI browser". That is not technically possible. Here is the whole truth.',

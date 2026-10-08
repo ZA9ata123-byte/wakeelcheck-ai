@@ -1,6 +1,7 @@
 import { after } from 'next/server';
 import { handleScanPost } from '@/lib/scan-post';
 import { startScan, store } from '@/lib/scans';
+import { verifierFromEnv } from '@/lib/turnstile';
 
 /**
  * سقف المنصّة بالثواني. يجب أن يطابق `PLATFORM_LIMIT_MS` في `lib/launch.ts`.
@@ -9,6 +10,9 @@ import { startScan, store } from '@/lib/scans';
  * فالرقم مكرَّر مضطرّاً، واختبارٌ في `test/launch.test.ts` يحرس تطابقهما.
  */
 export const maxDuration = 60;
+
+/** `null` حين لا يكتمل زوج المفاتيح — فلا يُطالب الزائر برمزٍ لن يصل. */
+const verifyHuman = verifierFromEnv((name) => process.env[name]);
 
 /**
  * المنطق كلّه في `lib/scan-post.ts` ويُختبر هناك. هذا محوّلٌ يحقن العالم:
@@ -22,5 +26,6 @@ export function POST(req: Request): Promise<Response> {
     schedule: (task) => after(task),
     env: (name) => process.env[name],
     now: () => new Date(),
+    verifyHuman,
   });
 }

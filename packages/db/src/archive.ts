@@ -44,7 +44,7 @@ const MIGRATIONS: readonly string[] = [
 ];
 
 /**
- * عطلٌ في الأرشيف — لا أن التقرير غير موجود.
+ * عطلٌ في قاعدة التقارير — لا أن التقرير غير موجود.
  *
  * الرسالة لا تحمل نصّ الاتصال: فيه كلمة السرّ — القاعدة 01.
  */
@@ -73,13 +73,21 @@ export interface ScanArchive {
 
 const normalize = (domain: string): string => domain.toLowerCase().replace(/^www\./, '');
 
-export function sqlArchive(client: SqlClient): ScanArchive {
+/**
+ * يُطبّق المخطّط مرّةً لكلّ نسخة قبل أوّل استعلام، ثم يجري الاستعلامات.
+ *
+ * وإن سقط التطبيق، يُعاد في النداء التالي لا يُحفظ الفشل — انقطاعٌ لحظيّ عند
+ * أوّل طلب لا يُعطّل النسخة إلى الأبد. وكلّ خطأٍ يُلفّ بلا نصّ الاتصال.
+ */
+export function schemaRunner(
+  client: SqlClient,
+  migrations: readonly string[]
+): <T>(text: string, params: readonly unknown[]) => Promise<T[]> {
   let ready: Promise<void> | null = null;
 
-  // مرّةً لكلّ نسخة. وإن سقطت، يُعاد المحاولة في النداء التالي لا يُحفظ الفشل.
   const ensure = (): Promise<void> => {
     ready ??= (async () => {
-      for (const statement of MIGRATIONS) await client.query(statement);
+      for (const statement of migrations) await client.query(statement);
     })().catch((err: unknown) => {
       ready = null;
       throw err;
@@ -87,7 +95,7 @@ export function sqlArchive(client: SqlClient): ScanArchive {
     return ready;
   };
 
-  const run = async <T>(text: string, params: readonly unknown[]): Promise<T[]> => {
+  return async <T>(text: string, params: readonly unknown[]): Promise<T[]> => {
     try {
       await ensure();
       return await client.query<T>(text, params);
@@ -95,6 +103,10 @@ export function sqlArchive(client: SqlClient): ScanArchive {
       throw new ArchiveUnavailableError(err instanceof Error ? err.name : 'query failed');
     }
   };
+}
+
+export function sqlArchive(client: SqlClient): ScanArchive {
+  const run = schemaRunner(client, MIGRATIONS);
 
   return {
     async save({ domain, result, costMicros, at }) {

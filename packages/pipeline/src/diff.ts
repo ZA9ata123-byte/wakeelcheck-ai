@@ -20,13 +20,14 @@
 
 import type {
   Bilingual,
+  EngineAnswer,
   Engine,
   EngineCoverage,
   MatrixRow,
   RuleResult,
   ScanResult,
 } from '@wakeelcheck/core';
-import { buildMatrix, normalizeArabic } from '@wakeelcheck/visibility';
+import { buildMatrix, normalizeArabic, summarizeByEngine } from '@wakeelcheck/visibility';
 
 export type ChangeDirection = 'gained' | 'lost' | 'unchanged';
 
@@ -58,6 +59,11 @@ export interface ScanDiff {
   engines: readonly EngineChange[];
   /** المحرّكات التي قِيست في الفحصين معاً — مقام كل ما تحته. */
   comparableEngines: readonly Engine[];
+  /**
+   * كم سؤالاً سُئل في الفحصين معاً. صفرٌ يعني أن الظهور لم يُقارَن أصلاً —
+   * فلا خبر عنه، والقواعد وحدها تُقارَن.
+   */
+  comparedQuestions: number;
   competitors: readonly CompetitorChange[];
   rules: readonly RuleChange[];
   scoreBefore: number;
@@ -95,32 +101,67 @@ function presenceOn(matrix: readonly MatrixRow[], engines: ReadonlySet<Engine>):
  *
  * ترتيب الوسيطين هو ترتيب الزمن: `before` أقدم.
  */
-export function diffScans(before: ScanResult, after: ScanResult): ScanDiff {
-  const beforeRows = before.shareOfVoice.byEngine;
-  const afterRows = after.shareOfVoice.byEngine;
+/**
+ * مفتاح الإجابة: المحرّك ونصّ السؤال مطبَّعاً.
+ *
+ * المعرّف وحده لا يكفي: `q1` أسبوعاً ليس `q1` أسبوعاً آخر إن تولّدت الأسئلة
+ * من جديد. والنصّ هو ما سُئل فعلاً.
+ */
+function answersByQuestion(scan: ScanResult): Map<string, EngineAnswer> {
+  const text = new Map(scan.questions.map((q) => [q.id, normalizeArabic(q.text.trim())]));
+  const out = new Map<string, EngineAnswer>();
+  for (const answer of scan.answers) {
+    const asked = text.get(answer.questionId);
+    if (asked === undefined) continue;
+    out.set(`${answer.engine}\u0000${asked}`, answer);
+  }
+  return out;
+}
 
-  const beforeBy = new Map(beforeRows.map((r) => [r.engine, r]));
-  const afterBy = new Map(afterRows.map((r) => [r.engine, r]));
+export function diffScans(before: ScanResult, after: ScanResult): ScanDiff {
+  const shownBefore = new Map(before.shareOfVoice.byEngine.map((r) => [r.engine, r]));
+  const shownAfter = new Map(after.shareOfVoice.byEngine.map((r) => [r.engine, r]));
 
   // اتّحاد المحرّكات حتى يظهر محرّكٌ أُضيف أو سقط، لا تقاطعُها.
   const allEngines: Engine[] = [
-    ...beforeRows.map((r) => r.engine),
-    ...afterRows.filter((r) => !beforeBy.has(r.engine)).map((r) => r.engine),
+    ...before.shareOfVoice.byEngine.map((r) => r.engine),
+    ...after.shareOfVoice.byEngine.filter((r) => !shownBefore.has(r.engine)).map((r) => r.engine),
   ];
 
-  const engines: EngineChange[] = allEngines.map((engine) => {
-    const b = beforeBy.get(engine)?.coverage ?? 'not_measured';
-    const a = afterBy.get(engine)?.coverage ?? 'not_measured';
+  // ── الشبيه بالشبيه ──
+  //
+  // الحكم لا يُبنى على الملخّص بل على الإجابات التي سُئلت **السؤالَ نفسه على
+  // المحرّك نفسه** في الفحصين. «لم يُذكر هذا الأسبوع» عن سؤالٍ لم يُسأل الأسبوع
+  // الماضي ليس خبراً — هو مقارنةٌ بين شيئين مختلفين. والأسئلة الثابتة في
+  // المتابعة تجعل هذا التقاطع كاملاً؛ والمولَّدة تجعله فارغاً غالباً، فلا يصدر
+  // حكمٌ — وهو الصحيح.
+  const was = answersByQuestion(before);
+  const now = answersByQuestion(after);
+  const common = [...was.keys()].filter((key) => now.has(key));
 
-    // القياس شرط الحكم. غيابه يُعرَض ولا يُفسَّر.
-    if (b === 'not_measured' || a === 'not_measured') {
+  const beforeRows = summarizeByEngine(common.map((k) => was.get(k) as EngineAnswer), allEngines);
+  const afterRows = summarizeByEngine(common.map((k) => now.get(k) as EngineAnswer), allEngines);
+  const beforeBy = new Map(beforeRows.map((r) => [r.engine, r]));
+  const afterBy = new Map(afterRows.map((r) => [r.engine, r]));
+
+  const comparedQuestions = new Set(common.map((k) => k.slice(k.indexOf('\u0000') + 1))).size;
+
+  const engines: EngineChange[] = allEngines.map((engine) => {
+    // العرض حقيقة كلّ فحص كما هي — ما قِيس فعلاً.
+    const b = shownBefore.get(engine)?.coverage ?? 'not_measured';
+    const a = shownAfter.get(engine)?.coverage ?? 'not_measured';
+
+    // والحكم على المشترك وحده. غيابُ مشتركٍ عند محرّكٍ يعني: لا حكم.
+    const cb = beforeBy.get(engine)?.coverage ?? 'not_measured';
+    const ca = afterBy.get(engine)?.coverage ?? 'not_measured';
+    if (cb === 'not_measured' || ca === 'not_measured') {
       return { engine, before: b, after: a, direction: null };
     }
     return {
       engine,
       before: b,
       after: a,
-      direction: b === a ? 'unchanged' : a === 'mentioned' ? 'gained' : 'lost',
+      direction: cb === ca ? 'unchanged' : ca === 'mentioned' ? 'gained' : 'lost',
     };
   });
 
@@ -179,6 +220,7 @@ export function diffScans(before: ScanResult, after: ScanResult): ScanDiff {
   return {
     engines,
     comparableEngines: [...comparable],
+    comparedQuestions,
     competitors: competitors.sort((a, b) => b.after - a.after || a.name.localeCompare(b.name, 'ar')),
     rules,
     scoreBefore: weightedScore(before.rules),

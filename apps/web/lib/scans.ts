@@ -15,8 +15,10 @@ import { safeFetch } from '@wakeelcheck/fetcher';
 import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } from '@wakeelcheck/llm';
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import type { KeyValueStore } from '@wakeelcheck/limits';
-import { HARD_DEADLINE_MS, launchScan, withHardDeadline } from './launch';
-import { archiveFromEnv, readReport, saveResult, storeFromEnv, type StoreKind } from './store';
+import { HARD_DEADLINE_MS, SOFT_BUDGET_MS, launchScan, withHardDeadline } from './launch';
+import { archiveFromEnv, monitorsFromEnv, readReport, saveResult, storeFromEnv, type StoreKind } from './store';
+import { runMonitor, type MonitorOutcome } from './monitor';
+import type { Monitor } from '@wakeelcheck/db';
 import type { StartInput, StartedScan } from './scan-post';
 import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
 import { collectSecurity as collectReal } from '@wakeelcheck/security';
@@ -32,8 +34,20 @@ export const storeKind: StoreKind = shared.kind;
 /** التقارير الدائمة — `null` بلا قاعدة، فيبقى التقرير يومين في المخزن. */
 export const archive = archiveFromEnv((name) => process.env[name]);
 
-export function getScan(id: string): Promise<ScanResult | null> {
-  return readReport(store, archive, id);
+/** سجلّ المتابعة — `null` بلا قاعدة، فلا متابعة. */
+export const monitors = monitorsFromEnv((name) => process.env[name]);
+
+/**
+ * التقرير بنشرته إن كان قياس متابعة. النشرة تُلصق هنا لا تُحفظ في التقرير:
+ * التقرير يُؤرشف قبل أن تُكتب، فيُقرأ بلا نشرةٍ من الأرشيف.
+ */
+export async function getScan(id: string): Promise<ScanResult | null> {
+  const report = await readReport(store, archive, id);
+  if (report === null || report.digest !== undefined || monitors === null) return report;
+
+  // نشرةٌ تعذّرت قراءتها لا تحجب التقرير — يُعرض بلاها.
+  const digest = await monitors.digestFor(id).catch(() => null);
+  return digest === null ? report : { ...report, digest };
 }
 
 export function putScan(result: ScanResult): Promise<void> {
@@ -180,4 +194,37 @@ export function startScan(input: StartInput): StartedScan {
   );
 
   return { scanId, demo, settled };
+}
+
+// ── المتابعة ─────────────────────────────────────────────────
+
+/**
+ * قياسٌ واحد لمتجرٍ متابَع، بتبعيات الإنتاج.
+ *
+ * في الوضع التجريبي لا يجري شيء: نشرةٌ مبنيّة على إجاباتٍ نموذجية خبرٌ كاذب
+ * يصل تاجراً حقيقياً. ولا يُسجَّل القياس، فيبقى المتجر أوّل المستحقّين حتى
+ * تُضبط المفاتيح.
+ */
+export async function monitorOnce(monitor: Monitor): Promise<MonitorOutcome> {
+  const { llm, demo } = buildLlm();
+  if (demo || archive === null || monitors === null) {
+    return { status: 'failed', domain: monitor.domain, reportId: '', error: 'monitoring needs model keys and a database' };
+  }
+
+  const engines = buildEngines({
+    openaiApiKey: process.env['OPENAI_API_KEY'] ?? null,
+    dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
+    dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
+    perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
+  });
+
+  return runMonitor(monitor, {
+    registry: monitors,
+    archive,
+    store,
+    pipeline: withHardDeadline(buildDeps(llm, demo, engines), HARD_DEADLINE_MS),
+    budgetMs: SOFT_BUDGET_MS,
+    now: () => new Date(),
+    newId: () => randomUUID(),
+  });
 }

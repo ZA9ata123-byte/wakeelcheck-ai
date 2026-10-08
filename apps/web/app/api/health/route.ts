@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { archive, storeKind } from '@/lib/scans';
+import { archive, monitors, storeKind } from '@/lib/scans';
 import { verifierFromEnv } from '@/lib/turnstile';
 
 /**
@@ -9,6 +9,7 @@ import { verifierFromEnv } from '@/lib/turnstile';
  * - `store: "redis"` ← الحدود والكاش والنتائج مشتركة بين النسخ.
  * - `human: true` ← Turnstile مُفعَّل بمفتاحيه معاً.
  * - `archive: true` ← التقارير تبقى دائماً، وروابطها لا تنتهي.
+ * - `monitoring: true` ← القاعدة و`CRON_SECRET` معاً: المتابعة الأسبوعية تعمل.
  *
  * لا قيمة متغيّر هنا ولا جزءٌ منها — القاعدة 01. اسم المخزن فقط.
  */
@@ -20,5 +21,6 @@ export function GET() {
     store: storeKind,
     human: verifierFromEnv((name) => process.env[name]) !== null,
     archive: archive !== null,
+    monitoring: monitors !== null && (process.env['CRON_SECRET'] ?? '') !== '',
   });
 }

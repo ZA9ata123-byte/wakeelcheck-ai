@@ -15,7 +15,7 @@
  */
 
 import type { ScanResult } from '@wakeelcheck/core';
-import { neonClient, sqlArchive, type ScanArchive } from '@wakeelcheck/db';
+import { neonClient, sqlArchive, sqlMonitors, type MonitorRegistry, type ScanArchive } from '@wakeelcheck/db';
 import { memoryStore, redisStore, type KeyValueStore } from '@wakeelcheck/limits';
 
 export type StoreKind = 'redis' | 'memory';
@@ -91,12 +91,23 @@ export async function loadResult(store: KeyValueStore, id: string): Promise<Scan
  * `DATABASE_URL` اسمه المعتاد، و`POSTGRES_URL` ما يضعه تكامل Vercel مع Neon
  * أيضاً. وبلا أيٍّ منهما يبقى التقرير يومين في المخزن — كما كان.
  */
-export function archiveFromEnv(env: Env): ScanArchive | null {
+function databaseUrl(env: Env): string | null {
   for (const name of ['DATABASE_URL', 'POSTGRES_URL']) {
     const url = env(name);
-    if (url !== undefined && url !== '') return sqlArchive(neonClient(url));
+    if (url !== undefined && url !== '') return url;
   }
   return null;
+}
+
+export function archiveFromEnv(env: Env): ScanArchive | null {
+  const url = databaseUrl(env);
+  return url === null ? null : sqlArchive(neonClient(url));
+}
+
+/** سجلّ المتابعة — في القاعدة نفسها. بلاها لا متابعة. */
+export function monitorsFromEnv(env: Env): MonitorRegistry | null {
+  const url = databaseUrl(env);
+  return url === null ? null : sqlMonitors(neonClient(url));
 }
 
 /**

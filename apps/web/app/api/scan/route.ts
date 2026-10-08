@@ -1,6 +1,6 @@
 import { after } from 'next/server';
 import { handleScanPost } from '@/lib/scan-post';
-import { limitStore, startScan } from '@/lib/scans';
+import { startScan, store } from '@/lib/scans';
 
 /**
  * سقف المنصّة بالثواني. يجب أن يطابق `PLATFORM_LIMIT_MS` في `lib/launch.ts`.
@@ -17,7 +17,7 @@ export const maxDuration = 60;
  */
 export function POST(req: Request): Promise<Response> {
   return handleScanPost(req, {
-    store: limitStore,
+    store,
     start: startScan,
     schedule: (task) => after(task),
     env: (name) => process.env[name],

@@ -1,6 +1,6 @@
 # اللوحة
 
-**آخر تحديث:** 2026-10-08 · ⚠️ النطاق انتقل · الحرّاس الثلاثة أُصلحت · **يكتبها:** claude
+**آخر تحديث:** 2026-10-08 · ⚠️ النطاق انتقل · #3 Redis مبنيّ · **يكتبها:** claude
 التصحيح يُطلب في صندوقك، ولا يُكتب هنا مباشرة.
 
 ---
@@ -26,7 +26,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 |---|---|
 | الفرع المرجعي | **`master`** — عليه الدمج والتصميم الجديد |
 | ⚠️ النسخة المحلية | على `main` ومتأخرة — الملفات القديمة ما زالت هنا |
-| الاختبارات | **337** · 0 فشل — منها 26 لـ`apps/web` لأوّل مرّة |
+| الاختبارات | **375** · 0 فشل — منها 40 لـ`apps/web` |
 | الأنواع | 0 أخطاء |
 | البناء | ناجح |
 
@@ -41,7 +41,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 |---|---|---|---|
 | ✅ | ~~الإنفاق لا يُسجَّل · الكاش لا يُكتب · الفحص يُترك~~ | claude | `162752a` — كانت ستحرق الميزانية يوم الإطلاق |
 | — | **المفاتيح والإعدادات في Vercel** — القائمة أدناه | **الرئيس** | 🔴 **هذا ما يحجز الإطلاق الهادئ الآن** |
-| [#3](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/3) | Redis مشترك — الحدّ الحالي لكلّ نسخة | claude | ⏳ يحجز **تويتر** لا الإطلاق الهادئ |
+| [#3](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/3) | Redis مشترك — الحدود والكاش **والنتائج** | claude | ✅ **الكود جاهز** `39bc8ac` · ينتظر حساب Upstash من الرئيس |
 | [#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) | Turnstile على `/api/scan` | claude | ⏳ يحجز **تويتر** لا الإطلاق الهادئ |
 | — | فحص 20 متجر وقراءة التقارير | **الرئيس** | 🔵 **الأداة جاهزة:** `pnpm run review stores.txt` — تُبرز القاعدة التي لم تفرّق |
 | [#9](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/9) | قياس مهلة Vercel | codex | 🟡 **الشكل مُجاب — بقي الزمن الحقيقي** · انظر أدناه |
@@ -61,6 +61,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 | `DEEPSEEK_API_KEY` | **ضروري** | بلاه يبقى الموقع **تجريبياً**: التوصيف والأسئلة والاستخراج وهمية، و«وضع تجريبي» أمام كلّ زائر |
 | `IP_HASH_SALT` | **ضروري** | نصّ عشوائيّ طويل. الافتراضيّ `dev-salt` مكتوبٌ في المستودع العموميّ |
 | `MAX_MONTHLY_SPEND_USD` | اختياريّ | الافتراضيّ صار 20. اجعله **أقلّ** من الرصيد |
+| `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN` | **قبل تويتر** | من Upstash (مجاني)، أو عبر تكامل Vercel ← Storage ← Upstash فتُضبط وحدها. تحقّق: `/api/health` يقول `"store":"redis"` |
 | `OPENROUTER_API_KEY` · `PERPLEXITY_API_KEY` · `DATAFORSEO_*` | **لا** | الفحص المجاني لا يستعملها |
 
 ⚠️ **أطفئ إعادة الشحن التلقائيّ** في OpenAI وDeepSeek. الرصيد المدفوع مسبقاً هو

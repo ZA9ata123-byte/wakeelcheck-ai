@@ -123,7 +123,9 @@ test('الوعد لا يُرفض حتى حين يسقط الفحص', async () =>
       deps: pipelineDeps(),
       demo: false,
       store: memoryStore(),
-      put: (r) => saved.set(r.id, r),
+      put: (r) => {
+          saved.set(r.id, r);
+        },
       run: async () => {
         throw new Error('عطلٌ لم يتوقّعه أحد');
       },
@@ -146,7 +148,9 @@ test('سقوطُ الدفتر لا يُفسد ما رآه التاجر', async (
 
   await launchScan(
     { url: 'daralanaqa.sa', domain: 'daralanaqa.sa', kind: 'quick', scanId: 'scan-y', budgetMs: 30_000, cacheTtlHours: 24 },
-    { deps: pipelineDeps(), demo: false, store: broken, put: (r) => saved.set(r.id, r) }
+    { deps: pipelineDeps(), demo: false, store: broken, put: (r) => {
+          saved.set(r.id, r);
+        } }
   );
 
   assert.equal(saved.get('scan-y')?.status, 'done');

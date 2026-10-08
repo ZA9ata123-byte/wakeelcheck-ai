@@ -20,6 +20,7 @@
  */
 
 import type { ScanKind, ScanResult } from '@wakeelcheck/core';
+import type { ScanArchive } from '@wakeelcheck/db';
 import { recordSpend, setCachedScan, type KeyValueStore } from '@wakeelcheck/limits';
 import {
   runScan,
@@ -110,6 +111,17 @@ export function shouldCache(result: ScanResult, demo: boolean): boolean {
   return result.answers.length > 0;
 }
 
+/**
+ * هل يُؤرشف التقرير دائماً؟
+ *
+ * المكتمل وحده، والحقيقيّ وحده. والمكتمل بلا إجابة يُؤرشف — بخلاف الكاش:
+ * جاهزيته وأمنه حقيقيان ورابطه يستحقّ أن يبقى، والمقارنة الأسبوعية تقرأ
+ * محرّكه الساقط «لم يُقَس» فلا تُنتج منه خبراً.
+ */
+export function shouldArchive(result: ScanResult, demo: boolean): boolean {
+  return !demo && result.status === 'done';
+}
+
 export interface LaunchInput {
   url: string;
   /** النطاق مطبَّعاً — هو مفتاح الكاش نفسه الذي سأل عنه `admit`. */
@@ -126,6 +138,8 @@ export interface LaunchContext {
   store: KeyValueStore;
   /** يحفظ النتيجة — في المخزن المشترك في الإنتاج. */
   put(result: ScanResult): Promise<void> | void;
+  /** الأرشيف الدائم (#5). غيابُه يعني أن التقرير يعيش في المخزن يومين فقط. */
+  archive?: ScanArchive | null;
   /** `runScan` في الإنتاج. يُستبدل في الاختبار حين يلزم فشلٌ لا ينتجه الخطّ. */
   run?: (req: ScanRequest, deps: PipelineDeps) => Promise<ScanOutcome>;
 }
@@ -186,17 +200,37 @@ export async function launchScan(input: LaunchInput, ctx: LaunchContext): Promis
 
   await save(outcome.result);
 
+  // ثلاث خطوات دفتر، كلٌّ في محاولتها: سقوطُ واحدةٍ لا يمنع الأخرى. مخزنٌ
+  // ساقط لا يمنع الأرشفة، وقاعدةٌ ساقطة لا تمنع تسجيل الإنفاق. وكلّ سقوطٍ
+  // يُرصد حين يصل Sentry (#6)؛ إلى ذلك الحين، السقفُ الحقيقيّ هو الرصيد
+  // المدفوع مسبقاً عند المزوّد.
   try {
     // كلُّ ما صُرف يُسجَّل — حتى الفاشل: نداءات التوصيف والأسئلة دُفع ثمنها.
     await recordSpend(ctx.store, outcome.costMicros, ctx.deps.now());
+  } catch {
+    // الإنفاق لم يُسجَّل.
+  }
 
+  try {
     if (shouldCache(outcome.result, ctx.demo)) {
       await setCachedScan(ctx.store, input.domain, input.kind, input.scanId, {
         ttlHours: input.cacheTtlHours,
       });
     }
   } catch {
-    // الدفتر سقط والنتيجة محفوظة. يُرصد هذا حين يصل Sentry (#6)؛ إلى ذلك
-    // الحين، السقفُ الحقيقيّ هو الرصيد المدفوع مسبقاً عند المزوّد.
+    // الفحص التالي لنفس المتجر يُدفع ثمنه — لا أكثر.
+  }
+
+  try {
+    if (shouldArchive(outcome.result, ctx.demo)) {
+      await ctx.archive?.save({
+        domain: input.domain,
+        result: outcome.result,
+        costMicros: outcome.costMicros,
+        at: ctx.deps.now(),
+      });
+    }
+  } catch {
+    // التقرير يبقى يومين في المخزن بدل أن يبقى دائماً.
   }
 }

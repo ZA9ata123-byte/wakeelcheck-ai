@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@wakeelcheck/core": "workspace:*",
+    "@wakeelcheck/db": "workspace:^",
     "@wakeelcheck/engines": "workspace:*",
     "@wakeelcheck/fetcher": "workspace:*",
     "@wakeelcheck/limits": "workspace:*",

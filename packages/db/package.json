@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": {
-    "@wakeelcheck/core": "workspace:*",
-    "drizzle-orm": "^0.38.0"
+  "exports": {
+    ".": "./src/index.ts"
   },
-  "scripts": { "typecheck": "tsc --noEmit" }
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "@wakeelcheck/core": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
+  }
 }

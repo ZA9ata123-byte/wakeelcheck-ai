@@ -2212,3 +2212,40 @@ html[lang='en'] mark.rival::after {
   margin-top: 12px;
   min-height: 65px;
 }
+
+/* ── رابط التقرير ──────────────────────────────────────── */
+/*
+ * L-025: `.evidence-footer span` (0,1,1) تغلب صنفاً وحده (0,1,0) على `gap`.
+ * فالمحدِّد هنا بصنفين (0,2,0) — يغلبها صراحةً، ولا يعتمد على الترتيب.
+ */
+.evidence-footer .evidence-actions {
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.report-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px dashed var(--muted);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-link:hover,
+.report-link:focus-visible {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.report-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}

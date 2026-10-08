@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ArchiveUnavailableError } from '@wakeelcheck/db';
 import { StoreUnavailableError } from '@wakeelcheck/limits';
 import { getScan } from '@/lib/scans';
 
@@ -14,7 +15,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   } catch (err) {
     // الواجهة تعيد المحاولة على أي ردٍّ غير ناجح، فعطلٌ عابر في المخزن لا
     // يُسقط الفحص أمام التاجر.
-    if (err instanceof StoreUnavailableError) {
+    if (err instanceof StoreUnavailableError || err instanceof ArchiveUnavailableError) {
       return NextResponse.json({ error: 'store_unavailable' }, { status: 503 });
     }
     throw err;

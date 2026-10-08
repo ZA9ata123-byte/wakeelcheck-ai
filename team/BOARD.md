@@ -1,6 +1,6 @@
 # اللوحة
 
-**آخر تحديث:** 2026-10-08 · ⚠️ النطاق انتقل · #3 و#4 مبنيّان · **يكتبها:** claude
+**آخر تحديث:** 2026-10-08 · ⚠️ النطاق انتقل · #3 و#4 و#5 مبنيّة · **يكتبها:** claude
 التصحيح يُطلب في صندوقك، ولا يُكتب هنا مباشرة.
 
 ---
@@ -26,7 +26,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 |---|---|
 | الفرع المرجعي | **`master`** — عليه الدمج والتصميم الجديد |
 | ⚠️ النسخة المحلية | على `main` ومتأخرة — الملفات القديمة ما زالت هنا |
-| الاختبارات | **390** · 0 فشل — منها 55 لـ`apps/web` |
+| الاختبارات | **411** · 0 فشل — منها 64 لـ`apps/web` و12 على Postgres حقيقيّ |
 | الأنواع | 0 أخطاء |
 | البناء | ناجح |
 
@@ -63,6 +63,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 | `MAX_MONTHLY_SPEND_USD` | اختياريّ | الافتراضيّ صار 20. اجعله **أقلّ** من الرصيد |
 | `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN` | **قبل تويتر** | من Upstash (مجاني)، أو عبر تكامل Vercel ← Storage ← Upstash فتُضبط وحدها. تحقّق: `/api/health` يقول `"store":"redis"` |
 | `TURNSTILE_SECRET_KEY` · `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | **قبل تويتر** | من Cloudflare ← Turnstile ← Add site (مجاني). **الاثنان معاً** وإلّا لا يعمل، ثم Redeploy. تحقّق: `/api/health` يقول `"human":true` |
+| `DATABASE_URL` | **للاشتراك المدفوع** | Vercel ← Storage ← Neon (مجاني) فيُضبط وحده. التقارير تبقى وروابطها لا تنتهي، والمتابعة الأسبوعية تجد ما تقارنه. تحقّق: `"archive":true` |
 | `OPENROUTER_API_KEY` · `PERPLEXITY_API_KEY` · `DATAFORSEO_*` | **لا** | الفحص المجاني لا يستعملها |
 
 ⚠️ **أطفئ إعادة الشحن التلقائيّ** في OpenAI وDeepSeek. الرصيد المدفوع مسبقاً هو

@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { EngineAnswer, MatrixRow, ScanResult } from '@wakeelcheck/core';
 import { buildMatrix } from '@wakeelcheck/visibility';
 import { copy, type Copy, type Locale } from '@/lib/i18n';
+import { useTurnstile } from '@/components/turnstile';
 import {
   ArrowNext,
   Check,
@@ -84,8 +85,16 @@ function score(result: ScanResult): { pct: number; passed: number; total: number
   return { pct: sum === 0 ? 0 : Math.round((got / sum) * 100), passed: result.rules.filter((r) => r.passed).length, total };
 }
 
+/**
+ * المفتاح العامّ لـTurnstile. يُقرأ بالنقطة حرفياً لأن Next يستبدله نصّاً عند
+ * البناء — والبيئة تُقرأ في المتصفّح بهذه الطريقة وحدها. غيابُه يُبقي الموقع
+ * كما كان: لا سكربت ولا تحقّق.
+ */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export default function Experience({ locale }: { locale: Locale }) {
   const t = copy[locale];
+  const { box: humanBox, take: takeHumanToken } = useTurnstile(TURNSTILE_SITE_KEY, locale);
 
   const [domain, setDomain] = useState('');
   const [shown, setShown] = useState('yourstore.sa');
@@ -147,15 +156,24 @@ export default function Experience({ locale }: { locale: Locale }) {
       timers.current.push(tick);
 
       try {
+        // لكلّ فحصٍ رمز. `null` حين لا تحقّق مُعدّاً — والخادم يعرف ذلك.
+        const turnstileToken = await takeHumanToken();
+
         const res = await fetch('/api/scan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: cleaned }),
+          body: JSON.stringify(turnstileToken === null ? { url: cleaned } : { url: cleaned, turnstileToken }),
         });
 
         if (res.status === 429) {
           clearTimers();
           setNotice(t.limitHit);
+          setPhase('failed');
+          return;
+        }
+        if (res.status === 403) {
+          clearTimers();
+          setNotice(t.humanFailed);
           setPhase('failed');
           return;
         }
@@ -181,7 +199,7 @@ export default function Experience({ locale }: { locale: Locale }) {
         setPhase('failed');
       }
     },
-    [clearTimers, domain, phase, poll, t]
+    [clearTimers, domain, phase, poll, t, takeHumanToken]
   );
 
   const answers: EngineAnswer[] = scan?.answers ?? [];
@@ -294,6 +312,9 @@ export default function Experience({ locale }: { locale: Locale }) {
                 ))}
               </div>
             )}
+
+            {/* فارغٌ عادةً: Cloudflare لا يُظهر شيئاً إلا لمن يشكّ فيه. */}
+            <div ref={humanBox} className="human-check" />
 
             {demo && (
               <p className="demo-note">

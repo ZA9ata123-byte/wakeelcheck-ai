@@ -2198,3 +2198,17 @@ html[lang='en'] mark.rival::after {
 .rival-skipped-why {
   color: var(--muted);
 }
+
+/* ── إثبات الإنسان ─────────────────────────────────────── */
+/*
+ * فارغٌ لأغلب الزوّار فلا يأخذ مكاناً. وحين يُظهر Cloudflare المربّع يأخذ
+ * مسافته من الحقل فوقه.
+ */
+.human-check:empty {
+  display: none;
+}
+
+.human-check {
+  margin-top: 12px;
+  min-height: 65px;
+}

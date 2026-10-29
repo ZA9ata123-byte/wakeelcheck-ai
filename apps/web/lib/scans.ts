@@ -12,7 +12,8 @@
 import { randomUUID } from 'node:crypto';
 import type { Engine, FetchResult, ScanResult } from '@wakeelcheck/core';
 import { safeFetch } from '@wakeelcheck/fetcher';
-import { fakeProvider, oxAlpha, deepSeekFlash, withFallback, type LlmProvider } from '@wakeelcheck/llm';
+import { fakeProvider, withFallback, type LlmProvider } from '@wakeelcheck/llm';
+import { isDemo, llmChain, llmKeys } from './llm-env';
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import type { KeyValueStore } from '@wakeelcheck/limits';
 import { HARD_DEADLINE_MS, SOFT_BUDGET_MS, launchScan, withHardDeadline } from './launch';
@@ -64,17 +65,9 @@ export function putScan(result: ScanResult): Promise<void> {
  * أي حساب — وتشغيل الحقيقي لاحقاً تغيير قيمة في البيئة، لا تغيير كود.
  */
 export function buildLlm(): { llm: LlmProvider; demo: boolean } {
-  const openrouter = process.env['OPENROUTER_API_KEY'] ?? null;
-  const deepseek = process.env['DEEPSEEK_API_KEY'] ?? null;
-
-  if (openrouter === null && deepseek === null) {
-    return { llm: demoLlm(), demo: true };
-  }
-
-  return {
-    llm: withFallback([oxAlpha(openrouter), deepSeekFlash(deepseek)]),
-    demo: false,
-  };
+  const keys = llmKeys((name) => process.env[name]);
+  if (isDemo(keys)) return { llm: demoLlm(), demo: true };
+  return { llm: withFallback(llmChain(keys)), demo: false };
 }
 
 const DEMO_ANSWER = (category: string, city: string | null): string => {
@@ -179,7 +172,7 @@ export function startScan(input: StartInput): StartedScan {
   const { llm, demo } = buildLlm();
 
   const engines = buildEngines({
-    openaiApiKey: process.env['OPENAI_API_KEY'] ?? null,
+    openaiApiKey: llmKeys((name) => process.env[name]).openai,
     dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
     dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
     perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
@@ -212,7 +205,7 @@ export async function monitorOnce(monitor: Monitor): Promise<MonitorOutcome> {
   }
 
   const engines = buildEngines({
-    openaiApiKey: process.env['OPENAI_API_KEY'] ?? null,
+    openaiApiKey: llmKeys((name) => process.env[name]).openai,
     dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
     dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
     perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,

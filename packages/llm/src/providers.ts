@@ -88,6 +88,11 @@ interface OpenAiCompatibleConfig {
   pricing: Pricing;
   /** ترويسات إضافية — OpenRouter يطلب Referer وTitle. */
   headers?: Record<string, string>;
+  /**
+   * نماذج التفكير (عائلة GPT-5) ترفض `temperature` و`max_tokens`: تأخذ
+   * `max_completion_tokens`، وأقلّ جهد تفكير يكفي للاستخراج ويُبقي الكلفة دنيا.
+   */
+  reasoning?: boolean;
 }
 
 interface ChatCompletionResponse {
@@ -114,8 +119,9 @@ function openAiCompatible(config: OpenAiCompatibleConfig): LlmProvider {
           { role: 'system', content: req.system },
           { role: 'user', content: req.user },
         ],
-        temperature: req.temperature ?? 0,
-        max_tokens: req.maxTokens ?? 2000,
+        ...(config.reasoning === true
+          ? { max_completion_tokens: req.maxTokens ?? 2000, reasoning_effort: 'minimal' }
+          : { temperature: req.temperature ?? 0, max_tokens: req.maxTokens ?? 2000 }),
         ...(req.json === true ? { response_format: { type: 'json_object' } } : {}),
       };
 
@@ -187,5 +193,22 @@ export function deepSeekFlash(apiKey: string | null): LlmProvider {
     apiKey,
     model: 'deepseek-v4-flash',
     pricing: { input: 0.22, output: 0.66 },
+  });
+}
+
+/**
+ * GPT-5 mini — يكفيه مفتاح OpenAI الذي يشغّل محرّك ChatGPT أصلاً.
+ *
+ * آخر السلسلة: أغلى من DeepSeek على الإخراج، لكنّه يعني أن مفتاحاً واحداً
+ * يكفي لإطلاق الموقع بلا وضعٍ تجريبيّ. ($0.25 إدخال · $2 إخراج للمليون)
+ */
+export function gpt5Mini(apiKey: string | null): LlmProvider {
+  return openAiCompatible({
+    name: 'gpt-5-mini',
+    baseUrl: 'https://api.openai.com/v1',
+    apiKey,
+    model: 'gpt-5-mini',
+    pricing: { input: 0.25, output: 2 },
+    reasoning: true,
   });
 }

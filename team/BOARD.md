@@ -58,7 +58,7 @@ Redis و[#4](https://github.com/ZA9ata123-byte/wakeelcheck-ai/issues/4) Turnstil
 | المتغيّر | | |
 |---|---|---|
 | `OPENAI_API_KEY` | **ضروري** | إجابة ChatGPT — الدليل |
-| `DEEPSEEK_API_KEY` | **ضروري** | بلاه يبقى الموقع **تجريبياً**: التوصيف والأسئلة والاستخراج وهمية، و«وضع تجريبي» أمام كلّ زائر |
+| `DEEPSEEK_API_KEY` | اختياريّ | أرخص للتوصيف والاستخراج. **بلاه يكفي `OPENAI_API_KEY`** (GPT-5 mini) — الموقع ما يبقاش تجريبي |
 | `IP_HASH_SALT` | **ضروري** | نصّ عشوائيّ طويل. الافتراضيّ `dev-salt` مكتوبٌ في المستودع العموميّ |
 | `MAX_MONTHLY_SPEND_USD` | اختياريّ | الافتراضيّ صار 20. اجعله **أقلّ** من الرصيد |
 | `UPSTASH_REDIS_REST_URL` · `UPSTASH_REDIS_REST_TOKEN` | **قبل تويتر** | من Upstash (مجاني)، أو عبر تكامل Vercel ← Storage ← Upstash فتُضبط وحدها. تحقّق: `/api/health` يقول `"store":"redis"` |

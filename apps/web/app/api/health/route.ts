@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { archive, monitors, storeKind } from '@/lib/scans';
 import { verifierFromEnv } from '@/lib/turnstile';
+import { isDemo, llmKeys } from '@/lib/llm-env';
 
 /**
  * ما يحتاج الرئيس أن يراه بعد ضبط المتغيّرات في Vercel:
@@ -17,7 +18,7 @@ export function GET() {
   return NextResponse.json({
     ok: true,
     service: 'wakeelcheck',
-    demo: process.env['OPENROUTER_API_KEY'] === undefined && process.env['DEEPSEEK_API_KEY'] === undefined,
+    demo: isDemo(llmKeys((name) => process.env[name])),
     store: storeKind,
     human: verifierFromEnv((name) => process.env[name]) !== null,
     archive: archive !== null,

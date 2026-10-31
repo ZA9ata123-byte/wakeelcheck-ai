@@ -54,6 +54,8 @@ export interface PipelineDeps {
 export interface ScanPlan {
   questions: number;
   engines: Engine[];
+  /** نداءاتٌ في الطريق معاً على المزوّد الواحد. */
+  perEngine: number;
   productPages: number;
   security: boolean;
   readiness: boolean;
@@ -63,21 +65,25 @@ export const PLANS: Record<ScanKind, ScanPlan> = {
   // المجاني: تشخيصٌ كامل — عشرون قاعدة وفحصٌ أمني وسؤالان على محرّك واحد.
   // التشخيص هو ما يُري التاجر أن المشكلة حقيقية؛ والمُباع هو المتابعة:
   // ما الذي تغيّر الأسبوع الماضي. إخفاء التشخيص يُخفي الدليل لا يبيعه.
-  quick: { questions: 2, engines: ['chatgpt'], productPages: 2, security: true, readiness: true },
+  // وسؤالاه معاً: ChatGPT مع البحث قرابة دقيقة، فالثاني بعد الأوّل لا يبقى
+  // له وقت. نداءان على حسابٍ واحد بعيدان عن حدّ المعدّل.
+  quick: { questions: 2, engines: ['chatgpt'], perEngine: 2, productPages: 2, security: true, readiness: true },
   full: {
     questions: 10,
     engines: ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity'],
+    perEngine: 1,
     productPages: 5,
     security: true,
     readiness: true,
   },
   // المتابعة: أسئلتها ثابتة تُمرَّر كلّ أسبوع، وهذا العدد لا يُستعمل إلا مرّةً
-  // واحدة — حين لا يكون للمتجر تقريرٌ سابق تُؤخذ أسئلته منه. ثلاثةٌ لا عشرة:
-  // المحرّك الواحد يُسأل بالتسلسل، وعشرة أسئلة على ChatGPT ≈ مئة ثانية لا تدخل
-  // مهلة الدالة. والأسئلة الثلاثة نفسها كلّ أسبوع أصدق من عشرةٍ تتبدّل.
+  // واحدة — حين لا يكون للمتجر تقريرٌ سابق تُؤخذ أسئلته منه. ثلاثةٌ لا عشرة،
+  // ومعاً: ثلاث دقائق بالتسلسل لا تدخل مهلة الدالة. والأسئلة الثلاثة نفسها
+  // كلّ أسبوع أصدق من عشرةٍ تتبدّل.
   monitor: {
     questions: 3,
     engines: ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity'],
+    perEngine: 3,
     productPages: 5,
     security: true,
     readiness: true,
@@ -235,7 +241,8 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
 
   // ── 7. سؤال المحرّكات ───────────────────────────────────────
   //
-  // مسارٌ لكلّ محرّك: أسئلتُه بالتسلسل، والمسارات تجري معاً.
+  // مسارٌ لكلّ محرّك، والمسارات تجري معاً. وداخل المسار `plan.perEngine`
+  // نداءً في الطريق على الأكثر — واحدٌ في الكامل، والأسئلة القليلة معاً.
   //
   // كان الترتيب متسلسلاً تماماً — عشرةُ أسئلة × أربعةُ محرّكات = أربعون نداءً
   // واحداً وراء الآخر، ومعها أربعون نداءَ استخراج. ثمانون رحلةَ شبكة في طلبٍ
@@ -260,52 +267,65 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
 
   await Promise.all(
     plan.engines.map(async (engine, ei) => {
-      for (const [qi, question] of questions.entries()) {
-        // لا نبدأ نداءً لن يُسلَّم. ما بقي من أسئلة هذا المحرّك يبقى غير
-        // مقيس، ويُصرَّح به — ولا يُعرض غياباً.
-        if (outOfTime()) {
-          const left = questions.length - qi;
-          engineWarnings.push({
-            qi,
-            ei,
-            step: `${engine}/budget`,
-            err: new Error(`توقّف عند السقف الزمني — ${left} سؤالاً لم يُسأل`),
-          });
-          break;
+      // عمّالٌ يتقاسمون أسئلة المحرّك بالدور: كلٌّ يأخذ التالي حين يفرغ.
+      let next = 0;
+
+      const worker = async (): Promise<void> => {
+        for (;;) {
+          const qi = next++;
+          const question = questions[qi];
+          if (question === undefined) return;
+
+          // لا نبدأ نداءً لن يُسلَّم. ما بقي من أسئلة هذا المحرّك يبقى غير
+          // مقيس، ويُصرَّح به مرّةً — ولا يُعرض غياباً.
+          if (outOfTime()) {
+            const left = questions.length - qi;
+            next = questions.length;
+            engineWarnings.push({
+              qi,
+              ei,
+              step: `${engine}/budget`,
+              err: new Error(`توقّف عند السقف الزمني — ${left} سؤالاً لم يُسأل`),
+            });
+            return;
+          }
+
+          try {
+            const reply = await deps.askEngine(engine, question.text, profile.locale);
+            costMicros += reply.costMicros;
+
+            const extracted = await extractCompetitors(
+              reply.text,
+              profile,
+              deps.llm,
+              brandName ?? undefined
+            );
+            costMicros += extracted.costMicros;
+
+            slots.push({
+              qi,
+              ei,
+              answer: {
+                questionId: question.id,
+                engine,
+                // حرفياً كما خرج — القاعدة الملزمة رقم 05.
+                answerText: reply.text,
+                citedUrls: reply.citedUrls,
+                storeMentioned: detectStoreMention(reply.text, profile, brandName ?? undefined),
+                competitors: extracted.competitors,
+                capturedAt: deps.now().toISOString(),
+                costMicros: reply.costMicros + extracted.costMicros,
+              },
+            });
+          } catch (err) {
+            // فشلُ نداءٍ واحد لا يُسقط مسارَه ولا بقيّةَ المسارات.
+            engineWarnings.push({ qi, ei, step: `${engine}/${question.id}`, err });
+          }
         }
+      };
 
-        try {
-          const reply = await deps.askEngine(engine, question.text, profile.locale);
-          costMicros += reply.costMicros;
-
-          const extracted = await extractCompetitors(
-            reply.text,
-            profile,
-            deps.llm,
-            brandName ?? undefined
-          );
-          costMicros += extracted.costMicros;
-
-          slots.push({
-            qi,
-            ei,
-            answer: {
-              questionId: question.id,
-              engine,
-              // حرفياً كما خرج — القاعدة الملزمة رقم 05.
-              answerText: reply.text,
-              citedUrls: reply.citedUrls,
-              storeMentioned: detectStoreMention(reply.text, profile, brandName ?? undefined),
-              competitors: extracted.competitors,
-              capturedAt: deps.now().toISOString(),
-              costMicros: reply.costMicros + extracted.costMicros,
-            },
-          });
-        } catch (err) {
-          // فشلُ نداءٍ واحد لا يُسقط مسارَه ولا بقيّةَ المسارات.
-          engineWarnings.push({ qi, ei, step: `${engine}/${question.id}`, err });
-        }
-      }
+      const lanes = Math.max(1, Math.min(plan.perEngine, questions.length));
+      await Promise.all(Array.from({ length: lanes }, () => worker()));
     })
   );
 

@@ -115,6 +115,27 @@ test('المحرّكات تجري معاً، والمزوّد الواحد ند�
   assert.equal(t.peak.perEngine, 1, 'مزوّدٌ واحد لا يُنادى مرّتين في آنٍ — حدُّ المعدّل والميزانية');
 });
 
+test('المجانيّ: سؤالاه معاً على ChatGPT — والكامل يبقى واحداً واحداً', async () => {
+  // تغيير سلوك: السؤال الثاني في المجانيّ كان يُسأل بعد الأوّل، فلا يبقى له
+  // وقت — ChatGPT مع البحث يأخذ قرابة دقيقة. نداءان في الطريق على حسابٍ واحد
+  // لا يقتربان من حدّ المعدّل، والكلفة نفسها.
+  const quick = tracker();
+  await runScan(
+    { url: 'daralanaqa.sa', kind: 'quick' },
+    deps({
+      async askEngine(engine) {
+        quick.enter(engine);
+        await wait(12);
+        quick.leave(engine);
+        return { text: ANSWER, citedUrls: [], costMicros: 0 };
+      },
+    })
+  );
+  assert.equal(quick.peak.perEngine, PLANS.quick.questions, 'سؤالا المجانيّ في الطريق معاً');
+  assert.equal(PLANS.quick.perEngine, 2);
+  assert.equal(PLANS.full.perEngine, 1, 'الكامل: أربعون نداءً لا تُطلق معاً');
+});
+
 test('الزمن يقارب أبطأ مسار لا مجموع النداءات', async () => {
   const perCall = 10;
   const started = Date.now();

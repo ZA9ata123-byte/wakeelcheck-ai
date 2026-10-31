@@ -245,3 +245,14 @@ test('a refused request does not consume budget headroom', async () => {
 
   assert.equal((await checkBudget(store, 300, NOW)).spentMicros, 0, 'admission alone costs nothing');
 });
+
+test('نتيجةٌ من نسخةٍ سابقة لمنطق الفحص لا تُقدَّم', async () => {
+  // كاشٌ كُتب قبل رفع النسخة — مفتاحه القديم بلا نسخة.
+  const store = memoryStore();
+  await store.set('scan:quick:bellaq8.com', 'old-scan', 86_400);
+
+  assert.equal(await getCachedScan(store, 'bellaq8.com', 'quick'), null, 'القديم لا يُقرأ');
+
+  await setCachedScan(store, 'www.Bellaq8.com', 'quick', 'new-scan', { ttlHours: 24 });
+  assert.equal(await getCachedScan(store, 'bellaq8.com', 'quick'), 'new-scan');
+});

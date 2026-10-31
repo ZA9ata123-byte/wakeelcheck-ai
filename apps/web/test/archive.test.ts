@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ScanResult } from '@wakeelcheck/core';
 import type { ArchiveEntry, ScanArchive } from '@wakeelcheck/db';
-import { checkBudget, memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
+import { CACHE_VERSION, checkBudget, memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
 import { launchScan, shouldArchive } from '../lib/launch';
 import { archiveFromEnv, monitorsFromEnv, readReport, saveResult } from '../lib/store';
 import { NOW, pipelineDeps } from './fixture';
@@ -105,7 +105,7 @@ test('أرشيفٌ ساقط لا يمنع تسجيل الإنفاق ولا ال�
   });
 
   assert.equal((await checkBudget(store, 20, NOW)).spentMicros, 2 * 21_700, 'الإنفاق سُجّل');
-  assert.equal(await store.get('scan:quick:daralanaqa.sa'), 'scan-a', 'والكاش كُتب');
+  assert.equal(await store.get(`scan:${CACHE_VERSION}:quick:daralanaqa.sa`), 'scan-a', 'والكاش كُتب');
 });
 
 test('مخزنٌ يسقط عند الإنفاق لا يمنع الأرشفة', async () => {

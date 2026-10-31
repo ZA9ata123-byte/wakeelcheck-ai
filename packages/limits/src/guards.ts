@@ -32,8 +32,17 @@ export interface CacheOptions {
   ttlHours: number;
 }
 
+/**
+ * نسخة منطق الفحص. تُرفع حين يتغيّر ما يُنتجه الفحص، فلا يُقدَّم لتاجرٍ
+ * يومٌ كاملٌ من نتيجةٍ قديمة: bellaq8.com بقي يعيد سؤالاً إنجليزياً موجّهاً
+ * للبائع بعد إصلاحه، لأنه كان في الكاش.
+ *
+ * v2: الأسئلة للمساعد لا للبائع، والبلد من الصفحة، وسؤالان معاً.
+ */
+export const CACHE_VERSION = 'v2';
+
 function cacheKey(domain: string, kind: ScanKind): string {
-  return `scan:${kind}:${domain.toLowerCase().replace(/^www\./, '')}`;
+  return `scan:${CACHE_VERSION}:${kind}:${domain.toLowerCase().replace(/^www\./, '')}`;
 }
 
 /**

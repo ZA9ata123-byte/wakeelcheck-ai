@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
 
 export const metadata: Metadata = {
@@ -19,7 +20,11 @@ export default function EnglishLayout({ children }: { children: React.ReactNode 
           href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* زيارات بلا ملفات تعريف — لا موافقة مطلوبة ولا بيانات شخصية. */}
+        <Analytics />
+      </body>
     </html>
   );
 }

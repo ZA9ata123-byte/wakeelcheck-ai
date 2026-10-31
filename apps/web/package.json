@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@vercel/analytics": "1.5.0",
     "@wakeelcheck/core": "workspace:*",
     "@wakeelcheck/db": "workspace:^",
     "@wakeelcheck/engines": "workspace:*",

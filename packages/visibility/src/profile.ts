@@ -177,13 +177,43 @@ export async function buildProfile(
 
 // ── أسئلة الشراء ─────────────────────────────────────────────
 
-const QUESTIONS_SYSTEM = `تكتب أسئلة يسألها متسوّق حقيقي للذكاء الاصطناعي قبل الشراء.
+const QUESTIONS_SYSTEM = `تكتب أسئلة يسألها متسوّق حقيقي لمساعد ذكاء اصطناعي (مثل ChatGPT) قبل الشراء.
 
 أعِد JSON فقط: {"questions":[{"text":"...","intent":"discovery|price|shipping|comparison"}]}
 
-- اكتب بلهجة سوق المتجر المحلية، لا بالفصحى الرسمية.
+- المتسوّق لا يعرف المتجر بعد. يسأل المساعد من أين يشتري وأيّ متجر يرشّح — كلّ سؤال يطلب ترشيح متاجر أو مكان شراء.
+  أمثلة: «وين ألقى عبايات سوداء ناعمة بالكويت؟» · «وش أفضل متجر أونلاين للعطور النسائية؟» · "Where can I buy modest dresses online in Kuwait?"
+- لا يخاطب المتسوّق متجراً ولا بائعاً: لا «عندكم» ولا «هل لديكم» ولا "do you have" ولا "your sizes". هذا سؤالٌ لبائع، والمساعد يجيب عنه متقمّصاً المتجر فلا يقيس شيئاً.
+- اذكر التخصص، والمدينة أو البلد إن عُرفا.
+- اكتب باللغة المعطاة. بالعربية: بلهجة سوق المتجر المحلية، لا بالفصحى الرسمية.
 - لا تذكر اسم المتجر ولا نطاقه إطلاقاً — نريد أسئلة يسألها من لا يعرفه.
 - نوّع النوايا: اكتشاف، سعر، شحن، مقارنة.`;
+
+/**
+ * سؤالٌ يخاطب البائع لا المساعد — «عندكم المقاس؟»، "Do you have it in plus?".
+ *
+ * ChatGPT يجيب عنه متقمّصاً المتجر («نعم، لدينا…») فلا يُرشّح أحداً ولا
+ * يقيس ظهور أحد. حدث فعلاً على أوّل فحصٍ حيّ. يُحذف مهما التزم النموذج.
+ *
+ * العربية بـ`includes`: `\b` لا يعمل معها (L-004)، وصيغ الجمع هذه لا تقع
+ * داخل كلماتٍ أخرى.
+ */
+const SELLER_EN =
+  /\b(do|does|can|could|will|would) you (have|sell|offer|ship|deliver|carry|stock|make)\b|\byour (store|shop|stock|sizes?|products?|collection|prices?|items?)\b/i;
+const SELLER_AR = ['عندكم', 'لديكم', 'تبيعون', 'توفرون', 'توفّرون', 'توصلون', 'توصّلون', 'تشحنون', 'متجركم', 'منتجاتكم', 'أسعاركم', 'اسعاركم', 'مقاساتكم'];
+
+export function addressesSeller(text: string): boolean {
+  return SELLER_EN.test(text) || SELLER_AR.some((w) => text.includes(w));
+}
+
+/** السؤال الذي لا يخطئ: إن لم يبقَ من أسئلة النموذج شيءٌ صالح. */
+export function fallbackQuestion(profile: StoreProfile): BuyingQuestion {
+  const english = profile.locale.toLowerCase().startsWith('en');
+  const text = english
+    ? `What is the best online store for ${profile.category}${profile.city === null ? '' : ` in ${profile.city}`}?`
+    : `وش أفضل متجر أونلاين لـ${profile.category}${profile.city === null ? '' : ` في ${profile.city}`}؟`;
+  return { id: 'q1', text, intent: 'discovery' };
+}
 
 const INTENTS: readonly QuestionIntent[] = ['discovery', 'price', 'shipping', 'comparison'];
 
@@ -215,7 +245,7 @@ export async function generateQuestions(
   try {
     parsed = parseJson<QuestionsShape>(response.text);
   } catch {
-    return { questions: [], costMicros: response.costMicros };
+    return { questions: [fallbackQuestion(profile)], costMicros: response.costMicros };
   }
 
   const questions: BuyingQuestion[] = [];
@@ -225,7 +255,7 @@ export async function generateQuestions(
     if (typeof entry?.text !== 'string') continue;
 
     const text = entry.text.trim();
-    if (text.length < 8 || seen.has(text)) continue;
+    if (text.length < 8 || seen.has(text) || addressesSeller(text)) continue;
     seen.add(text);
 
     const intent =
@@ -236,6 +266,8 @@ export async function generateQuestions(
     questions.push({ id: `q${questions.length + 1}`, text, intent });
     if (questions.length >= count) break;
   }
+
+  if (questions.length === 0) questions.push(fallbackQuestion(profile));
 
   return { questions, costMicros: response.costMicros };
 }

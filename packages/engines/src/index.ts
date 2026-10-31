@@ -107,6 +107,9 @@ export function chatGptEngine(opts: OpenAiOptions): EngineClient {
           // البحث مفعَّل عمداً: نريد ما يقوله المنتج لزبون حقيقي،
           // لا ما يتذكّره النموذج من تدريبه.
           tools: [{ type: 'web_search' }],
+          // جهد التفكير الافتراضيّ (متوسّط) مع البحث يتجاوز مهلة الفحص:
+          // أوّل فحصٍ حيّ عاد بلا إجابة. «منخفض» أدنى ما يقبل البحث معه.
+          reasoning: { effort: 'low' },
           input: [
             {
               role: 'user',

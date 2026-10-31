@@ -302,6 +302,13 @@ export interface ScanResult {
   rivals?: RivalReport;
   /** نشرة المتابعة: ما تغيّر منذ الفحص السابق. لفحوص المتابعة وحدها. */
   digest?: Digest;
+  /**
+   * ما لم يكتمل ولماذا: «chatgpt/q1: chatgpt exceeded 31000ms».
+   *
+   * يُحفظ لأن «لا إجابة» بلا سبب لا تُشخَّص ولا تُشرح للتاجر. رسائلُ
+   * أخطاءٍ عامة فقط — لا مفتاح فيها ولا عنوان اتصال (القاعدة 01).
+   */
+  warnings?: string[];
   error?: string;
 }
 

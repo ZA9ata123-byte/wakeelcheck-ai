@@ -268,7 +268,11 @@ export default function Experience({ locale }: { locale: Locale }) {
   const answers: EngineAnswer[] = scan?.answers ?? [];
   const answer = answers[Math.min(engineIdx, Math.max(answers.length - 1, 0))] ?? null;
   const rivals = answer?.competitors.map((c) => c.name) ?? [];
-  const question = scan?.questions.find((q) => q.id === answer?.questionId)?.text ?? null;
+  // فحصٌ اكتمل بلا إجابة: يُقال ذلك صراحةً. عرضُ المثال هنا مع «مطابقة
+  // حرفية» و«0 / 1» كان يقدّم نموذجاً على أنه نتيجة متجر التاجر.
+  const noAnswer = scan !== null && answers.length === 0;
+  const question =
+    scan?.questions.find((q) => q.id === answer?.questionId)?.text ?? (noAnswer ? scan.questions[0]?.text ?? null : null);
   const s = scan === null ? null : score(scan);
   const sov = scan?.shareOfVoice ?? null;
 
@@ -456,9 +460,11 @@ export default function Experience({ locale }: { locale: Locale }) {
                     <span className="mono-label">{t.evidenceKicker}</span>
                     <h2>{t.evidenceTitle}</h2>
                   </div>
-                  <span className="literal-badge">
-                    <Shield size={14} /> {t.literalBadge}
-                  </span>
+                  {!noAnswer && (
+                    <span className="literal-badge">
+                      <Shield size={14} /> {t.literalBadge}
+                    </span>
+                  )}
                 </div>
 
                 <div className="transcript" key={engineIdx}>
@@ -469,26 +475,26 @@ export default function Experience({ locale }: { locale: Locale }) {
                   <div className="answer">
                     <span>{answer === null ? 'ChatGPT' : engineLabel(answer.engine)}</span>
                     <blockquote>
-                      {answer === null ? t.sampleAnswer : markRivals(answer.answerText, rivals)}
+                      {noAnswer ? t.noAnswer : answer === null ? t.sampleAnswer : markRivals(answer.answerText, rivals)}
                     </blockquote>
                   </div>
                 </div>
 
                 <div className="result-rail">
-                  <div className={answer?.storeMentioned === true ? '' : 'result-negative'}>
+                  <div className={noAnswer || answer?.storeMentioned === true ? '' : 'result-negative'}>
                     <span>{t.yourStore}</span>
-                    <b dir="ltr">{answer === null ? '0 / 1' : answer.storeMentioned ? '1 / 1' : '0 / 1'}</b>
-                    <small>{answer?.storeMentioned === true ? t.mentioned : t.notMentioned}</small>
+                    <b dir="ltr">{noAnswer ? '—' : answer === null ? '0 / 1' : answer.storeMentioned ? '1 / 1' : '0 / 1'}</b>
+                    <small>{noAnswer ? t.cellNotMeasured : answer?.storeMentioned === true ? t.mentioned : t.notMentioned}</small>
                   </div>
                   <div>
                     <span>{t.firstRival}</span>
                     <b>{rivals[0] ?? sov?.top?.name ?? '—'}</b>
                     <small>{rivals.length === 0 ? t.noRival : t.namedInstead}</small>
                   </div>
-                  <div className={sov !== null && sov.store === 0 ? 'result-negative' : ''}>
+                  <div className={!noAnswer && sov !== null && sov.store === 0 ? 'result-negative' : ''}>
                     <span>{t.shareLabel}</span>
                     <b dir="ltr">
-                      {sov === null || sov.total === 0 ? '0%' : `${Math.round((sov.store / sov.total) * 100)}%`}
+                      {noAnswer ? '—' : sov === null || sov.total === 0 ? '0%' : `${Math.round((sov.store / sov.total) * 100)}%`}
                     </b>
                     <small>{t.inThisAnswer}</small>
                   </div>

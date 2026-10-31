@@ -355,6 +355,7 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
         // لا يعود منه شيء، ويحمل حينها «لم يُقَس» لا «لم يُذكر».
         byEngine: summarizeByEngine(answers, plan.engines),
       },
+      ...(warnings.length > 0 ? { warnings: [...warnings] } : {}),
     },
     costMicros,
     warnings,

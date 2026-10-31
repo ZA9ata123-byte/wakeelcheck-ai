@@ -182,6 +182,13 @@ test('one failing engine does not sink the others', async () => {
   assert.equal(result.status, 'done');
   assert.ok(result.answers.length > 0, 'the answers that succeeded are kept');
   assert.ok(warnings.some((w) => w.includes('engine timeout')));
+  // ويُحفظ في التقرير: «لا إجابة» بلا سبب لا تُشخَّص ولا تُشرح للتاجر.
+  assert.ok(result.warnings?.some((w) => w.includes('engine timeout')), 'السبب في التقرير');
+});
+
+test('فحصٌ بلا عطب لا يحمل warnings', async () => {
+  const { result } = await runScan({ url: 'daralanaqa.sa', kind: 'quick' }, deps());
+  assert.equal(result.warnings, undefined);
 });
 
 test('a failing security collection leaves the rest intact', async () => {

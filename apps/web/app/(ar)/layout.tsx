@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'وكيل تشيك — شوف الجواب الذي يعطيه الذكاء الاصطناعي عن متجرك',
+  title: 'وكيل تشيك — اعرف الإجابة التي يقدّمها الذكاء الاصطناعي عن متجرك',
   description:
     'نُريك الإجابة الحرفية التي يعطيها ChatGPT وبحث Google عن متجرك، ومن ذُكر بدلاً منك — ثم نُصلح السبب.',
 };

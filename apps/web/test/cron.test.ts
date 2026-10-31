@@ -160,7 +160,10 @@ const fromRoot = (...rel: string[]): string => {
 };
 
 test('vercel.json يجدول المسار الموجود فعلاً', () => {
-  const config = JSON.parse(readFileSync(fromRoot('vercel.json'), 'utf8')) as {
+  // في apps/web لا في الجذر: Vercel يقرؤه من الدوسي الذي يبني منه، وما
+  // في الجذر يُتجاهل بصمت — ومعه المهمّة المجدولة.
+  assert.ok(!existsSync(fromRoot('apps/web/package.json').replace('apps/web/package.json', 'vercel.json')), 'لا vercel.json في الجذر');
+  const config = JSON.parse(readFileSync(fromRoot('apps/web/vercel.json'), 'utf8')) as {
     crons?: { path: string; schedule: string }[];
   };
   const job = config.crons?.find((c) => c.path === '/api/cron/monitor');

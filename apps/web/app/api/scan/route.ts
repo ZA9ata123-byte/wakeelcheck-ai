@@ -9,7 +9,7 @@ import { verifierFromEnv } from '@/lib/turnstile';
  * Next يقرؤه نصّاً ثابتاً عند البناء لا تعبيراً، فلا يمكن استيراده من هناك.
  * فالرقم مكرَّر مضطرّاً، واختبارٌ في `test/launch.test.ts` يحرس تطابقهما.
  */
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 /** `null` حين لا يكتمل زوج المفاتيح — فلا يُطالب الزائر برمزٍ لن يصل. */
 const verifyHuman = verifierFromEnv((name) => process.env[name]);

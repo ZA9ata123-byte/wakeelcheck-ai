@@ -136,7 +136,8 @@ export default function Experience({ locale }: { locale: Locale }) {
 
   /** يسأل عن النتيجة حتى تكتمل — العقد: POST يعود فوراً، وGET يسأل. */
   const poll = useCallback(async (scanId: string): Promise<ScanResult> => {
-    for (let i = 0; i < 90; i++) {
+    // 120 × 1.2 ث ≈ 144 ث: أطول من سقف الدالة (120)، فلا يستسلم المتصفّح قبل الخادم.
+    for (let i = 0; i < 120; i++) {
       await new Promise((r) => setTimeout(r, 1200));
       const res = await fetch(`/api/scan/${scanId}`);
       if (!res.ok) continue;

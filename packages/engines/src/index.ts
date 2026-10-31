@@ -106,7 +106,8 @@ export function chatGptEngine(opts: OpenAiOptions): EngineClient {
           model,
           // البحث مفعَّل عمداً: نريد ما يقوله المنتج لزبون حقيقي،
           // لا ما يتذكّره النموذج من تدريبه.
-          tools: [{ type: 'web_search' }],
+          // سياق بحثٍ منخفض: أسرع، ويكفي لمعرفة من يُرشَّح.
+          tools: [{ type: 'web_search', search_context_size: 'low' }],
           // جهد التفكير الافتراضيّ (متوسّط) مع البحث يتجاوز مهلة الفحص:
           // أوّل فحصٍ حيّ عاد بلا إجابة. «منخفض» أدنى ما يقبل البحث معه.
           reasoning: { effort: 'low' },

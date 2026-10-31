@@ -23,6 +23,6 @@ test('بحثٌ مفعّل وجهد تفكير منخفض', async () => {
   }
   assert.ok(body);
   const sent = body as Record<string, unknown>;
-  assert.deepEqual(sent['tools'], [{ type: 'web_search' }], 'ما يقوله لزبونٍ حقيقيّ، لا ما يتذكّره');
+  assert.deepEqual(sent['tools'], [{ type: 'web_search', search_context_size: 'low' }], 'ما يقوله لزبونٍ حقيقيّ، لا ما يتذكّره');
   assert.deepEqual(sent['reasoning'], { effort: 'low' });
 });

@@ -59,11 +59,11 @@ test('الخطأ الأصليّ يمرّ كما هو لا كمهلة', async () 
 });
 
 test('المهلة الصلبة تشمل المحرّك والنموذج معاً', async () => {
-  // ساعةٌ قفزت ستّين ثانية: كل نداءٍ بعدها يُرفض فوراً، لا ينتظر.
+  // ساعةٌ قفزت ما بعد المهلة: كل نداءٍ بعدها يُرفض فوراً، لا ينتظر.
   let t = NOW.getTime();
   const base = pipelineDeps();
   const deps = withHardDeadline({ ...base, now: () => new Date(t) }, HARD_DEADLINE_MS);
-  t += 60_000;
+  t += HARD_DEADLINE_MS + 1_000;
 
   await assert.rejects(deps.askEngine('chatgpt', 'سؤال', 'ar-SA'), /deadline passed/);
   await assert.rejects(deps.llm.complete({ system: 's', user: 'u' }), /deadline passed/);

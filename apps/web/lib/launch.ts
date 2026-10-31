@@ -38,14 +38,18 @@ import {
 // اللَّيِّن يمنع بدء نداءٍ جديد. الصُّلب يقطع انتظار نداءٍ جارٍ. والفرق بين
 // الصُّلب والمنصّة هامشٌ للأمان (حتى 8 ثوانٍ، بالتوازي) والتخزين.
 
+// كانت 60/35/45: أوّل فحوصٍ حيّة عادت بلا إجابة — ChatGPT مع البحث تجاوز
+// أربعين ثانية («no reply within 39888ms»). Vercel يسمح بـ300 ثانية على
+// Hobby مع Fluid compute (`vercel.json`)، فالسقف مُدَّ لا الإجابة قُطعت.
+
 /** سقف المنصّة — يطابق `maxDuration` في `app/api/scan/route.ts`. */
-export const PLATFORM_LIMIT_MS = 60_000;
+export const PLATFORM_LIMIT_MS = 120_000;
 
 /** لا نداء محرّكٍ جديد بعده. يُمرَّر إلى `runScan` كـ`budgetMs`. */
-export const SOFT_BUDGET_MS = 35_000;
+export const SOFT_BUDGET_MS = 75_000;
 
 /** لا انتظار لأيّ نداءٍ خارجيّ مدفوع بعده. */
-export const HARD_DEADLINE_MS = 45_000;
+export const HARD_DEADLINE_MS = 100_000;
 
 // ── المهلة الصلبة ────────────────────────────────────────────
 

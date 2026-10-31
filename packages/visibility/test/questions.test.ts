@@ -16,7 +16,8 @@ const profile = (locale = 'ar-KW'): StoreProfile => ({
   domain: 'bellaq8.com',
   platform: 'shopify',
   category: 'ملابس نسائية',
-  city: 'الكويت',
+  city: null,
+  country: 'الكويت',
   locale,
   currency: 'KWD',
   productUrls: [],
@@ -66,4 +67,39 @@ test('ما يُعدّ خطاباً للبائع وما لا يُعدّ', () => {
   ]) {
     assert.equal(addressesSeller(shopper), false, shopper);
   }
+});
+
+// ── البلد والعملة من أدلّة الصفحة ─────────────────────────────
+
+import { detectCountry, detectCurrency } from '../src/profile.ts';
+
+test('«مدارس» و«عندك» ليستا عملة', () => {
+  // كان «ر.?س» بلا حدود يطابق «مدارس»، فقُرئ متجرٌ كويتيّ سعودياً.
+  assert.equal(detectCurrency('<p>ألعاب تعليمية للمدارس وفارس الصغير، وكل ما عندك</p>'), null);
+});
+
+test('العملة: الدليل البنيويّ أوّلاً، ثم الرمز وحده', () => {
+  assert.equal(detectCurrency('<script>{"priceCurrency":"KWD"}</script><p>للمدارس</p>'), 'KWD');
+  assert.equal(detectCurrency('<meta property="product:price:currency" content="SAR">'), 'SAR');
+  assert.equal(detectCurrency('<span>29.500 د.ك</span>'), 'KWD');
+  assert.equal(detectCurrency('<span>السعر: 120 ر.س</span>'), 'SAR');
+});
+
+test('البلد: النطاق، ثم الهاتف، ثم اللغة، ثم العملة', () => {
+  assert.equal(detectCountry('', 'shop.com.kw', null, 'SAR'), 'الكويت', 'نطاق البلد يغلب');
+  assert.equal(detectCountry('<a href="https://wa.me/96560648080">واتساب</a>', 'aboalizz.com', 'ar', 'SAR'), 'الكويت', 'الهاتف يغلب العملة');
+  assert.equal(detectCountry('', 'x.com', 'ar-AE', null), 'الإمارات');
+  assert.equal(detectCountry('', 'x.com', 'ar', 'KWD'), 'الكويت');
+  assert.equal(detectCountry('', 'x.com', 'ar', null), null, 'بلا دليل: لا بلد');
+});
+
+test('رقمٌ عاديّ لا يُقرأ هاتفاً مصرياً', () => {
+  assert.equal(detectCountry('<p>الطلب رقم 2024 و 00201 قطعة</p>', 'x.com', 'ar', null), null);
+});
+
+test('بلا بلد: لا يُذكر مكانٌ في الاحتياطيّ', () => {
+  assert.equal(
+    fallbackQuestion({ ...profile(), country: null }).text,
+    'وش أفضل متجر أونلاين لـملابس نسائية؟'
+  );
 });

@@ -16,6 +16,7 @@ const PROFILE: StoreProfile = {
   platform: 'salla',
   category: 'عبايات نسائية',
   city: 'الرياض',
+  country: 'السعودية',
   locale: 'ar-SA',
   currency: 'SAR',
   productUrls: [],

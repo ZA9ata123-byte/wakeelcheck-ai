@@ -2,7 +2,7 @@ import { handleMonitorCron } from '@/lib/cron';
 import { monitorOnce, monitors } from '@/lib/scans';
 
 /** قياسٌ واحد يدخل الدقيقة بهامش — انظر `lib/launch.ts`. */
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 /**
  * يستدعيه Vercel Cron (`vercel.json`) ويرسل `CRON_SECRET` من تلقاء نفسه.

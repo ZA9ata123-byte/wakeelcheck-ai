@@ -77,20 +77,92 @@ export function findProductUrls(
 
 // ── التوصيف ──────────────────────────────────────────────────
 
+// ── العملة والبلد ─────────────────────────────────────────────
+//
+// `\b` لا يعمل مع العربية (L-004): «ر.?س» بلا حدودٍ طابق «مدارس» و«فارس»،
+// فقُرئ متجرٌ كويتيّ سعودياً وسُئل عن الرياض. الرموز العربية تُطابَق هنا
+// بشرط ألّا يجاورها حرفٌ عربيّ، والدليل البنيويّ (`priceCurrency`) أوّلاً.
+
+const AR = '؀-ۿ';
+const solo = (core: string): RegExp => new RegExp(`(?<![${AR}])(?:${core})(?![${AR}])`);
+
+const CURRENCY_STRUCTURED =
+  /"(?:priceCurrency|currency|currency_code|currencyCode)"\s*:\s*"([A-Z]{3})"|product:price:currency"\s+content="([A-Z]{3})"/;
+
 const CURRENCY_SIGNS: readonly [string, RegExp][] = [
-  ['SAR', /ر\.?س|ريال سعودي|"SAR"|SAR\b/],
-  ['AED', /د\.?إ|درهم|"AED"/],
-  ['KWD', /د\.?ك|دينار كويتي|"KWD"/],
-  ['USD', /"USD"|\$\s?\d/],
-  ['EUR', /"EUR"|€/],
+  ['KWD', solo(String.raw`د\.?\s?ك|دينار كويتي`)],
+  ['SAR', solo(String.raw`ر\.?\s?س|ريال سعودي`)],
+  ['AED', solo(String.raw`د\.?\s?إ|درهم إماراتي`)],
+  ['QAR', solo(String.raw`ر\.?\s?ق|ريال قطري`)],
+  ['BHD', solo(String.raw`د\.?\s?ب|دينار بحريني`)],
+  ['OMR', solo(String.raw`ر\.?\s?ع|ريال عماني|ريال عُماني`)],
+  ['MAD', solo(String.raw`د\.?\s?م|درهم مغربي`)],
+  ['KWD', /\bKWD\b/],
+  ['SAR', /\bSAR\b/],
+  ['AED', /\bAED\b/],
+  ['USD', /\bUSD\b|\$\s?\d/],
+  ['EUR', /\bEUR\b|€/],
 ];
+
+export function detectCurrency(html: string): string | null {
+  const m = CURRENCY_STRUCTURED.exec(html);
+  const structured = m?.[1] ?? m?.[2];
+  if (structured !== undefined) return structured;
+  return CURRENCY_SIGNS.find(([, sign]) => sign.test(html))?.[0] ?? null;
+}
+
+interface Country {
+  code: string;
+  ar: string;
+  phone: string;
+  currency: string;
+}
+
+const COUNTRIES: readonly Country[] = [
+  { code: 'kw', ar: 'الكويت', phone: '965', currency: 'KWD' },
+  { code: 'sa', ar: 'السعودية', phone: '966', currency: 'SAR' },
+  { code: 'ae', ar: 'الإمارات', phone: '971', currency: 'AED' },
+  { code: 'qa', ar: 'قطر', phone: '974', currency: 'QAR' },
+  { code: 'bh', ar: 'البحرين', phone: '973', currency: 'BHD' },
+  { code: 'om', ar: 'عُمان', phone: '968', currency: 'OMR' },
+  { code: 'ma', ar: 'المغرب', phone: '212', currency: 'MAD' },
+  { code: 'jo', ar: 'الأردن', phone: '962', currency: 'JOD' },
+  { code: 'eg', ar: 'مصر', phone: '20', currency: 'EGP' },
+];
+
+/**
+ * البلد من أدلّة الصفحة، بالترتيب: نطاق البلد (‎.kw)، ثم رقم الهاتف أو
+ * واتساب (+965)، ثم لغة الصفحة (ar-KW)، ثم العملة. الهاتف قبل العملة: متجرٌ
+ * كويتيّ قد يعرض الريال لزبائنه في السعودية، ورقمه يبقى كويتياً.
+ */
+export function detectCountry(html: string, domain: string, lang: string | null, currency: string | null): string | null {
+  const host = domain.toLowerCase();
+  const byTld = COUNTRIES.find((c) => host.endsWith(`.${c.code}`));
+  if (byTld !== undefined) return byTld.ar;
+
+  let best: { c: Country; n: number } | null = null;
+  for (const c of COUNTRIES) {
+    // مصر (+20) بلا تكملةٍ صارمة تطابق أيّ رقم: تُشترط صيغة الجوال المصريّ.
+    const tail = c.phone === '20' ? String.raw`1\d{9}` : String.raw`\d{7,9}`;
+    const re = new RegExp(String.raw`(?:\+|%2B|00|wa\.me/|phone=)\s?${c.phone}[\s-]?${tail}`, 'g');
+    const n = html.match(re)?.length ?? 0;
+    if (n > 0 && (best === null || n > best.n)) best = { c, n };
+  }
+  if (best !== null) return best.c.ar;
+
+  const region = lang?.split(/[-_]/)[1]?.toLowerCase();
+  const byLang = COUNTRIES.find((c) => c.code === region);
+  if (byLang !== undefined) return byLang.ar;
+
+  return COUNTRIES.find((c) => c.currency === currency)?.ar ?? null;
+}
 
 const PROFILE_SYSTEM = `تقرأ صفحة متجر إلكتروني وتستخرج تخصّصه ومدينته.
 
 أعِد JSON فقط: {"category":"...","city":"..."|null,"brandName":"..."|null}
 
 - category: ما يبيعه المتجر بكلمات زبونه، مثل "عبايات نسائية" أو "قهوة مختصة".
-- city: المدينة إن ذُكرت صراحةً، وإلا null.
+- city: المدينة إن ذُكرت صراحةً في الصفحة، وإلا null. لا تستنتجها من العملة ولا من اللغة.
 - brandName: اسم المتجر كما يكتبه هو، وإلا null.`;
 
 export interface ProfileResult {
@@ -115,7 +187,7 @@ export async function buildProfile(
 ): Promise<ProfileResult> {
   const $ = cheerio.load(html || '<html></html>');
 
-  const currency = CURRENCY_SIGNS.find(([, sign]) => sign.test(html))?.[0] ?? null;
+  const currency = detectCurrency(html);
   const lang = $('html').attr('lang')?.trim();
   const locale = lang !== undefined && lang.length >= 2 ? lang : 'ar-SA';
 
@@ -166,6 +238,7 @@ export async function buildProfile(
       platform: detectPlatform(html),
       category,
       city,
+      country: detectCountry(html, domain, lang ?? null, currency),
       locale,
       currency,
       productUrls: findProductUrls(html, baseUrl, sitemapXml, productLimit),
@@ -184,7 +257,7 @@ const QUESTIONS_SYSTEM = `تكتب أسئلة يسألها متسوّق حقيق
 - المتسوّق لا يعرف المتجر بعد. يسأل المساعد من أين يشتري وأيّ متجر يرشّح — كلّ سؤال يطلب ترشيح متاجر أو مكان شراء.
   أمثلة: «وين ألقى عبايات سوداء ناعمة بالكويت؟» · «وش أفضل متجر أونلاين للعطور النسائية؟» · "Where can I buy modest dresses online in Kuwait?"
 - لا يخاطب المتسوّق متجراً ولا بائعاً: لا «عندكم» ولا «هل لديكم» ولا "do you have" ولا "your sizes". هذا سؤالٌ لبائع، والمساعد يجيب عنه متقمّصاً المتجر فلا يقيس شيئاً.
-- اذكر التخصص، والمدينة أو البلد إن عُرفا.
+- اذكر التخصص، والبلد المعطى. لا تذكر مدينةً ولا بلداً غير المعطى: متجرٌ في الكويت لا يُسأل عنه في الرياض.
 - اكتب باللغة المعطاة. بالعربية: بلهجة سوق المتجر المحلية، لا بالفصحى الرسمية.
 - لا تذكر اسم المتجر ولا نطاقه إطلاقاً — نريد أسئلة يسألها من لا يعرفه.
 - نوّع النوايا: اكتشاف، سعر، شحن، مقارنة.`;
@@ -209,9 +282,10 @@ export function addressesSeller(text: string): boolean {
 /** السؤال الذي لا يخطئ: إن لم يبقَ من أسئلة النموذج شيءٌ صالح. */
 export function fallbackQuestion(profile: StoreProfile): BuyingQuestion {
   const english = profile.locale.toLowerCase().startsWith('en');
+  const place = profile.city ?? profile.country;
   const text = english
-    ? `What is the best online store for ${profile.category}${profile.city === null ? '' : ` in ${profile.city}`}?`
-    : `وش أفضل متجر أونلاين لـ${profile.category}${profile.city === null ? '' : ` في ${profile.city}`}؟`;
+    ? `What is the best online store for ${profile.category}${place === null ? '' : ` in ${place}`}?`
+    : `وش أفضل متجر أونلاين لـ${profile.category}${place === null ? '' : ` في ${place}`}؟`;
   return { id: 'q1', text, intent: 'discovery' };
 }
 
@@ -231,11 +305,15 @@ export async function generateQuestions(
   count: number,
   llm: LlmProvider
 ): Promise<QuestionsResult> {
-  const where = profile.city === null ? '' : ` في ${profile.city}`;
-
   const response = await llm.complete({
     system: QUESTIONS_SYSTEM,
-    user: `التخصص: ${profile.category}${where}\nاللغة: ${profile.locale}\nالعدد المطلوب: ${count}`,
+    user: [
+      `التخصص: ${profile.category}`,
+      `البلد: ${profile.country ?? 'غير معروف — لا تذكر بلداً ولا مدينة'}`,
+      `المدينة: ${profile.city ?? 'غير معروفة — لا تخترع مدينة'}`,
+      `اللغة: ${profile.locale}`,
+      `العدد المطلوب: ${count}`,
+    ].join('\n'),
     json: true,
     temperature: 0.7, // تنويع مقصود: أسئلة متطابقة تقيس شيئاً واحداً
     maxTokens: 900,

@@ -39,8 +39,13 @@ export interface StoreProfile {
   platform: Platform;
   /** تخصص المتجر بكلمات زبونه، مثل "عبايات نسائية". */
   category: string;
-  /** المدينة إن أمكن استنتاجها، وإلا null. */
+  /** المدينة إن ذُكرت صراحةً، وإلا null. */
   city: string | null;
+  /**
+   * البلد بالعربية («الكويت») من النطاق والهاتف ولغة الصفحة والعملة — أدلّةٌ
+   * في الصفحة لا تخمينُ نموذج. بلا دليلٍ: null، فلا يُذكر في الأسئلة.
+   */
+  country: string | null;
   /** BCP-47، مثل "ar-SA". */
   locale: string;
   currency: string | null;

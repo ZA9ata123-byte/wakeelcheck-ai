@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { EngineAnswer, MatrixRow, ScanResult } from '@wakeelcheck/core';
 import { buildMatrix } from '@wakeelcheck/visibility';
 import { copy, type Copy, type Locale } from '@/lib/i18n';
+import { answerSources } from '@/lib/sources';
 import { useTurnstile } from '@/components/turnstile';
 import {
   ArrowNext,
@@ -269,6 +270,7 @@ export default function Experience({ locale }: { locale: Locale }) {
   const answers: EngineAnswer[] = scan?.answers ?? [];
   const answer = answers[Math.min(engineIdx, Math.max(answers.length - 1, 0))] ?? null;
   const rivals = answer?.competitors.map((c) => c.name) ?? [];
+  const sources = answerSources(answer?.citedUrls ?? []);
   // فحصٌ اكتمل بلا إجابة: يُقال ذلك صراحةً. عرضُ المثال هنا مع «مطابقة
   // حرفية» و«0 / 1» كان يقدّم نموذجاً على أنه نتيجة متجر التاجر.
   const noAnswer = scan !== null && answers.length === 0;
@@ -488,8 +490,8 @@ export default function Experience({ locale }: { locale: Locale }) {
                     <small>{noAnswer ? t.cellNotMeasured : answer?.storeMentioned === true ? t.mentioned : t.notMentioned}</small>
                   </div>
                   <div>
-                    <span>{t.firstRival}</span>
-                    <b>{rivals[0] ?? sov?.top?.name ?? '—'}</b>
+                    <span>{t.rivalsNamed}</span>
+                    <b dir="ltr">{noAnswer ? '—' : answer === null ? '—' : rivals.length}</b>
                     <small>{rivals.length === 0 ? t.noRival : t.namedInstead}</small>
                   </div>
                   <div className={!noAnswer && sov !== null && sov.store === 0 ? 'result-negative' : ''}>
@@ -500,6 +502,34 @@ export default function Experience({ locale }: { locale: Locale }) {
                     <small>{t.inThisAnswer}</small>
                   </div>
                 </div>
+
+                {/* كلّ المنافسين لا أوّلهم: «Nazakah ظهر وأنا لا» هو ما يحرّك التاجر. */}
+                {rivals.length > 0 && (
+                  <ul className="answer-rivals">
+                    {rivals.map((name) => (
+                      <li key={name}>
+                        <mark className="rival">{name}</mark>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* خطّة العمل لا التشخيص: الصفحات التي رشّحت المنافسين. */}
+                {sources.length > 0 && (
+                  <div className="answer-sources">
+                    <span className="mono-label">{t.sourcesTitle}</span>
+                    <ul>
+                      {sources.map((src) => (
+                        <li key={src.host}>
+                          <a href={src.href} target="_blank" rel="noopener noreferrer nofollow" dir="ltr">
+                            {src.host}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{t.sourcesNote}</p>
+                  </div>
+                )}
 
                 <footer className="evidence-footer">
                   <span>

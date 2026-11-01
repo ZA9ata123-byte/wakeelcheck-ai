@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { PLANS } from '@wakeelcheck/pipeline';
 import assert from 'node:assert/strict';
 import { checkBudget } from '@wakeelcheck/limits';
 import { DEFAULT_MONTHLY_USD, handleScanPost } from '../lib/scan-post';
@@ -69,7 +70,9 @@ test('الإنفاق يُسجَّل بعد الفحص', async () => {
   const { spentMicros } = await checkBudget(h.store, DEFAULT_MONTHLY_USD, NOW);
 
   // سريع: سؤالان × محرّك واحد، ونداءات النموذج: توصيف + أسئلة + استخراجان.
-  assert.equal(spentMicros, 2 * 21_700 + 4 * 300);
+  // كلّ نداء محرّك، وكلّ نداء نموذج: التوصيف والأسئلة واستخراجٌ لكلّ إجابة.
+  const answers = PLANS.quick.questions * PLANS.quick.engines.length;
+  assert.equal(spentMicros, answers * 21_700 + (2 + answers) * 300);
 });
 
 test('السقف الشهريّ يُوقف القبول حين يُبلَغ', async () => {

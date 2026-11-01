@@ -176,6 +176,7 @@ export function startScan(input: StartInput): StartedScan {
     dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
     dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
     perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
+    serpApiKey: process.env['SERPAPI_KEY']?.trim() || null,
   });
 
   const scanId = randomUUID();
@@ -209,6 +210,7 @@ export async function monitorOnce(monitor: Monitor): Promise<MonitorOutcome> {
     dataforseoLogin: process.env['DATAFORSEO_LOGIN'] ?? null,
     dataforseoPassword: process.env['DATAFORSEO_PASSWORD'] ?? null,
     perplexityApiKey: process.env['PERPLEXITY_API_KEY'] ?? null,
+    serpApiKey: process.env['SERPAPI_KEY']?.trim() || null,
   });
 
   return runMonitor(monitor, {

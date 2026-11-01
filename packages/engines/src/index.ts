@@ -399,6 +399,98 @@ export function perplexityEngine(opts: PerplexityOptions): EngineClient {
   };
 }
 
+// ── Google AI Mode عبر SerpApi ──────────────────────────────
+
+/**
+ * يقرأ ردّ SerpApi لـAI Mode: نصّ الإجابة وحده، لا مقتطفات المراجع.
+ *
+ * المراجع (`references`) تحمل مقتطفاتٍ من الصفحات نفسها لا من الإجابة — جمعُها
+ * مع النصّ يُدخل في «الدليل الحرفي» كلاماً لم يقله المحرّك (القاعدة 05).
+ * فالنصّ من `reconstructed_markdown` إن وُجد، وإلا من `text_blocks`؛ والروابط
+ * من المراجع.
+ */
+export function parseSerpApiAiMode(payload: unknown): { text: string; citedUrls: string[] } {
+  if (payload === null || typeof payload !== 'object') return { text: '', citedUrls: [] };
+  const root = payload as Record<string, unknown>;
+
+  const urls = new Set<string>();
+  const refs = root['references'];
+  if (Array.isArray(refs)) {
+    for (const r of refs) {
+      const link = (r as { link?: unknown } | null)?.link;
+      if (typeof link === 'string' && link.startsWith('http')) urls.add(link);
+    }
+  }
+
+  const md = root['reconstructed_markdown'];
+  if (typeof md === 'string' && md.trim() !== '') {
+    return { text: md.trim(), citedUrls: urls.size > 0 ? [...urls] : urlsIn(md) };
+  }
+
+  const lines: string[] = [];
+  const walk = (blocks: unknown, depth: number): void => {
+    if (!Array.isArray(blocks) || depth > 4) return;
+    for (const b of blocks) {
+      if (b === null || typeof b !== 'object') continue;
+      const block = b as Record<string, unknown>;
+      const snippet = block['snippet'];
+      if (typeof snippet === 'string' && snippet.trim() !== '') {
+        lines.push(depth > 0 || block['type'] === 'list' ? `- ${snippet.trim()}` : snippet.trim());
+      }
+      walk(block['list'], depth + 1);
+      walk(block['text_blocks'], depth + 1);
+    }
+  };
+  walk(root['text_blocks'], 0);
+
+  return { text: lines.join('\n').trim(), citedUrls: [...urls] };
+}
+
+export interface SerpApiOptions {
+  apiKey: string | null;
+  /**
+   * كلفة البحث بالميكرو-دولار. الخطة المجانية (250 بحثاً شهرياً) لا تُكلّف،
+   * فلا يُحسب عليها شيء من السقف الشهريّ. تُضبط حين ندفع.
+   */
+  costMicros?: number;
+}
+
+/** Google AI Mode عبر SerpApi — بديل DataForSEO، بخطةٍ مجانية. */
+export function serpApiAiModeEngine(opts: SerpApiOptions): EngineClient {
+  return {
+    engine: 'ai_mode',
+    available: opts.apiKey !== null,
+
+    async ask(question, locale) {
+      if (opts.apiKey === null) throw new UpstreamError('ai_mode', 'missing SERPAPI_KEY');
+
+      const [lang, region] = locale.split(/[-_]/);
+      const params = new URLSearchParams({
+        engine: 'google_ai_mode',
+        q: question,
+        hl: lang ?? 'ar',
+        api_key: opts.apiKey,
+      });
+      if (region !== undefined) params.set('gl', region.toLowerCase());
+
+      const res = await fetch(`https://serpapi.com/search.json?${params.toString()}`, {
+        signal: AbortSignal.timeout(90_000),
+      });
+      // الرسالة بلا الرابط: فيه المفتاح (القاعدة 01).
+      if (!res.ok) throw new UpstreamError('ai_mode', `HTTP ${res.status}`);
+
+      const payload: unknown = await res.json();
+      const error = (payload as { error?: unknown } | null)?.error;
+      if (typeof error === 'string') throw new UpstreamError('ai_mode', error.slice(0, 120));
+
+      const { text, citedUrls } = parseSerpApiAiMode(payload);
+      if (text.length === 0) throw new UpstreamError('ai_mode', 'no answer on this surface');
+
+      return { text, citedUrls, costMicros: opts.costMicros ?? 0 };
+    },
+  };
+}
+
 // ── التجميع ──────────────────────────────────────────────────
 
 export interface EngineEnv {
@@ -406,6 +498,8 @@ export interface EngineEnv {
   dataforseoLogin: string | null;
   dataforseoPassword: string | null;
   perplexityApiKey: string | null;
+  /** SerpApi — إن وُجد، فهو مصدر AI Mode بدل DataForSEO. */
+  serpApiKey?: string | null;
 }
 
 /** المحرّكات المتاحة فعلاً. غير المُعدّ لا يُدرج، فلا يُسأل ولا يُدَّعى. */
@@ -415,7 +509,11 @@ export function buildEngines(env: EngineEnv): EngineClient[] {
   return [
     chatGptEngine({ apiKey: env.openaiApiKey }),
     aiOverviewsEngine(dfs),
-    aiModeEngine(dfs),
+    // SerpApi أوّلاً إن ضُبط: خطّته المجانية تكفي الإطلاق، وDataForSEO
+    // تشترط شحناً أوّل ولم يُفتح حسابها.
+    env.serpApiKey !== undefined && env.serpApiKey !== null
+      ? serpApiAiModeEngine({ apiKey: env.serpApiKey })
+      : aiModeEngine(dfs),
     perplexityEngine({ apiKey: env.perplexityApiKey }),
     // مبنيّ ومتاح ببيانات DataForSEO نفسها، وغير مُدرَج في أي خطّة بعد.
     copilotEngine(dfs),

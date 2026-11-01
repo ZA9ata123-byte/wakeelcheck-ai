@@ -54,8 +54,9 @@ function deps(asked: string[]): { deps: PipelineDeps; llm: ReturnType<typeof fak
     deps: {
       fetchPage: async (url) => page(url),
       fetchText: async () => null,
-      askEngine: async (_engine, question) => {
-        asked.push(question);
+      askEngine: async (engine, question) => {
+        // ما يُسأل لا كم مرّة: المجانيّ يسأل محرّكين، والسؤال نفسه على كليهما.
+        if (engine === 'chatgpt') asked.push(question);
         return { text: 'من أبرز الخيارات بيت الأناقة.', citedUrls: [], costMicros: 0 };
       },
       collectSecurity: async () => SECURITY,

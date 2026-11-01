@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import type { ScanResult } from '@wakeelcheck/core';
 import type { ArchiveEntry, ScanArchive } from '@wakeelcheck/db';
 import { CACHE_VERSION, checkBudget, memoryStore, type KeyValueStore } from '@wakeelcheck/limits';
+import { PLANS } from '@wakeelcheck/pipeline';
 import { launchScan, shouldArchive } from '../lib/launch';
 import { archiveFromEnv, monitorsFromEnv, readReport, saveResult } from '../lib/store';
 import { NOW, pipelineDeps } from './fixture';
@@ -57,7 +58,8 @@ test('التقرير المكتمل الحقيقيّ يُؤرشف بنطاقه �
   assert.equal(entry?.domain, 'daralanaqa.sa');
   assert.equal(entry?.result.id, 'scan-a');
   assert.equal(entry?.result.status, 'done');
-  assert.equal(entry?.costMicros, 2 * 21_700);
+  // سؤالان × محرّكان — كلّ نداءٍ محسوب.
+  assert.equal(entry?.costMicros, PLANS.quick.questions * PLANS.quick.engines.length * 21_700);
   assert.equal(entry?.at.toISOString(), NOW.toISOString(), 'من الساعة المحقونة');
 });
 
@@ -104,7 +106,7 @@ test('أرشيفٌ ساقط لا يمنع تسجيل الإنفاق ولا ال�
     archive: memoryArchive({ broken: true }),
   });
 
-  assert.equal((await checkBudget(store, 20, NOW)).spentMicros, 2 * 21_700, 'الإنفاق سُجّل');
+  assert.equal((await checkBudget(store, 20, NOW)).spentMicros, PLANS.quick.questions * PLANS.quick.engines.length * 21_700, 'الإنفاق سُجّل');
   assert.equal(await store.get(`scan:${CACHE_VERSION}:quick:daralanaqa.sa`), 'scan-a', 'والكاش كُتب');
 });
 

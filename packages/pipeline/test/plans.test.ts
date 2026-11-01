@@ -14,7 +14,7 @@ import { PLANS } from '../src/pipeline.ts';
  */
 
 test('الخطط تعدّد محرّكاتها حرفياً', () => {
-  assert.deepEqual(PLANS.quick.engines, ['chatgpt']);
+  assert.deepEqual(PLANS.quick.engines, ['chatgpt', 'ai_mode']);
   assert.deepEqual(PLANS.full.engines, ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity']);
   assert.deepEqual(PLANS.monitor.engines, ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity']);
 });
@@ -26,8 +26,11 @@ test('copilot مبنيّ وغير مُشغَّل — مساره لم يُثبَ�
   }
 });
 
-test('المجاني على محرّك واحد — سقف الكلفة قبل أي ترويج', () => {
+test('المجاني: ChatGPT وGoogle AI Mode وحدهما — سقف الكلفة قبل أي ترويج', () => {
   // القاعدة 04: حملة واحدة بلا حدّ تحرق الميزانية.
-  assert.equal(PLANS.quick.engines.length, 1);
+  // تغيير سلوك بقرار المالك: AI Mode أرخص من ChatGPT باثنتي عشرة مرّة
+  // (0.004$ على DataForSEO، ومجّاني في خطة SerpApi)، و«ChatGPT + Google»
+  // في الفحص المجانيّ ما لا تقدّمه أداةٌ عربية. الكامل وحده يسأل الأربعة.
+  assert.deepEqual(PLANS.quick.engines, ['chatgpt', 'ai_mode']);
   assert.ok(PLANS.quick.questions <= 2);
 });

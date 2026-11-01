@@ -135,11 +135,11 @@ test('a store that is mentioned is recorded as such', async () => {
 
 // ── الخطط ────────────────────────────────────────────────────
 
-test('a quick scan asks one engine but still carries the full diagnosis', async () => {
+test('a quick scan asks its two engines but still carries the full diagnosis', async () => {
   const { result } = await runScan({ url: 'daralanaqa.sa', kind: 'quick' }, deps());
 
-  // محرّك واحد يفصل المجاني عن المدفوع — لا حجبُ التشخيص.
-  assert.deepEqual([...new Set(result.answers.map((a) => a.engine))], ['chatgpt']);
+  // عدد المحرّكات يفصل المجاني عن المدفوع — لا حجبُ التشخيص.
+  assert.deepEqual([...new Set(result.answers.map((a) => a.engine))], ['chatgpt', 'ai_mode']);
   assert.ok(result.rules.length > 0, 'the diagnosis is evidence — it is shown, not withheld');
   assert.ok(result.security.length > 0, 'and the security findings with it');
 });

@@ -113,8 +113,8 @@ function renderAnswer(text: string, rivals: readonly string[]): React.ReactNode 
 
 function engineLabel(engine: string): string {
   if (engine === 'chatgpt') return 'ChatGPT';
-  if (engine === 'ai_overviews') return 'AI Overviews';
-  if (engine === 'ai_mode') return 'AI Mode';
+  if (engine === 'ai_overviews') return 'Google AI Overviews';
+  if (engine === 'ai_mode') return 'Google AI Mode';
   if (engine === 'perplexity') return 'Perplexity';
   if (engine === 'copilot') return 'Copilot';
   return engine;

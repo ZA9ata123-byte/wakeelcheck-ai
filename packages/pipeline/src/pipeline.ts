@@ -68,7 +68,8 @@ export const PLANS: Record<ScanKind, ScanPlan> = {
   // ما الذي تغيّر الأسبوع الماضي. إخفاء التشخيص يُخفي الدليل لا يبيعه.
   // وسؤالاه معاً: ChatGPT مع البحث قرابة دقيقة، فالثاني بعد الأوّل لا يبقى
   // له وقت. نداءان على حسابٍ واحد بعيدان عن حدّ المعدّل.
-  quick: { questions: 2, engines: ['chatgpt'], perEngine: 2, productPages: 2, security: true, readiness: true },
+  // وGoogle AI Mode معه: أرخص باثنتي عشرة مرّة، و«ChatGPT + Google» هو العرض.
+  quick: { questions: 2, engines: ['chatgpt', 'ai_mode'], perEngine: 2, productPages: 2, security: true, readiness: true },
   full: {
     questions: 10,
     engines: ['chatgpt', 'ai_overviews', 'ai_mode', 'perplexity'],

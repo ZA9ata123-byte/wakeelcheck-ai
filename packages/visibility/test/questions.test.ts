@@ -103,3 +103,14 @@ test('بلا بلد: لا يُذكر مكانٌ في الاحتياطيّ', () =
     'وش أفضل متجر أونلاين لـملابس نسائية؟'
   );
 });
+
+import { countryCode, regionalLocale } from '../src/profile.ts';
+
+test('المحرّكات تُسأل من بلد المتجر', () => {
+  assert.equal(countryCode('الكويت'), 'kw');
+  assert.equal(regionalLocale('ar', 'الكويت'), 'ar-KW');
+  // البلد يغلب منطقة اللغة: صفحةٌ بـar-SA ورقمٍ كويتيّ متجرٌ كويتيّ.
+  assert.equal(regionalLocale('ar-SA', 'الكويت'), 'ar-KW');
+  assert.equal(regionalLocale('en', 'الإمارات'), 'en-AE');
+  assert.equal(regionalLocale('ar-SA', null), 'ar-SA', 'بلا بلد: كما هي');
+});

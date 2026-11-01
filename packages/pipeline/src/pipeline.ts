@@ -26,6 +26,7 @@ import {
   detectStoreMention,
   extractCompetitors,
   generateQuestions,
+  regionalLocale,
   summarize,
   summarizeByEngine,
 } from '@wakeelcheck/visibility';
@@ -291,7 +292,7 @@ export async function runScan(req: ScanRequest, deps: PipelineDeps): Promise<Sca
           }
 
           try {
-            const reply = await deps.askEngine(engine, question.text, profile.locale);
+            const reply = await deps.askEngine(engine, question.text, regionalLocale(profile.locale, profile.country));
             costMicros += reply.costMicros;
 
             const extracted = await extractCompetitors(

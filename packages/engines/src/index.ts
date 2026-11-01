@@ -195,7 +195,34 @@ export interface DataForSeoOptions {
   languageCode?: string;
 }
 
-function dataForSeoEngine(engine: Engine, defaultPath: string, opts: DataForSeoOptions): EngineClient {
+/**
+ * رموز DataForSEO للبلدان (رموز Google Ads: 2000 + الرمز الرقميّ ISO).
+ * كانت السعودية لكلّ متجر: متجرٌ كويتيّ كان يُقاس كما يراه زبونٌ في الرياض.
+ */
+const LOCATION: Record<string, number> = {
+  KW: 2414,
+  SA: 2682,
+  AE: 2784,
+  QA: 2634,
+  BH: 2048,
+  OM: 2512,
+  MA: 2504,
+  EG: 2818,
+  JO: 2400,
+};
+
+/** «ar-KW» ← 2414. بلا منطقةٍ معروفة: السعودية، أكبر أسواق الخليج. */
+export function locationFor(locale: string): number {
+  const region = locale.split(/[-_]/)[1]?.toUpperCase();
+  return (region !== undefined ? LOCATION[region] : undefined) ?? LOCATION['SA'] ?? 2682;
+}
+
+function dataForSeoEngine(
+  engine: Engine,
+  defaultPath: string,
+  costMicros: number,
+  opts: DataForSeoOptions
+): EngineClient {
   const available = opts.login !== null && opts.password !== null;
 
   return {
@@ -214,7 +241,7 @@ function dataForSeoEngine(engine: Engine, defaultPath: string, opts: DataForSeoO
         body: JSON.stringify([
           {
             keyword: question,
-            location_code: opts.locationCode ?? 2682, // السعودية
+            location_code: opts.locationCode ?? locationFor(locale),
             language_code: opts.languageCode ?? locale.split('-')[0] ?? 'ar',
             device: 'mobile',
           },
@@ -228,18 +255,19 @@ function dataForSeoEngine(engine: Engine, defaultPath: string, opts: DataForSeoO
       const { text, citedUrls } = parseDataForSeo(payload);
       if (text.length === 0) throw new UpstreamError(engine, 'no answer on this surface');
 
-      // التسعير لكل نداء لا لكل توكن — رقم ثابت للمحاسبة.
-      return { text, citedUrls, costMicros: 2_600 };
+      // التسعير لكل نداء لا لكل توكن — سعر DataForSEO المنشور للوضع الحيّ.
+      return { text, citedUrls, costMicros };
     },
   };
 }
 
 export function aiOverviewsEngine(opts: DataForSeoOptions): EngineClient {
-  return dataForSeoEngine('ai_overviews', '/v3/serp/google/organic/live/advanced', opts);
+  return dataForSeoEngine('ai_overviews', '/v3/serp/google/organic/live/advanced', 2_000, opts);
 }
 
 export function aiModeEngine(opts: DataForSeoOptions): EngineClient {
-  return dataForSeoEngine('ai_mode', '/v3/serp/google/ai_mode/live/advanced', opts);
+  // 0.004$ للنداء الحيّ — https://dataforseo.com/pricing/serp/google-ai-mode-serp-api
+  return dataForSeoEngine('ai_mode', '/v3/serp/google/ai_mode/live/advanced', 4_000, opts);
 }
 
 /**
@@ -257,7 +285,7 @@ export function aiModeEngine(opts: DataForSeoOptions): EngineClient {
  * القاعدة 06: لا نعرض «Copilot» في تقرير تاجر قبل ردٍّ حيّ واحد يُثبته.
  */
 export function copilotEngine(opts: DataForSeoOptions): EngineClient {
-  return dataForSeoEngine('copilot', '/v3/serp/bing/organic/live/advanced', opts);
+  return dataForSeoEngine('copilot', '/v3/serp/bing/organic/live/advanced', 2_000, opts);
 }
 
 // ── Perplexity ──────────────────────────────────────────────

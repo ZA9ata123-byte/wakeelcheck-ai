@@ -26,3 +26,25 @@ test('بحثٌ مفعّل وجهد تفكير منخفض', async () => {
   assert.deepEqual(sent['tools'], [{ type: 'web_search', search_context_size: 'low' }], 'ما يقوله لزبونٍ حقيقيّ، لا ما يتذكّره');
   assert.deepEqual(sent['reasoning'], { effort: 'low' });
 });
+
+import { aiModeEngine, locationFor } from '../src/index.ts';
+
+test('Google يُسأل من بلد المتجر لا من السعودية دائماً', async () => {
+  assert.equal(locationFor('ar-KW'), 2414);
+  assert.equal(locationFor('ar-AE'), 2784);
+  assert.equal(locationFor('ar'), 2682, 'بلا منطقة: السعودية كما كان');
+
+  const original = globalThis.fetch;
+  let sent: { location_code?: number; language_code?: string }[] = [];
+  globalThis.fetch = (async (_url: string | URL, init?: RequestInit) => {
+    sent = JSON.parse(String(init?.body)) as typeof sent;
+    return Response.json({ tasks: [{ result: [{ items: [{ markdown: 'جواب' }] }] }] });
+  }) as typeof fetch;
+  try {
+    await aiModeEngine({ login: KEY, password: KEY }).ask('وين ألقى عطور بالكويت؟', 'ar-KW');
+  } finally {
+    globalThis.fetch = original;
+  }
+  assert.equal(sent[0]?.location_code, 2414);
+  assert.equal(sent[0]?.language_code, 'ar');
+});

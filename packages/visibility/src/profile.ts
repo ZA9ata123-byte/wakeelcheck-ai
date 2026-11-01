@@ -130,6 +130,25 @@ const COUNTRIES: readonly Country[] = [
   { code: 'eg', ar: 'مصر', phone: '20', currency: 'EGP' },
 ];
 
+/** «الكويت» ← «kw». */
+export function countryCode(country: string | null): string | null {
+  return COUNTRIES.find((c) => c.ar === country)?.code ?? null;
+}
+
+/**
+ * لغة الصفحة ببلد المتجر: «ar» + الكويت ← «ar-KW».
+ *
+ * البلد يغلب منطقة اللغة: صفحةٌ بـ`lang="ar-SA"` ورقمٍ كويتيّ متجرٌ كويتيّ.
+ * المحرّكات تقرأ المنطقة لتسأل من البلد الصحيح — Google في الكويت لا يجيب
+ * كما يجيب في الرياض.
+ */
+export function regionalLocale(locale: string, country: string | null): string {
+  const code = countryCode(country);
+  if (code === null) return locale;
+  const lang = locale.split(/[-_]/)[0] || 'ar';
+  return `${lang}-${code.toUpperCase()}`;
+}
+
 /**
  * البلد من أدلّة الصفحة، بالترتيب: نطاق البلد (‎.kw)، ثم رقم الهاتف أو
  * واتساب (+965)، ثم لغة الصفحة (ar-KW)، ثم العملة. الهاتف قبل العملة: متجرٌ

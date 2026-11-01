@@ -16,6 +16,8 @@ import type { EngineAnswer, MatrixRow, ScanResult } from '@wakeelcheck/core';
 import { buildMatrix } from '@wakeelcheck/visibility';
 import { copy, type Copy, type Locale } from '@/lib/i18n';
 import { answerSources } from '@/lib/sources';
+import { citeHost, parseAnswer, type Inline } from '@/lib/answer-format';
+import { pickCause } from '@/lib/cause';
 import { useTurnstile } from '@/components/turnstile';
 import {
   ArrowNext,
@@ -65,6 +67,46 @@ function markRivals(text: string, names: readonly string[]): React.ReactNode[] {
       </mark>
     ) : (
       part
+    )
+  );
+}
+
+/**
+ * الكلمات اللاتينية معزولةً داخل السطر العربيّ: «The Avenues:» تبقى وحدةً
+ * فلا تقلب ترتيب ما حولها، والسطر يبقى على اتجاه الصفحة.
+ */
+function isolateLatin(nodes: React.ReactNode[]): React.ReactNode[] {
+  return nodes.flatMap((node, i): React.ReactNode[] =>
+    typeof node !== 'string'
+      ? [node]
+      : node
+          .split(/([A-Za-z][A-Za-z0-9&'’.\- ]*[A-Za-z0-9])/)
+          .map((part, j) => (/^[A-Za-z]/.test(part) ? <bdi key={`${i}-${j}`}>{part}</bdi> : part))
+  );
+}
+
+/** الإجابة ببنيتها: فقرات وقوائم، والرابط زرٌّ بموقعه. الكلمات كما هي. */
+function renderAnswer(text: string, rivals: readonly string[]): React.ReactNode {
+  const inline = (parts: Inline[]): React.ReactNode[] =>
+    parts.map((part, i) =>
+      part.kind === 'cite' ? (
+        <a key={i} className="cite" href={part.href} target="_blank" rel="noopener noreferrer nofollow" dir="ltr">
+          {citeHost(part.href, part.label)}
+        </a>
+      ) : part.kind === 'strong' ? (
+        <strong key={i}>{isolateLatin(markRivals(part.text, rivals))}</strong>
+      ) : (
+        <span key={i}>{isolateLatin(markRivals(part.text, rivals))}</span>
+      )
+    );
+
+  return parseAnswer(text).map((block, i) =>
+    block.kind === 'p' ? (
+      <p key={i}>{inline(block.inline)}</p>
+    ) : block.ordered ? (
+      <ol key={i}>{block.items.map((item, j) => <li key={j}>{inline(item)}</li>)}</ol>
+    ) : (
+      <ul key={i}>{block.items.map((item, j) => <li key={j}>{inline(item)}</li>)}</ul>
     )
   );
 }
@@ -271,6 +313,9 @@ export default function Experience({ locale }: { locale: Locale }) {
   const answer = answers[Math.min(engineIdx, Math.max(answers.length - 1, 0))] ?? null;
   const rivals = answer?.competitors.map((c) => c.name) ?? [];
   const sources = answerSources(answer?.citedUrls ?? []);
+  // «لماذا حدث» من قواعد هذا المتجر. قبل أيّ فحص: مثالٌ موسوم بأنه مثال.
+  const cause = scan === null ? null : pickCause(scan.rules);
+  const fixCode = scan === null ? ROBOTS_FIX : cause?.fixSnippet ?? null;
   // فحصٌ اكتمل بلا إجابة: يُقال ذلك صراحةً. عرضُ المثال هنا مع «مطابقة
   // حرفية» و«0 / 1» كان يقدّم نموذجاً على أنه نتيجة متجر التاجر.
   const noAnswer = scan !== null && answers.length === 0;
@@ -427,7 +472,10 @@ export default function Experience({ locale }: { locale: Locale }) {
                     className={i === engineIdx ? 'active' : ''}
                     onClick={() => setEngineIdx(i)}
                   >
-                    {engineLabel(a.engine)}
+                    {/* سؤالان على المحرّك نفسه: «ChatGPT · 1» و«ChatGPT · 2» لا اسمان متطابقان. */}
+                    {answers.filter((x) => x.engine === a.engine).length > 1
+                      ? `${engineLabel(a.engine)} · ${answers.slice(0, i + 1).filter((x) => x.engine === a.engine).length}`
+                      : engineLabel(a.engine)}
                   </button>
                 ))}
               </div>
@@ -478,7 +526,7 @@ export default function Experience({ locale }: { locale: Locale }) {
                   <div className="answer">
                     <span>{answer === null ? 'ChatGPT' : engineLabel(answer.engine)}</span>
                     <blockquote>
-                      {noAnswer ? t.noAnswer : answer === null ? t.sampleAnswer : markRivals(answer.answerText, rivals)}
+                      {noAnswer ? t.noAnswer : answer === null ? t.sampleAnswer : renderAnswer(answer.answerText, rivals)}
                     </blockquote>
                   </div>
                 </div>
@@ -561,38 +609,78 @@ export default function Experience({ locale }: { locale: Locale }) {
         <div className="causal-flow">
           <article>
             <i>01</i>
-            <span>{t.causeSteps[0].tag}</span>
+            <span>
+              {t.causeSteps[0].tag}
+              {scan === null && <em className="example-tag">{t.exampleTag}</em>}
+            </span>
             <h3>{t.causeSteps[0].title}</h3>
             <p>
-              «… <mark className="rival">{rivals[0] ?? t.sampleRival}</mark> …»
+              {scan !== null && rivals.length === 0 ? (
+                t.noRival
+              ) : (
+                <>
+                  «… <mark className="rival">{rivals[0] ?? t.sampleRival}</mark> …»
+                </>
+              )}
             </p>
           </article>
 
           <article className="cause-card">
             <i>02</i>
-            <span>{t.causeSteps[1].tag}</span>
-            <h3>{t.causeSteps[1].title}</h3>
-            <code dir="ltr">GPTBot → blocked</code>
+            <span>
+              {t.causeSteps[1].tag}
+              {scan === null && <em className="example-tag">{t.exampleTag}</em>}
+            </span>
+            {scan === null ? (
+              <>
+                <h3>{t.causeSteps[1].title}</h3>
+                <code dir="ltr">GPTBot → blocked</code>
+              </>
+            ) : cause === null ? (
+              <>
+                <h3>{t.noCauseTitle}</h3>
+                <p>{t.noCauseBody}</p>
+              </>
+            ) : (
+              <>
+                <h3>{locale === 'ar' ? cause.detail.ar : cause.detail.en}</h3>
+                {cause.evidence !== '' && <code dir="ltr">{cause.evidence}</code>}
+              </>
+            )}
           </article>
 
           <article className="fix-card">
             <i>03</i>
-            <span>{t.causeSteps[2].tag}</span>
-            <h3>{t.causeSteps[2].title}</h3>
-            <pre dir="ltr">
-              <code>{ROBOTS_FIX}</code>
-            </pre>
-            <button
-              type="button"
-              onClick={() => {
-                void navigator.clipboard?.writeText(ROBOTS_FIX).then(() => {
-                  setCopied(true);
-                  window.setTimeout(() => setCopied(false), 1800);
-                });
-              }}
-            >
-              <CopyIcon size={15} /> {copied ? t.copied : t.copyCode}
-            </button>
+            <span>
+              {t.causeSteps[2].tag}
+              {scan === null && <em className="example-tag">{t.exampleTag}</em>}
+            </span>
+            {fixCode !== null ? (
+              <>
+                <h3>{t.causeSteps[2].title}</h3>
+                <pre dir="ltr">
+                  <code>{fixCode}</code>
+                </pre>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard?.writeText(fixCode).then(() => {
+                      setCopied(true);
+                      window.setTimeout(() => setCopied(false), 1800);
+                    });
+                  }}
+                >
+                  <CopyIcon size={15} /> {copied ? t.copied : t.copyCode}
+                </button>
+              </>
+            ) : sources.length > 0 ? (
+              <>
+                <h3>{t.presentOn}</h3>
+                <p dir="ltr">{sources.map((src) => src.host).join(' · ')}</p>
+              </>
+            ) : (
+              <h3>{t.noFixTitle}</h3>
+            )}
           </article>
         </div>
 

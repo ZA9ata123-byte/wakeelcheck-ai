@@ -733,6 +733,56 @@ html[lang='en'] .arrow-next {
   letter-spacing: -0.025em;
 }
 
+/* الإجابة ببنيتها. السطر على اتجاه الصفحة، والأسماء اللاتينية والروابط
+   معزولةٌ (<bdi>) فلا تقلب ترتيبه (L-029). */
+.answer blockquote p,
+.answer blockquote ul,
+.answer blockquote ol {
+  margin: 0 0 0.55em;
+}
+
+.answer blockquote ul,
+.answer blockquote ol {
+  padding-inline-start: 1.1em;
+}
+
+.answer blockquote li {
+  margin-bottom: 0.3em;
+}
+
+.answer blockquote strong {
+  font-weight: 600;
+}
+
+.answer blockquote mark.rival,
+.answer blockquote .cite {
+  unicode-bidi: isolate;
+}
+
+.answer blockquote .cite {
+  display: inline-block;
+  margin-inline-start: 4px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.causal-flow .example-tag {
+  margin-inline-start: 8px;
+  padding: 1px 7px;
+  border: 1px solid var(--band-rule);
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 9px;
+}
+
 /* العلامة على النص — هي العلامة التجارية كلها */
 mark.rival {
   position: relative;

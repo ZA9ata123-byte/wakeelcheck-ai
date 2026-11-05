@@ -139,7 +139,7 @@ test('a quick scan asks its two engines but still carries the full diagnosis', a
   const { result } = await runScan({ url: 'daralanaqa.sa', kind: 'quick' }, deps());
 
   // عدد المحرّكات يفصل المجاني عن المدفوع — لا حجبُ التشخيص.
-  assert.deepEqual([...new Set(result.answers.map((a) => a.engine))], ['chatgpt', 'ai_mode']);
+  assert.deepEqual([...new Set(result.answers.map((a) => a.engine))], [...PLANS.quick.engines]);
   assert.ok(result.rules.length > 0, 'the diagnosis is evidence — it is shown, not withheld');
   assert.ok(result.security.length > 0, 'and the security findings with it');
 });

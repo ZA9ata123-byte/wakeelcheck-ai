@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { archive, monitors, storeKind } from '@/lib/scans';
+import { archive, monitors, storeKind, subscriptions } from '@/lib/scans';
+import { checkoutTarget } from '@/lib/billing';
 import { verifierFromEnv } from '@/lib/turnstile';
 import { isDemo, llmKeys } from '@/lib/llm-env';
 
@@ -11,6 +12,7 @@ import { isDemo, llmKeys } from '@/lib/llm-env';
  * - `human: true` ← Turnstile مُفعَّل بمفتاحيه معاً.
  * - `archive: true` ← التقارير تبقى دائماً، وروابطها لا تنتهي.
  * - `monitoring: true` ← القاعدة و`CRON_SECRET` معاً: المتابعة الأسبوعية تعمل.
+ * - `billing: true` ← رابط الدفع وسرّ الإشعار والقاعدة معاً: الاشتراك يفتح المتابعة.
  *
  * لا قيمة متغيّر هنا ولا جزءٌ منها — القاعدة 01. اسم المخزن فقط.
  */
@@ -23,5 +25,9 @@ export function GET() {
     human: verifierFromEnv((name) => process.env[name]) !== null,
     archive: archive !== null,
     monitoring: monitors !== null && (process.env['CRON_SECRET'] ?? '') !== '',
+    billing:
+      subscriptions !== null &&
+      (process.env['LEMONSQUEEZY_WEBHOOK_SECRET'] ?? '') !== '' &&
+      checkoutTarget(process.env['LEMONSQUEEZY_CHECKOUT_URL'], 'example.com', 'ar') !== null,
   });
 }

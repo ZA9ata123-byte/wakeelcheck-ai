@@ -15,7 +15,15 @@
  */
 
 import type { ScanResult } from '@wakeelcheck/core';
-import { neonClient, sqlArchive, sqlMonitors, type MonitorRegistry, type ScanArchive } from '@wakeelcheck/db';
+import {
+  neonClient,
+  sqlArchive,
+  sqlMonitors,
+  sqlSubscriptions,
+  type MonitorRegistry,
+  type ScanArchive,
+  type SubscriptionLedger,
+} from '@wakeelcheck/db';
 import { memoryStore, redisStore, type KeyValueStore } from '@wakeelcheck/limits';
 
 export type StoreKind = 'redis' | 'memory';
@@ -108,6 +116,12 @@ export function archiveFromEnv(env: Env): ScanArchive | null {
 export function monitorsFromEnv(env: Env): MonitorRegistry | null {
   const url = databaseUrl(env);
   return url === null ? null : sqlMonitors(neonClient(url));
+}
+
+/** سجلّ الاشتراكات — في القاعدة نفسها. بلاها لا يُقبل إشعار دفع. */
+export function subscriptionsFromEnv(env: Env): SubscriptionLedger | null {
+  const url = databaseUrl(env);
+  return url === null ? null : sqlSubscriptions(neonClient(url));
 }
 
 /**

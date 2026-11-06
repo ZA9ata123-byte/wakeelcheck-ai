@@ -17,7 +17,15 @@ import { isDemo, llmChain, llmKeys } from './llm-env';
 import type { PipelineDeps, SecurityCollected } from '@wakeelcheck/pipeline';
 import type { KeyValueStore } from '@wakeelcheck/limits';
 import { HARD_DEADLINE_MS, SOFT_BUDGET_MS, launchScan, withHardDeadline } from './launch';
-import { archiveFromEnv, monitorsFromEnv, readReport, saveResult, storeFromEnv, type StoreKind } from './store';
+import {
+  archiveFromEnv,
+  monitorsFromEnv,
+  readReport,
+  saveResult,
+  storeFromEnv,
+  subscriptionsFromEnv,
+  type StoreKind,
+} from './store';
 import { runMonitor, type MonitorOutcome } from './monitor';
 import type { Monitor } from '@wakeelcheck/db';
 import type { StartInput, StartedScan } from './scan-post';
@@ -37,6 +45,7 @@ export const archive = archiveFromEnv((name) => process.env[name]);
 
 /** سجلّ المتابعة — `null` بلا قاعدة، فلا متابعة. */
 export const monitors = monitorsFromEnv((name) => process.env[name]);
+export const subscriptions = subscriptionsFromEnv((name) => process.env[name]);
 
 /**
  * التقرير بنشرته إن كان قياس متابعة. النشرة تُلصق هنا لا تُحفظ في التقرير:

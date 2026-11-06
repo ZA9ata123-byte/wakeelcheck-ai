@@ -21,11 +21,17 @@ test('القائمة والرابط والعريض — وكلّ كلمةٍ با�
 
   // القاعدة 05: لا كلمة تُحذف ولا تُضاف — النصّ الظاهر هو نصّ الإجابة.
   const shown = blocks
-    .flatMap((b) => (b.kind === 'p' ? [b.inline] : b.items))
+    .flatMap((b) => (b.kind === 'list' ? b.items : [b.inline]))
     .flat()
     .map((p) => (p.kind === 'cite' ? p.label : p.text))
     .join('');
   assert.equal(words(shown), words(text.replace(/\(https?:[^)]+\)/g, '')));
+});
+
+test('عنوانٌ في جواب Google يُعرض عنواناً — بلا ####', () => {
+  const blocks = parseAnswer('مقدّمة:\n\n#### **1. متاجر العطور العامة**\n\n- The Perfume Smell ** (TPS):** أصلية.');
+  assert.deepEqual(blocks[1], { kind: 'heading', inline: [{ kind: 'strong', text: '1. متاجر العطور العامة' }] });
+  assert.equal(blocks[2]?.kind, 'list');
 });
 
 test('قائمةٌ ملتصقة في سطرٍ واحد تُفصل', () => {

@@ -52,8 +52,23 @@ test('يُسأل من بلد المتجر ولغته، والمفتاح لا ي�
   assert.equal(params.get('hl'), 'ar');
 });
 
-test('مع SERPAPI_KEY: AI Mode من SerpApi، وبلاه: DataForSEO كما كان', () => {
+test('AI Mode: DataForSEO المُثبَت أوّلاً، وSerpApi حين لا حساب غيره', async () => {
   const env = { openaiApiKey: null, dataforseoLogin: null, dataforseoPassword: null, perplexityApiKey: null };
   assert.deepEqual(buildEngines({ ...env, serpApiKey: KEY }).map((e) => e.engine), ['ai_mode']);
   assert.deepEqual(buildEngines(env).map((e) => e.engine), [], 'بلا مفتاح: لا محرّك يُدّعى');
+
+  // المفتاحان معاً: النداء يذهب إلى DataForSEO.
+  const original = globalThis.fetch;
+  let host = '';
+  globalThis.fetch = (async (u: string | URL) => {
+    host = new URL(String(u)).hostname;
+    return Response.json({ tasks: [{ result: [{ items: [{ type: 'ai_overview', markdown: 'جواب' }] }] }] });
+  }) as typeof fetch;
+  try {
+    const both = buildEngines({ ...env, dataforseoLogin: KEY, dataforseoPassword: KEY, serpApiKey: KEY });
+    await both.find((e) => e.engine === 'ai_mode')?.ask('سؤال', 'ar-KW');
+  } finally {
+    globalThis.fetch = original;
+  }
+  assert.equal(host, 'api.dataforseo.com');
 });

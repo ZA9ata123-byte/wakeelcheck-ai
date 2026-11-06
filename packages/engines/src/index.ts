@@ -183,6 +183,91 @@ export function parseDataForSeo(payload: unknown): { text: string; citedUrls: st
   return { text, citedUrls: [...urls] };
 }
 
+// ── Google: ai_overview ────────────────────────────────────
+
+/**
+ * ما رآه المستخدم في Google، من Markdown الذي يسلسله DataForSEO.
+ *
+ * التسلسل يضيف ما لا يظهر في الصفحة: الاسمُ ثم رابطُه باسمه نفسه
+ * («X[X](…)»)، وإحالاتٌ «[[1]](…)»، وروابطُ تحويلٍ عبر google.com/goto،
+ * وعلاماتُ تمييزٍ بـ`. في Google يظهر الاسم مرّةً رابطاً. فيُعاد إلى ذلك —
+ * الكلمات كما هي، لا حرف يُضاف ولا يُعاد صوغه (القاعدة 05).
+ */
+export function googleAnswerText(md: string): string {
+  return md
+    .replace(/\[\[\d+\]\]\([^)\s]*\)/g, '')
+    .replace(/(\S[^[\]\n]*?)\[\1\]\([^)\s]*\)/g, '$1')
+    .replace(/\[([^\]\n]+)\]\(https?:\/\/(?:www\.)?google\.[a-z.]+\/goto[^)\s]*\)/g, '$1')
+    .replace(/`([^`\n]+)`/g, '$1')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/[ \t]+\n/g, '\n')
+    .trim();
+}
+
+function isGoogleRedirect(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    return /^google\.[a-z.]+$/.test(host);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * يقرأ أوّل عنصر `ai_overview` في ردّ DataForSEO — في AI Mode، وفي نتائج
+ * Google العادية حين يظهر ملخّص الذكاء الاصطناعي فوقها.
+ *
+ * الجواب من `markdown` أعلى العنصر وحده: عناصره الفرعية تعيده مقطّعاً،
+ * والمراجع تحمل مقتطفاتٍ من صفحاتها لا من الجواب. والروابط من المراجع، بلا
+ * تحويلات google التي لا تدلّ على موقع. `null` حين لا ملخّص في الردّ.
+ */
+export function parseAiOverview(payload: unknown): { text: string; citedUrls: string[] } | null {
+  let found: Record<string, unknown> | null = null;
+  const seek = (node: unknown, depth: number): void => {
+    if (found !== null || depth > 8 || node === null || typeof node !== 'object') return;
+    if (Array.isArray(node)) {
+      for (const child of node) seek(child, depth + 1);
+      return;
+    }
+    const record = node as Record<string, unknown>;
+    if (record['type'] === 'ai_overview') {
+      found = record;
+      return;
+    }
+    for (const key of ['tasks', 'result', 'items']) seek(record[key], depth + 1);
+  };
+  seek(payload, 0);
+  if (found === null) return null;
+  const overview: Record<string, unknown> = found;
+
+  let markdown = typeof overview['markdown'] === 'string' ? overview['markdown'] : '';
+  if (markdown.trim() === '' && Array.isArray(overview['items'])) {
+    markdown = overview['items']
+      .map((el) => {
+        const e = el as Record<string, unknown> | null;
+        return typeof e?.['markdown'] === 'string' ? e['markdown'] : typeof e?.['text'] === 'string' ? e['text'] : '';
+      })
+      .filter((t) => t !== '')
+      .join('\n\n');
+  }
+
+  const urls = new Set<string>();
+  const collect = (refs: unknown): void => {
+    if (!Array.isArray(refs)) return;
+    for (const r of refs) {
+      const url = (r as { url?: unknown } | null)?.url;
+      if (typeof url === 'string' && url.startsWith('http') && !isGoogleRedirect(url)) urls.add(url);
+    }
+  };
+  collect(overview['references']);
+  if (Array.isArray(overview['items'])) {
+    for (const el of overview['items']) collect((el as { references?: unknown } | null)?.references);
+  }
+
+  const text = googleAnswerText(markdown);
+  return text === '' ? null : { text, citedUrls: [...urls] };
+}
+
 export interface DataForSeoOptions {
   login: string | null;
   password: string | null;
@@ -252,7 +337,10 @@ function dataForSeoEngine(
       if (!res.ok) throw new UpstreamError(engine, `HTTP ${res.status}`);
 
       const payload: unknown = await res.json();
-      const { text, citedUrls } = parseDataForSeo(payload);
+      // أسطح Google لها قارئها: الجواب وحده، لا كلّ نصٍّ في الردّ.
+      const parsed = engine === 'copilot' ? parseDataForSeo(payload) : parseAiOverview(payload);
+      const text = parsed?.text ?? '';
+      const citedUrls = parsed?.citedUrls ?? [];
       if (text.length === 0) throw new UpstreamError(engine, 'no answer on this surface');
 
       // التسعير لكل نداء لا لكل توكن — سعر DataForSEO المنشور للوضع الحيّ.
@@ -509,9 +597,9 @@ export function buildEngines(env: EngineEnv): EngineClient[] {
   return [
     chatGptEngine({ apiKey: env.openaiApiKey }),
     aiOverviewsEngine(dfs),
-    // SerpApi أوّلاً إن ضُبط: خطّته المجانية تكفي الإطلاق، وDataForSEO
-    // تشترط شحناً أوّل ولم يُفتح حسابها.
-    env.serpApiKey !== undefined && env.serpApiKey !== null
+    // DataForSEO أوّلاً: ردّه الحيّ أثبت السطح وقارئه (القاعدة 06). SerpApi
+    // احتياطٌ حين لا حساب DataForSEO — قارئه من وثائقه، لم يُثبَّت بردٍّ حيّ.
+    dfs.login === null && env.serpApiKey !== undefined && env.serpApiKey !== null
       ? serpApiAiModeEngine({ apiKey: env.serpApiKey })
       : aiModeEngine(dfs),
     perplexityEngine({ apiKey: env.perplexityApiKey }),

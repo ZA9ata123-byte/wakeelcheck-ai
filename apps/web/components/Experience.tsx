@@ -103,6 +103,10 @@ function renderAnswer(text: string, rivals: readonly string[]): React.ReactNode 
   return parseAnswer(text).map((block, i) =>
     block.kind === 'p' ? (
       <p key={i}>{inline(block.inline)}</p>
+    ) : block.kind === 'heading' ? (
+      <p key={i} className="answer-heading">
+        {inline(block.inline)}
+      </p>
     ) : block.ordered ? (
       <ol key={i}>{block.items.map((item, j) => <li key={j}>{inline(item)}</li>)}</ol>
     ) : (

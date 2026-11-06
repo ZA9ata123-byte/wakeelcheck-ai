@@ -12,7 +12,10 @@ export type Inline =
   | { kind: 'strong'; text: string }
   | { kind: 'cite'; label: string; href: string };
 
-export type Block = { kind: 'p'; inline: Inline[] } | { kind: 'list'; ordered: boolean; items: Inline[][] };
+export type Block =
+  | { kind: 'p'; inline: Inline[] }
+  | { kind: 'heading'; inline: Inline[] }
+  | { kind: 'list'; ordered: boolean; items: Inline[][] };
 
 const LINK = /\(?\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)\)?|\*\*([^*]+)\*\*/g;
 
@@ -30,6 +33,7 @@ export function parseInline(line: string): Inline[] {
   return out.filter((p) => p.kind !== 'text' || p.text.trim() !== '');
 }
 
+const HEADING = /^#{1,6}\s+/;
 const BULLET = /^\s*[-•*]\s+/;
 const NUMBERED = /^\s*\d+[.)]\s+/;
 
@@ -38,6 +42,12 @@ export function parseAnswer(text: string): Block[] {
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.trim();
     if (line === '') continue;
+
+    // «#### **1. متاجر العطور**» — عنوانٌ في جواب Google، يُعرض عنواناً لا رموزاً.
+    if (HEADING.test(line)) {
+      blocks.push({ kind: 'heading', inline: parseInline(line.replace(HEADING, '')) });
+      continue;
+    }
 
     const bullet = BULLET.test(line);
     const numbered = !bullet && NUMBERED.test(line);

@@ -38,7 +38,7 @@ test('Google يُسأل من بلد المتجر لا من السعودية دا
   let sent: { location_code?: number; language_code?: string }[] = [];
   globalThis.fetch = (async (_url: string | URL, init?: RequestInit) => {
     sent = JSON.parse(String(init?.body)) as typeof sent;
-    return Response.json({ tasks: [{ result: [{ items: [{ markdown: 'جواب' }] }] }] });
+    return Response.json({ tasks: [{ result: [{ items: [{ type: 'ai_overview', markdown: 'جواب' }] }] }] });
   }) as typeof fetch;
   try {
     await aiModeEngine({ login: KEY, password: KEY }).ask('وين ألقى عطور بالكويت؟', 'ar-KW');

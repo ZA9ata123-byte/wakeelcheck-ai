@@ -754,6 +754,11 @@ html[lang='en'] .arrow-next {
   font-weight: 600;
 }
 
+.answer blockquote .answer-heading {
+  margin-top: 0.9em;
+  font-size: 0.8em;
+}
+
 .answer blockquote mark.rival,
 .answer blockquote .cite {
   unicode-bidi: isolate;

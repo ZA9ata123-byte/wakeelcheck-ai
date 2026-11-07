@@ -103,6 +103,7 @@ interface Payload {
       ends_at?: unknown;
       updated_at?: unknown;
       test_mode?: unknown;
+      user_email?: unknown;
     };
   };
 }
@@ -171,6 +172,8 @@ export async function handleLemonWebhook(req: Request, deps: WebhookDeps): Promi
       testMode: a.test_mode === true || payload.meta?.test_mode === true,
       endsAt: date(a.ends_at),
       updatedAt,
+      email: typeof a.user_email === 'string' && a.user_email.includes('@') ? a.user_email.trim() : null,
+      locale: payload.meta?.custom_data?.locale === 'en' ? 'en' : 'ar',
     });
 
     // يُحكم بالمحفوظ لا بالوارد: إشعارٌ قديم وصل متأخراً لا يُعيد ما أُغلق.
@@ -179,7 +182,7 @@ export async function handleLemonWebhook(req: Request, deps: WebhookDeps): Promi
       await deps.registry.enroll({
         domain: stored.domain,
         url: `https://${stored.domain}/`,
-        locale: payload.meta?.custom_data?.locale === 'en' ? 'en' : 'ar',
+        locale: stored.locale,
         at: updatedAt,
       });
     } else {

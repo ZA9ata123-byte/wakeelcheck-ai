@@ -146,6 +146,45 @@ test('قياسٌ فاشل يُعلَن ولا يُخفى', async () => {
   assert.deepEqual(body, { ran: 'a.sa', status: 'failed', report: 'r2' });
 });
 
+test('بعد قياسٍ ناجح تُرسل النشرة، ويُعلن عددها', async () => {
+  const notified: string[] = [];
+  const d = cron({
+    notify: async (m) => {
+      notified.push(`${m.domain}:${m.reportId}`);
+      return { sent: 1, failed: 0 };
+    },
+  });
+  const body = await (await handleMonitorCron(cronReq(`Bearer ${SECRET}`), d)).json();
+  assert.deepEqual(notified, ['a.sa:r1']);
+  assert.deepEqual((body as { mail: unknown }).mail, { sent: 1, failed: 0 });
+});
+
+test('قياسٌ فاشل: لا نشرة', async () => {
+  let called = false;
+  const d = cron({
+    runOne: async (m) => ({ status: 'failed', domain: m.domain, reportId: 'r2', error: 'boom' }),
+    notify: async () => {
+      called = true;
+      return { sent: 0, failed: 0 };
+    },
+  });
+  await handleMonitorCron(cronReq(`Bearer ${SECRET}`), d);
+  assert.equal(called, false);
+});
+
+test('عطلٌ في الإرسال لا يُفشل القياس: 200 والقياس معلن', async () => {
+  const d = cron({
+    notify: async () => {
+      throw new TypeError('down');
+    },
+  });
+  const res = await handleMonitorCron(cronReq(`Bearer ${SECRET}`), d);
+  assert.equal(res.status, 200);
+  const body = (await res.json()) as { status: string; mail: unknown };
+  assert.equal(body.status, 'measured');
+  assert.deepEqual(body.mail, { error: 'TypeError' });
+});
+
 test('المتابعة أسبوعية', () => {
   assert.equal(MONITOR_INTERVAL_DAYS, 7);
 });

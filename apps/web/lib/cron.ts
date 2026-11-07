@@ -10,10 +10,11 @@
  */
 
 import { timingSafeEqual } from 'node:crypto';
-import { isWakeelError } from '@wakeelcheck/core';
+import { isWakeelError, type Digest } from '@wakeelcheck/core';
 import { ArchiveUnavailableError, type Monitor, type MonitorRegistry } from '@wakeelcheck/db';
 import { normalizeUrl } from '@wakeelcheck/fetcher';
 import type { MonitorOutcome } from './monitor';
+import type { NotifyResult } from './notify';
 
 /** أسبوع: ما تَعِد به المتابعة. */
 export const MONITOR_INTERVAL_DAYS = 7;
@@ -31,6 +32,8 @@ export interface CronDeps {
   secret: string | undefined;
   registry: MonitorRegistry | null;
   runOne(monitor: Monitor): Promise<MonitorOutcome>;
+  /** يرسل النشرة بعد قياسٍ ناجح. اختياريّ: بلاه تُحفظ النشرة ولا تُرسل. */
+  notify?(measured: { domain: string; reportId: string; digest: Digest }): Promise<NotifyResult>;
   now(): Date;
 }
 
@@ -65,11 +68,24 @@ export async function handleMonitorCron(req: Request, deps: CronDeps): Promise<R
   if (next === undefined) return Response.json({ ran: null });
 
   const outcome = await deps.runOne(next);
-  return Response.json(
-    outcome.status === 'measured'
-      ? { ran: outcome.domain, status: outcome.status, report: outcome.reportId, tone: outcome.digest.tone }
-      : { ran: outcome.domain, status: outcome.status, report: outcome.reportId }
-  );
+  if (outcome.status !== 'measured') {
+    return Response.json({ ran: outcome.domain, status: outcome.status, report: outcome.reportId });
+  }
+
+  // الرسالة بعد الحفظ، وفشلها لا يُفشل القياس: التقرير قائم برابطه.
+  let mail: NotifyResult | { error: string } | null = null;
+  if (deps.notify !== undefined) {
+    mail = await deps.notify(outcome).catch((err: unknown) => ({
+      error: err instanceof Error ? err.name : 'notify failed',
+    }));
+  }
+  return Response.json({
+    ran: outcome.domain,
+    status: outcome.status,
+    report: outcome.reportId,
+    tone: outcome.digest.tone,
+    ...(mail === null ? {} : { mail }),
+  });
 }
 
 // ── التسجيل ──────────────────────────────────────────────────

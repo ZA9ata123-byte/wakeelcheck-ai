@@ -1,5 +1,5 @@
 import { handleMonitorCron } from '@/lib/cron';
-import { monitorOnce, monitors } from '@/lib/scans';
+import { monitorOnce, monitors, notifyMeasured } from '@/lib/scans';
 
 /** قياسٌ واحد يدخل الدقيقة بهامش — انظر `lib/launch.ts`. */
 export const maxDuration = 120;
@@ -13,6 +13,7 @@ export function GET(req: Request): Promise<Response> {
     secret: process.env['CRON_SECRET'],
     registry: monitors,
     runOne: monitorOnce,
+    notify: notifyMeasured,
     now: () => new Date(),
   });
 }

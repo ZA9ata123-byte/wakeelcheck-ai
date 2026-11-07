@@ -31,6 +31,9 @@ function fakeLedger(opts: { down?: boolean; stored?: (s: Subscription) => Subscr
     async get() {
       return null;
     },
+    async recipients() {
+      return [];
+    },
   };
   return self;
 }
@@ -82,6 +85,7 @@ function event(
         ends_at: null,
         updated_at: '2026-11-06T10:00:00.000000Z',
         test_mode: true,
+        user_email: 'owner@noura.example',
       },
     },
   });
@@ -159,6 +163,8 @@ test('اشتراكٌ فعّال يفتح المتابعة لنطاقه المط�
   assert.equal(ledger.applied[0]?.domain, 'noura.sa');
   assert.equal(ledger.applied[0]?.variantId, '7');
   assert.equal(ledger.applied[0]?.testMode, true);
+  assert.equal(ledger.applied[0]?.email, 'owner@noura.example', 'البريد يُحفظ للنشرة');
+  assert.equal(ledger.applied[0]?.locale, 'en');
   assert.equal(registry.enrolled[0]?.domain, 'noura.sa');
   assert.equal(registry.enrolled[0]?.locale, 'en');
   assert.equal(registry.deactivated.length, 0);

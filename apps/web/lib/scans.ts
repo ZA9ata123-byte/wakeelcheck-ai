@@ -10,7 +10,7 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import type { Engine, FetchResult, ScanResult } from '@wakeelcheck/core';
+import type { Digest, Engine, FetchResult, ScanResult } from '@wakeelcheck/core';
 import { safeFetch } from '@wakeelcheck/fetcher';
 import { fakeProvider, withFallback, type LlmProvider } from '@wakeelcheck/llm';
 import { isDemo, llmChain, llmKeys } from './llm-env';
@@ -27,6 +27,8 @@ import {
   type StoreKind,
 } from './store';
 import { runMonitor, type MonitorOutcome } from './monitor';
+import { mailerFromEnv } from './mailer';
+import { notifyDigest, type NotifyResult } from './notify';
 import type { Monitor } from '@wakeelcheck/db';
 import type { StartInput, StartedScan } from './scan-post';
 import { buildEngines, type EngineClient } from '@wakeelcheck/engines';
@@ -46,6 +48,16 @@ export const archive = archiveFromEnv((name) => process.env[name]);
 /** سجلّ المتابعة — `null` بلا قاعدة، فلا متابعة. */
 export const monitors = monitorsFromEnv((name) => process.env[name]);
 export const subscriptions = subscriptionsFromEnv((name) => process.env[name]);
+export const mailer = mailerFromEnv((name) => process.env[name]);
+
+/** النشرة إلى مشتركي النطاق — بعد قياسٍ ناجح. */
+export function notifyMeasured(measured: { domain: string; reportId: string; digest: Digest }): Promise<NotifyResult> {
+  return notifyDigest(measured, {
+    ledger: subscriptions,
+    mailer,
+    site: process.env['SITE_URL']?.trim() || 'https://aitchek.online',
+  });
+}
 
 /**
  * التقرير بنشرته إن كان قياس متابعة. النشرة تُلصق هنا لا تُحفظ في التقرير:

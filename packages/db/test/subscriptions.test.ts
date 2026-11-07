@@ -25,6 +25,8 @@ const sub = (status: string, updatedAt: string, extra: Partial<Subscription> = {
   testMode: true,
   endsAt: null,
   updatedAt: new Date(updatedAt),
+  email: 'owner@noura.example',
+  locale: 'ar',
   ...extra,
 });
 
@@ -62,4 +64,41 @@ test('الحدث نفسه مرّتين بلا أثر', async () => {
 
 test('اشتراكٌ لا نعرفه: null', async () => {
   assert.equal(await ledger().get('nope'), null);
+});
+
+// ── من تُرسل إليهم النشرة ────────────────────────────────────
+
+const ENTITLED = ['on_trial', 'active', 'past_due', 'cancelled'];
+
+test('المستحقّ ببريده يُرجَع، والمنتهي لا', async () => {
+  const l = ledger();
+  await l.apply(sub('active', '2026-11-01T10:00:00Z', { id: 'a', locale: 'en' }));
+  await l.apply(sub('expired', '2026-11-01T10:00:00Z', { id: 'b', email: 'gone@noura.example' }));
+  assert.deepEqual(await l.recipients('www.noura.sa', ENTITLED), [
+    { email: 'owner@noura.example', locale: 'en' },
+  ]);
+});
+
+test('بلا بريد: لا يُرجَع، ولا يُمسح بريدٌ قائم بحدثٍ بلا بريد', async () => {
+  const l = ledger();
+  await l.apply(sub('active', '2026-11-01T10:00:00Z'));
+  await l.apply(sub('active', '2026-11-02T10:00:00Z', { email: null }));
+  assert.equal((await l.get('42'))?.email, 'owner@noura.example');
+
+  const m = ledger();
+  await m.apply(sub('active', '2026-11-01T10:00:00Z', { email: null }));
+  assert.deepEqual(await m.recipients('noura.sa', ENTITLED), []);
+});
+
+test('بريدٌ واحد مرّةً واحدة وإن تكرّر في اشتراكين', async () => {
+  const l = ledger();
+  await l.apply(sub('active', '2026-11-01T10:00:00Z', { id: 'a' }));
+  await l.apply(sub('on_trial', '2026-11-03T10:00:00Z', { id: 'b', email: 'OWNER@noura.example' }));
+  assert.equal((await l.recipients('noura.sa', ENTITLED)).length, 1);
+});
+
+test('نطاقٌ آخر لا يرى بريد غيره', async () => {
+  const l = ledger();
+  await l.apply(sub('active', '2026-11-01T10:00:00Z'));
+  assert.deepEqual(await l.recipients('other.sa', ENTITLED), []);
 });

@@ -3,9 +3,10 @@ import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'وكيل تشيك — اعرف الإجابة التي يقدّمها الذكاء الاصطناعي عن متجرك',
+  title: 'وكيل تشيك — كُن أنت الجواب',
   description:
-    'نُريك الإجابة الحرفية التي يعطيها ChatGPT وبحث Google عن متجرك، ومن ذُكر بدلاً منك — ثم نُصلح السبب.',
+    'عميلك يسأل الذكاء الاصطناعي. اكتشف هل يوصي بمتجرك، ومن يظهر بدلاً منك — الإجابة الحرفية من ChatGPT وGoogle AI Mode.',
+  icons: { icon: '/brand/mark.svg' },
 };
 
 /**
@@ -17,18 +18,14 @@ export const metadata: Metadata = {
  */
 export default function ArabicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" data-theme="dark" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-        />
-        {/* الوضع المحفوظ قبل الرسم — بلا وميضٍ داكن عند من اختار الفاتح. */}
+        <meta name="theme-color" content="#070b13" />
+        {/* الوضع والحركة المحفوظان قبل الرسم — بلا وميض. الداكن افتراضيّ كما في الحزمة. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: "try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}",
+            __html:
+              "try{var d=document.documentElement;d.dataset.theme=localStorage.getItem('aitchek-theme')==='light'?'light':'dark';if(localStorage.getItem('aitchek-motion')==='reduce')d.classList.add('reduce-motion')}catch(e){}",
           }}
         />
       </head>

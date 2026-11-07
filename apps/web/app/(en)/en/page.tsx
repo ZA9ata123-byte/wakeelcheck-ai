@@ -1,5 +1,5 @@
-import Experience from '@/components/Experience';
+import Studio from '@/components/Studio';
 
 export default function Page() {
-  return <Experience locale="en" />;
+  return <Studio locale="en" />;
 }

@@ -3,26 +3,23 @@ import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: 'WakeelCheck — see the answer AI gives about your store',
+  title: 'AITCHEK — Be the answer.',
   description:
-    'See the exact answer ChatGPT and Google AI give about your store, and who gets named instead of you.',
+    'Your customer is asking AI. Discover if it recommends your store, and who shows up instead — the verbatim answer from ChatGPT and Google AI Mode.',
+  icons: { icon: '/brand/mark.svg' },
 };
 
 /** Independent root layout for English — see the Arabic layout for why. */
 export default function EnglishLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    <html lang="en" dir="ltr" data-theme="dark" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-        />
-        {/* الوضع المحفوظ قبل الرسم — بلا وميضٍ داكن عند من اختار الفاتح. */}
+        <meta name="theme-color" content="#070b13" />
+        {/* الوضع والحركة المحفوظان قبل الرسم — بلا وميض. الداكن افتراضيّ كما في الحزمة. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: "try{if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')}catch(e){}",
+            __html:
+              "try{var d=document.documentElement;d.dataset.theme=localStorage.getItem('aitchek-theme')==='light'?'light':'dark';if(localStorage.getItem('aitchek-motion')==='reduce')d.classList.add('reduce-motion')}catch(e){}",
           }}
         />
       </head>

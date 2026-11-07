@@ -118,3 +118,22 @@ export const Users = (p: IconProps) => (
     <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
   </Svg>
 );
+
+/** نجمة البحث — علامة محرّك ChatGPT في الواجهة، رسمٌ عامّ لا شعار. */
+export function Sparkle({ size = 15, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4" />
+    </Svg>
+  );
+}
+
+/** حرف G — علامة محرّكات Google في الواجهة، رسمٌ عامّ لا شعار. */
+export function GoogleG({ size = 15, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M20 12a8 8 0 1 1-2.4-5.7" />
+      <path d="M20 12h-7" />
+    </Svg>
+  );
+}

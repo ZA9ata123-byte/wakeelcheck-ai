@@ -28,10 +28,12 @@ import {
   Copy as CopyIcon,
   External,
   Globe,
+  GoogleG,
   Grid,
   Menu,
   Search,
   Shield,
+  Sparkle,
   Users,
 } from '@/components/icons';
 
@@ -356,7 +358,11 @@ export default function Experience({ locale }: { locale: Locale }) {
       {/* ── الشريط العلوي ─────────────────────────────── */}
       <nav className="topbar" aria-label={t.navHome}>
         <a href="#top" className="wordmark">
-          وكيل تشيك<span>{t.brandTag}</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/mark.svg" width={40} height={40} alt="" aria-hidden="true" />
+          <span className="wordmark-text">
+            وكيل تشيك<span>{t.brandTag}</span>
+          </span>
         </a>
 
         <div className={`nav-links${menuOpen ? ' open' : ''}`}>
@@ -387,6 +393,8 @@ export default function Experience({ locale }: { locale: Locale }) {
 
       {/* ── البطل والخانة ─────────────────────────────── */}
       <section className="hero" id="scanner">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="hero-halo" src="/brand/halo.svg" alt="" aria-hidden="true" />
         <div className="hero-copy">
           <p className="section-kicker">{t.kicker}</p>
 
@@ -394,6 +402,8 @@ export default function Experience({ locale }: { locale: Locale }) {
             <span className="title-line">
               {t.titleA}
               <b dir="ltr">ChatGPT</b>
+              {t.titleAnd}
+              <b dir="ltr">Google AI</b>
             </span>
             <span className="title-line">{t.titleB}</span>
           </h1>
@@ -423,6 +433,11 @@ export default function Experience({ locale }: { locale: Locale }) {
                 <CircleAlert size={15} /> {notice}
               </p>
             ) : (
+              <>
+              <div className="engine-row" aria-label="ChatGPT · Google AI Mode">
+                <span><Sparkle /> ChatGPT</span>
+                <span><GoogleG /> Google AI Mode</span>
+              </div>
               <div className="trust-row">
                 {t.trust.map((item) => (
                   <span key={item}>
@@ -430,6 +445,7 @@ export default function Experience({ locale }: { locale: Locale }) {
                   </span>
                 ))}
               </div>
+              </>
             )}
 
             {/* فارغٌ عادةً: Cloudflare لا يُظهر شيئاً إلا لمن يشكّ فيه. */}

@@ -8,173 +8,151 @@
  * القاعدة: لا يُكتب لون في مكوّن، ولا يُعرَّف لون داخل media query وحدها.
  */
 
+/* الخطوط محلية — من حزمة المصمم، بتراخيصها في public/fonts/licenses. */
+@font-face { font-family: 'Manrope'; font-weight: 400; font-display: swap; src: url('/fonts/manrope-400.woff') format('woff'); }
+@font-face { font-family: 'Manrope'; font-weight: 700; font-display: swap; src: url('/fonts/manrope-700.woff') format('woff'); }
+@font-face { font-family: 'Aitchek Arabic UI'; font-weight: 400; font-display: swap; src: url('/fonts/aitchek-ar-400.woff') format('woff'); }
+@font-face { font-family: 'Aitchek Arabic UI'; font-weight: 700; font-display: swap; src: url('/fonts/aitchek-ar-700.woff') format('woff'); }
+
 :root {
+  color-scheme: dark;
   /* الأسطح */
-  --ground: #e9e8e4;
-  --sheet: #ffffff;
-  --sheet-2: #fbfaf8;
-  --sheet-3: #f7f5ef;
-  --sheet-4: #f6f4ef;
-  --well: #e4e1dc;
+  --ground: #070b13;
+  --sheet: #101c2b;
+  --sheet-2: #0b1420;
+  --sheet-3: #0d1826;
+  --sheet-4: #152438;
+  --well: #1a2d44;
 
   /* الحبر */
-  --ink: #171412;
-  --ink-soft: #5f5b56;
-  --muted: #8d8881;
-  --faint: #9b9791;
+  --ink: #f2f7fe;
+  --ink-soft: #c5d3e3;
+  --muted: #a3b6ca;
+  --faint: #8599ae;
   --on-dark: #ffffff;
 
   /* الخطوط الفاصلة */
-  --line: #d7d3cc;
-  --line-strong: #bdb8b0;
-  --line-input: #aaa59e;
+  --line: #253b52;
+  --line-strong: #53738f;
+  --line-input: #3a5571;
 
-  /* النطاق الداكن — مقصود داكن في الوضعين، وهو ما يفصل الأقسام */
-  --band: #171412;
-  --band-ink: #f8f6f1;
-  --band-soft: #c0bbb4;
-  --band-muted: #8f8981;
-  --band-faint: #77716b;
-  --band-line: #302c29;
-  --band-rule: #5b554f;
-  --band-card: #1c1917;
-  --band-card-line: #625d57;
-  --band-code: #11100f;
-  --band-code-line: #3d3935;
-  --band-code-ink: #d4cfc8;
+  /* النطاق الداكن */
+  --band: #050810;
+  --band-ink: #f2f7fe;
+  --band-soft: #b5c4d6;
+  --band-muted: #9aaec4;
+  --band-faint: #7489a0;
+  --band-line: #1b2b3d;
+  --band-rule: #2c4258;
+  --band-card: #0e1927;
+  --band-card-line: #253b52;
+  --band-code: #04070d;
+  --band-code-line: #1f3247;
+  --band-code-ink: #cfe4f7;
 
-  /* العلامتان — اللون هنا معنى لا زينة */
-  --rival: #d8452c;
-  --rival-wash: #f9e7e2;
-  --rival-deep: #a8321f;
+  /* العلامات — اللون معنى لا زينة: الأحمر للمنافس وحده */
+  --rival: #ff8c8c;
+  --rival-wash: #48292e;
+  --rival-deep: #ffb3b3;
 
-  --present: #1a6f52;
-  --present-wash: #e2f0ea;
-  --present-line: #bcd8cc;
-  --present-edge: #0d5c42;
-  --present-hover: #135f46;
-  --present-lift: #4dac86;
+  --present: #8ee3ca;
+  --present-wash: #14312d;
+  --present-line: #24584c;
+  --present-edge: #5fc7a8;
+  --present-hover: #a6ecd7;
+  --present-lift: #b8f2e0;
 
-  --caution: #9a6a10;
-  --caution-code: #d7a537;
+  --caution: #f0c266;
+  --caution-code: #f0c266;
+  --caution-wash: #342b1b;
+
+  /* الفعل — الأزرار والتبويب النشط والتركيز */
+  --action: #2465f5;
+  --action-edge: #6ba6ff;
+  --action-hover: #3a78ff;
+  --action-wash: #152438;
+  --action-line: #2f5b9a;
+  --accent: #99d7ff;
 
   /* الظلال */
-  --lift-sm: 0 8px 24px rgb(34 29 24 / 6%);
-  --lift-md: 0 25px 60px rgb(33 27 22 / 9%);
-  --lift-lg: 0 30px 80px rgb(33 27 22 / 14%), 0 4px 12px rgb(33 27 22 / 6%);
-  --lift-cta: 0 8px 20px rgb(26 111 82 / 16%);
-  --glow-present: 0 0 20px rgb(26 111 82 / 25%);
-  --pulse-present: rgb(26 111 82 / 8%);
+  --lift-sm: 0 8px 24px rgb(0 0 0 / 35%);
+  --lift-md: 0 24px 60px rgb(0 0 0 / 45%);
+  --lift-lg: 0 30px 80px rgb(0 0 0 / 55%), 0 4px 12px rgb(0 0 0 / 35%);
+  --lift-cta: 0 6px 24px rgb(21 94 250 / 25%);
+  --glow-present: 0 0 20px rgb(142 227 202 / 20%);
+  --pulse-present: rgb(142 227 202 / 10%);
+  --halo-opacity: 1;
 
-  --face: 'Readex Pro', 'Segoe UI', Tahoma, sans-serif;
+  --face: 'Aitchek Arabic UI', 'Manrope', 'Segoe UI', Tahoma, sans-serif;
+  --latin: 'Manrope', 'Aitchek Arabic UI', sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --ground: #0f0e0d;
-    --sheet: #1b1917;
-    --sheet-2: #201e1c;
-    --sheet-3: #171514;
-    --sheet-4: #232120;
-    --well: #2c2926;
+/*
+ * الهوية داكنة، كما رسمها المصمم، وفي كلّ متصفّح. الفاتح مُعرَّف كاملاً
+ * ويُطلب صراحةً بـ`data-theme="light"`.
+ */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --ground: #f4f7fc;
+  --sheet: #ffffff;
+  --sheet-2: #eaf1fa;
+  --sheet-3: #f8fafd;
+  --sheet-4: #eaf2fe;
+  --well: #dde7f3;
 
-    --ink: #f1efec;
-    --ink-soft: #c3beb8;
-    --muted: #9b958e;
-    --faint: #8a847d;
-    --on-dark: #ffffff;
+  --ink: #10203d;
+  --ink-soft: #33465f;
+  --muted: #536780;
+  --faint: #6a7d94;
+  --on-dark: #ffffff;
 
-    --line: #35322f;
-    --line-strong: #423e3a;
-    --line-input: #4b4640;
+  --line: #d0ddee;
+  --line-strong: #9cb7d4;
+  --line-input: #9cb7d4;
 
-    --band: #080807;
-    --band-ink: #f4f2ee;
-    --band-soft: #b8b3ac;
-    --band-muted: #8a847d;
-    --band-faint: #6d6862;
-    --band-line: #26231f;
-    --band-rule: #3f3a35;
-    --band-card: #141210;
-    --band-card-line: #3a3531;
-    --band-code: #050505;
-    --band-code-line: #2e2a26;
-    --band-code-ink: #cfcac3;
+  --band: #0b1420;
+  --band-ink: #f2f7fe;
+  --band-soft: #b5c4d6;
+  --band-muted: #9aaec4;
+  --band-faint: #7489a0;
+  --band-line: #1b2b3d;
+  --band-rule: #2c4258;
+  --band-card: #101c2b;
+  --band-card-line: #253b52;
+  --band-code: #070b13;
+  --band-code-line: #1f3247;
+  --band-code-ink: #cfe4f7;
 
-    --rival: #ff7259;
-    --rival-wash: #3a1a10;
-    --rival-deep: #ff9581;
+  --rival: #ae2931;
+  --rival-wash: #ffe4e7;
+  --rival-deep: #8c1f26;
 
-    --present: #4fbc91;
-    --present-wash: #11291f;
-    --present-line: #1f4a39;
-    --present-edge: #2e7d5f;
-    --present-hover: #5cc79c;
-    --present-lift: #74d6ad;
+  --present: #12644c;
+  --present-wash: #def5eb;
+  --present-line: #b4e2cf;
+  --present-edge: #0d5240;
+  --present-hover: #0f5a44;
+  --present-lift: #2f8a6c;
 
-    --caution: #d59f3c;
-    --caution-code: #e0b25c;
+  --caution: #885704;
+  --caution-code: #b07a12;
+  --caution-wash: #fff4dc;
 
-    --lift-sm: 0 8px 24px rgb(0 0 0 / 45%);
-    --lift-md: 0 25px 60px rgb(0 0 0 / 65%);
-    --lift-lg: 0 30px 80px rgb(0 0 0 / 80%), 0 4px 12px rgb(0 0 0 / 50%);
-    --lift-cta: 0 8px 20px rgb(0 0 0 / 55%);
-    --glow-present: 0 0 20px rgb(79 188 145 / 22%);
-    --pulse-present: rgb(79 188 145 / 10%);
-  }
-}
+  --action: #2465f5;
+  --action-edge: #1747e9;
+  --action-hover: #1f58e0;
+  --action-wash: #eaf2fe;
+  --action-line: #9cb7d4;
+  --accent: #215fc8;
 
-:root[data-theme='dark'] {
-  --ground: #0f0e0d;
-  --sheet: #1b1917;
-  --sheet-2: #201e1c;
-  --sheet-3: #171514;
-  --sheet-4: #232120;
-  --well: #2c2926;
-
-  --ink: #f1efec;
-  --ink-soft: #c3beb8;
-  --muted: #9b958e;
-  --faint: #8a847d;
-
-  --line: #35322f;
-  --line-strong: #423e3a;
-  --line-input: #4b4640;
-
-  --band: #080807;
-  --band-ink: #f4f2ee;
-  --band-soft: #b8b3ac;
-  --band-muted: #8a847d;
-  --band-faint: #6d6862;
-  --band-line: #26231f;
-  --band-rule: #3f3a35;
-  --band-card: #141210;
-  --band-card-line: #3a3531;
-  --band-code: #050505;
-  --band-code-line: #2e2a26;
-  --band-code-ink: #cfcac3;
-
-  --rival: #ff7259;
-  --rival-wash: #3a1a10;
-  --rival-deep: #ff9581;
-
-  --present: #4fbc91;
-  --present-wash: #11291f;
-  --present-line: #1f4a39;
-  --present-edge: #2e7d5f;
-  --present-hover: #5cc79c;
-  --present-lift: #74d6ad;
-
-  --caution: #d59f3c;
-  --caution-code: #e0b25c;
-
-  --lift-sm: 0 8px 24px rgb(0 0 0 / 45%);
-  --lift-md: 0 25px 60px rgb(0 0 0 / 65%);
-  --lift-lg: 0 30px 80px rgb(0 0 0 / 80%), 0 4px 12px rgb(0 0 0 / 50%);
-  --lift-cta: 0 8px 20px rgb(0 0 0 / 55%);
-  --glow-present: 0 0 20px rgb(79 188 145 / 22%);
-  --pulse-present: rgb(79 188 145 / 10%);
+  --lift-sm: 0 8px 24px rgb(25 72 121 / 7%);
+  --lift-md: 0 24px 60px rgb(25 72 121 / 9%);
+  --lift-lg: 0 30px 80px rgb(25 72 121 / 12%), 0 4px 12px rgb(25 72 121 / 6%);
+  --lift-cta: 0 6px 24px rgb(36 101 245 / 22%);
+  --glow-present: 0 0 20px rgb(18 100 76 / 20%);
+  --pulse-present: rgb(18 100 76 / 8%);
+  --halo-opacity: 0.45;
 }
 
 /* ── الأساس ─────────────────────────────────────────────── */
@@ -192,7 +170,7 @@ body {
   background: var(--ground);
   color: var(--ink);
   font-family: var(--face);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 16px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -232,7 +210,7 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--present);
+  outline: 2px solid var(--action);
   outline-offset: 3px;
   border-radius: 3px;
 }
@@ -249,7 +227,7 @@ html[lang='en'] .arrow-next {
 /* ── الشريط العلوي ──────────────────────────────────────── */
 
 .topbar {
-  height: 72px;
+  height: 80px;
   padding: 0 clamp(18px, 4vw, 64px);
   background: var(--band);
   color: var(--band-ink);
@@ -263,17 +241,27 @@ html[lang='en'] .arrow-next {
 
 .wordmark {
   display: flex;
-  flex-direction: column;
-  font-size: 21px;
-  font-weight: 650;
-  line-height: 1;
-  letter-spacing: -0.035em;
+  align-items: center;
+  gap: 11px;
 }
 
-.wordmark span {
+.wordmark img {
+  width: 40px;
+  height: 40px;
+}
+
+.wordmark-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wordmark-text span {
   margin-top: 6px;
   color: var(--band-muted);
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 400;
   letter-spacing: 0;
 }
@@ -296,7 +284,7 @@ html[lang='en'] .arrow-next {
 .nav-links a:first-child,
 .nav-links a:hover {
   color: var(--band-ink);
-  border-color: var(--present);
+  border-color: var(--action);
 }
 
 .nav-actions {
@@ -317,17 +305,18 @@ html[lang='en'] .arrow-next {
 }
 
 .language {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .nav-cta {
-  background: var(--present);
-  border: 1px solid var(--present-edge);
+  background: var(--action);
+  border: 1px solid var(--action-edge);
   color: var(--on-dark);
-  padding: 10px 18px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 11px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--lift-cta);
 }
 
 .menu-button {
@@ -337,6 +326,7 @@ html[lang='en'] .arrow-next {
 /* ── البطل ──────────────────────────────────────────────── */
 
 .hero {
+  position: relative;
   min-height: 760px;
   padding: clamp(58px, 7vw, 110px) clamp(18px, 4vw, 64px) 100px;
   background: var(--sheet);
@@ -345,24 +335,75 @@ html[lang='en'] .arrow-next {
   gap: clamp(42px, 4.5vw, 76px);
   align-items: center;
   overflow: hidden;
+  isolation: isolate;
+}
+
+/* حلقة المصمم — خلف النصّ، لا فوقه. */
+.hero-halo {
+  position: absolute;
+  inset-inline-start: -8%;
+  top: 6%;
+  width: min(1000px, 90vw);
+  height: auto;
+  opacity: var(--halo-opacity);
+  z-index: -1;
+  pointer-events: none;
+  animation: halo-float 14s ease-in-out infinite alternate;
+}
+
+@keyframes halo-float {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-18px) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-halo { animation: none; }
 }
 
 .hero-copy {
   max-width: 650px;
 }
 
+.engine-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.engine-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--sheet-4);
+  color: var(--ink);
+  font-family: var(--latin);
+  font-size: 13px;
+  font-weight: 700;
+  direction: ltr;
+}
+
+.engine-row svg {
+  color: var(--accent);
+}
+
 .section-kicker,
 .mono-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
+  /* الخطّ الأحادي يُفرّق الحروف العربية — فخطّ الواجهة هنا. */
+  font-family: var(--face);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--accent);
 }
 
 .hero h1 {
   margin: 22px 0 26px;
-  font-size: clamp(40px, 4.3vw, 68px);
-  font-weight: 560;
+  font-size: clamp(38px, 4.1vw, 64px);
+  font-weight: 700;
   line-height: 1.18;
   letter-spacing: -0.025em;
 }
@@ -380,10 +421,11 @@ html[lang='en'] .arrow-next {
 
 .hero h1 b {
   display: inline-block;
-  font-family: var(--mono);
-  font-size: 0.88em;
-  font-weight: 720;
-  letter-spacing: -0.045em;
+  font-family: var(--latin);
+  font-size: 0.86em;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--accent);
 }
 
 .hero-lede {
@@ -400,7 +442,7 @@ html[lang='en'] .arrow-next {
 .domain-form > label {
   display: block;
   margin-bottom: 9px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -430,9 +472,9 @@ html[lang='en'] .arrow-next {
 .domain-controls button {
   height: 58px;
   border-radius: 8px;
-  background: var(--present);
+  background: var(--action);
   color: var(--on-dark);
-  border: 1px solid var(--present-edge);
+  border: 1px solid var(--action-edge);
   font-weight: 650;
   font-size: 14px;
   box-shadow: var(--lift-cta);
@@ -440,7 +482,7 @@ html[lang='en'] .arrow-next {
 }
 
 .domain-controls button:hover:not(:disabled) {
-  background: var(--present-hover);
+  background: var(--action-hover);
 }
 
 .domain-controls button:disabled {
@@ -454,7 +496,7 @@ html[lang='en'] .arrow-next {
   flex-wrap: wrap;
   gap: 13px 24px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .trust-row span,
@@ -471,7 +513,7 @@ html[lang='en'] .arrow-next {
 .form-error {
   margin: 12px 0 0;
   color: var(--rival);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .demo-note {
@@ -480,7 +522,7 @@ html[lang='en'] .arrow-next {
   background: var(--rival-wash);
   color: var(--rival-deep);
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* ── نافذة المنتج ───────────────────────────────────────── */
@@ -539,7 +581,7 @@ html[lang='en'] .arrow-next {
   align-items: center;
   gap: 9px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -556,7 +598,7 @@ html[lang='en'] .arrow-next {
   align-items: center;
   gap: 16px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .scan-meta span {
@@ -590,14 +632,14 @@ html[lang='en'] .arrow-next {
   background: transparent;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .engine-tabs button.active {
   color: var(--ink);
-  border-color: var(--present);
-  background: var(--present-wash);
+  border-color: var(--action);
+  background: var(--action-wash);
   font-weight: 700;
 }
 
@@ -640,7 +682,7 @@ html[lang='en'] .arrow-next {
   place-items: center;
   background: var(--sheet);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 13px;
   position: relative;
   z-index: 1;
 }
@@ -660,14 +702,14 @@ html[lang='en'] .arrow-next {
 }
 
 .scan-track li.current span {
-  color: var(--present);
-  border-color: var(--present);
-  box-shadow: 0 0 0 4px var(--present-wash);
+  color: var(--action);
+  border-color: var(--action);
+  box-shadow: 0 0 0 4px var(--action-wash);
   animation: pulse 1.2s ease-in-out infinite;
 }
 
 .scan-track small {
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .evidence-head {
@@ -693,7 +735,7 @@ html[lang='en'] .arrow-next {
   border: 1px solid var(--present-line);
   border-radius: 999px;
   padding: 6px 9px;
-  font-size: 9px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -717,7 +759,7 @@ html[lang='en'] .arrow-next {
 .answer > span,
 .result-rail span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .question p {
@@ -771,7 +813,7 @@ html[lang='en'] .arrow-next {
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 1.8;
   letter-spacing: 0;
@@ -785,7 +827,7 @@ html[lang='en'] .arrow-next {
   border: 1px solid var(--band-rule);
   border-radius: 999px;
   font-style: normal;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 /* العلامة على النص — هي العلامة التجارية كلها */
@@ -848,7 +890,7 @@ html[lang='en'] mark.rival::after {
 .result-rail small {
   grid-column: 1 / -1;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .result-rail .result-negative b,
@@ -889,7 +931,7 @@ html[lang='en'] mark.rival::after {
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: none;
 }
 
@@ -900,7 +942,7 @@ html[lang='en'] mark.rival::after {
 .answer-sources p {
   margin: 8px 0 0;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .evidence-footer {
@@ -911,7 +953,7 @@ html[lang='en'] mark.rival::after {
   justify-content: space-between;
   gap: 15px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .evidence-footer span,
@@ -924,7 +966,7 @@ html[lang='en'] mark.rival::after {
 .evidence-footer a {
   color: var(--ink);
   border-bottom: 1px solid var(--ink);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   padding-bottom: 2px;
 }
@@ -953,7 +995,7 @@ html[lang='en'] mark.rival::after {
 .live-scan p {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .scan-beam {
@@ -1038,7 +1080,7 @@ html[lang='en'] mark.rival::after {
   background: var(--rival);
   color: var(--on-dark);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   font-style: normal;
 }
 
@@ -1052,7 +1094,7 @@ html[lang='en'] mark.rival::after {
 
 .causal-flow article > span {
   color: var(--band-muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .causal-flow h3 {
@@ -1069,7 +1111,7 @@ html[lang='en'] mark.rival::after {
 .causal-flow > article > code {
   color: var(--caution-code);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .fix-card pre {
@@ -1080,7 +1122,7 @@ html[lang='en'] mark.rival::after {
   border-radius: 6px;
   color: var(--band-code-ink);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.7;
   overflow-x: auto;
 }
@@ -1093,7 +1135,7 @@ html[lang='en'] mark.rival::after {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 10px;
+  font-size: 13px;
   cursor: pointer;
 }
 
@@ -1128,7 +1170,7 @@ html[lang='en'] mark.rival::after {
 
 .report-tabs button.active {
   color: var(--ink);
-  box-shadow: inset 0 -3px var(--present);
+  box-shadow: inset 0 -3px var(--action);
   font-weight: 650;
 }
 
@@ -1235,7 +1277,7 @@ html[lang='en'] mark.rival::after {
   text-align: center;
   border-radius: 999px;
   padding: 5px 7px;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .rule-state.failed {
@@ -1258,18 +1300,18 @@ html[lang='en'] mark.rival::after {
 
 .readiness-panel li b {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .readiness-panel li small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .readiness-panel li code {
   font-family: var(--mono);
   color: var(--muted);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 /* ── السعر ──────────────────────────────────────────────── */
@@ -1304,7 +1346,7 @@ html[lang='en'] mark.rival::after {
 
 .price-card header strong {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -1340,7 +1382,7 @@ html[lang='en'] mark.rival::after {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--present);
+  background: var(--action);
   color: var(--on-dark);
   font-weight: 650;
 }
@@ -1363,20 +1405,20 @@ html[lang='en'] mark.rival::after {
 
 .site-footer p {
   color: var(--band-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .footer-links {
   display: flex;
   gap: 28px;
   color: var(--band-soft);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .site-footer > span {
   color: var(--band-faint);
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 13px;
 }
 
 /* ── الحركة ─────────────────────────────────────────────── */
@@ -1500,7 +1542,7 @@ html[lang='en'] mark.rival::after {
     gap: 10px;
   }
   .trust-row span {
-    font-size: 10px;
+    font-size: 13px;
   }
   .product-scene {
     perspective: none;
@@ -1605,7 +1647,7 @@ html[lang='en'] mark.rival::after {
   }
   .report-tabs button {
     height: 61px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .report-section,
   .pricing {
@@ -1676,7 +1718,7 @@ html[lang='en'] mark.rival::after {
 
 .tab-n {
   margin-inline-start: 6px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--muted);
   background: var(--sheet-2);
@@ -1686,9 +1728,9 @@ html[lang='en'] mark.rival::after {
 }
 
 .report-tabs button.active .tab-n {
-  color: var(--present);
-  border-color: var(--present-line);
-  background: var(--present-wash);
+  color: var(--action);
+  border-color: var(--action-line);
+  background: var(--action-wash);
 }
 
 .tab-n[data-alarm='yes'] {
@@ -1768,12 +1810,12 @@ html[lang='en'] mark.rival::after {
 }
 
 .rule-body > small {
-  font-size: 10px;
+  font-size: 13px;
   color: var(--faint);
 }
 
 .rule-ev {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   background: var(--sheet-2);
   border: 1px solid var(--line);
@@ -1785,7 +1827,7 @@ html[lang='en'] mark.rival::after {
 
 .rule-w {
   color: var(--faint);
-  font-size: 11px;
+  font-size: 13px;
   padding-top: 3px;
 }
 
@@ -1804,7 +1846,7 @@ html[lang='en'] mark.rival::after {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -1815,12 +1857,12 @@ html[lang='en'] mark.rival::after {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .fix-head button:hover {
-  color: var(--present);
+  color: var(--action);
 }
 
 .rule-fix pre {
@@ -1846,7 +1888,7 @@ html[lang='en'] mark.rival::after {
 }
 
 .rule-toggle:hover {
-  color: var(--present);
+  color: var(--action);
 }
 
 /* ── نتائج الأمن ───────────────────────────────────────── */
@@ -1896,7 +1938,7 @@ html[lang='en'] mark.rival::after {
 
 .f-head .sev {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   padding: 3px 8px;
   border-radius: 4px;
@@ -1920,7 +1962,7 @@ html[lang='en'] mark.rival::after {
 
 .f-head .kind {
   margin-inline-start: auto;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--faint);
 }
 
@@ -1931,7 +1973,7 @@ html[lang='en'] mark.rival::after {
 }
 
 .f-ev {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   background: var(--sheet-2);
   border: 1px solid var(--line);
@@ -1958,7 +2000,7 @@ html[lang='en'] mark.rival::after {
 
 .matrix-coverage {
   margin: 0 0 14px;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   color: var(--muted);
 }
@@ -1983,7 +2025,7 @@ html[lang='en'] mark.rival::after {
   background: var(--sheet-2);
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -2021,7 +2063,7 @@ html[lang='en'] mark.rival::after {
   width: 22px;
   height: 22px;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
 }
 
@@ -2063,7 +2105,7 @@ html[lang='en'] mark.rival::after {
 
 .matrix-note {
   margin: 14px 0 0;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.75;
   color: var(--muted);
 }
@@ -2091,7 +2133,7 @@ html[lang='en'] mark.rival::after {
 }
 
 @media (max-width: 720px) {
-  .matrix { font-size: 12px; }
+  .matrix { font-size: 13px; }
   .matrix-name { padding-inline: 10px; }
   .matrix-body-cell,
   .matrix-head-cell { padding-inline: 6px; }
@@ -2157,7 +2199,7 @@ html[lang='en'] mark.rival::after {
 }
 
 .rival-domain {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -2166,7 +2208,7 @@ html[lang='en'] mark.rival::after {
   flex-wrap: wrap;
   gap: 14px;
   align-items: baseline;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .rival-seen {
@@ -2198,7 +2240,7 @@ html[lang='en'] mark.rival::after {
 
 .rival-col-title {
   margin: 0 0 10px;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -2244,7 +2286,7 @@ html[lang='en'] mark.rival::after {
   direction: ltr;
   text-align: left;
   unicode-bidi: isolate;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--muted);
   background: var(--sheet-2);
@@ -2271,7 +2313,7 @@ html[lang='en'] mark.rival::after {
 
 .rival-skipped-title {
   margin: 0 0 8px;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -2289,7 +2331,7 @@ html[lang='en'] mark.rival::after {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -2336,7 +2378,7 @@ html[lang='en'] mark.rival::after {
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 }

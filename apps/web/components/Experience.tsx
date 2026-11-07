@@ -31,9 +31,11 @@ import {
   GoogleG,
   Grid,
   Menu,
+  Moon,
   Search,
   Shield,
   Sparkle,
+  Sun,
   Users,
 } from '@/components/icons';
 
@@ -170,6 +172,23 @@ export default function Experience({ locale }: { locale: Locale }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [demo, setDemo] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // الوضع: داكنٌ افتراضاً، والفاتح اختيار الزائر ويُحفظ في متصفّحه وحده.
+  // السكربت في التخطيط يضعه قبل الرسم، فلا وميض؛ وهنا تُقرأ القيمة فقط.
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  useEffect(() => {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+  }, []);
+  const toggleTheme = useCallback(() => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // تخزينٌ محجوب: يبقى الاختيار لهذه الصفحة وحدها.
+    }
+    setTheme(next);
+  }, [theme]);
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [tab, setTab] = useState<Tab>('evidence');
@@ -373,6 +392,9 @@ export default function Experience({ locale }: { locale: Locale }) {
         </div>
 
         <div className="nav-actions">
+          <button className="theme-toggle" type="button" aria-label={t.themeLabel} onClick={toggleTheme}>
+            {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+          </button>
           <a className="language" href={t.otherHref}>
             <Globe size={16} /> {t.other} <ChevronDown size={14} />
           </a>

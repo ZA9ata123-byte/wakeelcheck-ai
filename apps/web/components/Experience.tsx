@@ -392,6 +392,9 @@ export default function Experience({ locale }: { locale: Locale }) {
         </div>
 
         <div className="nav-actions">
+          <a className="nav-price" href="#pricing">
+            {t.navPrice}
+          </a>
           <button className="theme-toggle" type="button" aria-label={t.themeLabel} onClick={toggleTheme}>
             {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
           </button>

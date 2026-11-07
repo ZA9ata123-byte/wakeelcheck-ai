@@ -308,6 +308,18 @@ html[lang='en'] .arrow-next {
   font-size: 13px;
 }
 
+.nav-price {
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--band-line);
+  border-radius: 999px;
+  color: var(--band-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .theme-toggle {
   display: grid;
   place-items: center;
@@ -1495,13 +1507,22 @@ html[lang='en'] mark.rival::after {
     height: 64px;
     padding: 0 18px;
   }
-  .wordmark {
+  .wordmark img {
+    width: 34px;
+    height: 34px;
+  }
+  .wordmark-text {
     font-size: 18px;
   }
-  .wordmark span,
+  /* الشعار النصّي يبقى؛ يختفي سطر الوصف تحته فقط. كان `.wordmark span`
+     يُخفي الاسم نفسه، فبقي الشريط شعاراً بلا اسم. */
+  .wordmark-text span,
   .nav-cta,
   .language {
     display: none;
+  }
+  .nav-price {
+    display: inline-flex;
   }
   .menu-button {
     display: inline-flex;

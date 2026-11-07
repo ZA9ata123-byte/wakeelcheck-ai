@@ -380,7 +380,7 @@ export default function Experience({ locale }: { locale: Locale }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/mark.svg" width={40} height={40} alt="" aria-hidden="true" />
           <span className="wordmark-text">
-            وكيل تشيك<span>{t.brandTag}</span>
+            وكيل تشيك<span title={t.brandTag}>AITCHEK</span>
           </span>
         </a>
 

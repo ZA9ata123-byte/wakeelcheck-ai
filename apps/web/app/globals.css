@@ -259,11 +259,13 @@ html[lang='en'] .arrow-next {
 }
 
 .wordmark-text span {
-  margin-top: 6px;
+  font-family: var(--latin);
+  letter-spacing: 0.27em;
+  direction: ltr;
+  margin-top: 5px;
   color: var(--band-muted);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .nav-links {
@@ -553,6 +555,95 @@ html[lang='en'] .arrow-next {
   color: var(--rival-deep);
   border-radius: 6px;
   font-size: 13px;
+}
+
+/* ── تخطيط المصمم: البطل في الوسط ───────────────────────────
+ * العنوان داخل الحلقة، والخانة تحته بزرّها في داخلها، ثم الشارات. ونافذة
+ * المنتج — حيث تظهر الإجابة — تنزل تحتها بعرضٍ أوسع.
+ */
+
+.hero {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  text-align: center;
+  padding-top: clamp(64px, 8vw, 120px);
+  gap: clamp(48px, 5vw, 72px);
+}
+
+.hero-copy {
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: clamp(40px, 5.2vw, 78px);
+}
+
+.hero-lede {
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.hero-halo {
+  inset-inline: 0;
+  margin-inline: auto;
+  top: 0;
+  width: min(1040px, 96vw);
+  /* تتلاشى الحلقة قبل سطر الشرح، فلا تقطع حروفه. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 78%);
+}
+
+.domain-form {
+  width: min(660px, 100%);
+}
+
+.domain-form > label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.domain-controls {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  padding: 6px;
+  background: var(--sheet);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  box-shadow: var(--lift-md);
+}
+
+.domain-controls input {
+  height: 54px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline-offset: -2px;
+}
+
+.domain-controls button {
+  height: 54px;
+  padding: 0 28px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.engine-row,
+.trust-row {
+  justify-content: center;
+}
+
+/* `.hero` قبلها: قاعدة النافذة الأصلية تأتي بعد هذا القسم وتمدّها. */
+.hero .product-scene {
+  width: min(1000px, 100%);
+  justify-self: center;
+  text-align: start;
 }
 
 /* ── نافذة المنتج ───────────────────────────────────────── */
@@ -1516,7 +1607,6 @@ html[lang='en'] mark.rival::after {
   }
   /* الشعار النصّي يبقى؛ يختفي سطر الوصف تحته فقط. كان `.wordmark span`
      يُخفي الاسم نفسه، فبقي الشريط شعاراً بلا اسم. */
-  .wordmark-text span,
   .nav-cta,
   .language {
     display: none;

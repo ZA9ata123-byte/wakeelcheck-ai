@@ -394,7 +394,8 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
   const country = scan?.profile?.country ?? null;
   const localeLine = [
     country === null ? null : ar ? country : t.countries[countryCode(country) ?? ''] ?? country,
-    scan?.profile?.locale?.startsWith('en') ? 'English' : 'العربية',
+    // لغة المتجر بلغة الواجهة: «العربية» في الصفحة العربية، «Arabic» في الإنجليزية.
+    scan?.profile?.locale?.startsWith('en') ? (ar ? 'الإنجليزية' : 'English') : ar ? 'العربية' : 'Arabic',
   ]
     .filter((x): x is string => x !== null)
     .join(' · ');
@@ -571,11 +572,9 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
                 <bdi>Google AI Mode</bdi>
               </button>
             </div>
-            <p className="question-mini" dir="rtl">
-              {t.previewQ}
-            </p>
-            <blockquote className="preview-quote" dir="rtl" lang="ar">
-              في الكويت، عندك خيارات ممتازة وموثوقة لشراء العطور أونلاين:{' '}
+            <p className="question-mini">{t.previewQ}</p>
+            <blockquote className="preview-quote">
+              {t.previewIntro}{' '}
               <mark>
                 <bdi>The Perfume Smell</bdi>
               </mark>{' '}
@@ -583,7 +582,7 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
               <mark>
                 <bdi>Perfumes Kuwait</bdi>
               </mark>{' '}
-              · <mark>أجمل للعطور</mark>…
+              · <mark>{t.previewThird}</mark>…
             </blockquote>
             <div className="preview-bottom">
               <span className="source-count">{t.previewMeta}</span>

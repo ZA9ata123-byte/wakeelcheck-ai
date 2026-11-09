@@ -364,14 +364,16 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
     go('home');
   }, [clearTimers, go]);
 
-  const subscribe = useCallback(() => {
+  const subscribe = useCallback((plan: 'monthly' | 'yearly' = 'monthly') => {
     const target = scan?.profile?.domain ?? (domain !== '' && domain !== '…' ? domain : null);
     if (target === null) {
       toast(t.scanFirst);
       goSection('top');
       return;
     }
-    window.location.href = `/api/billing/checkout?domain=${encodeURIComponent(target)}&locale=${locale}`;
+    window.location.href = `/api/billing/checkout?domain=${encodeURIComponent(target)}&locale=${locale}${
+      plan === 'yearly' ? '&plan=yearly' : ''
+    }`;
   }, [domain, goSection, locale, scan, t, toast]);
 
   // ── مشتقّات التقرير ──────────────────────────────────────────
@@ -672,9 +674,12 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
             <div className="price-number">$39</div>
             <span className="micro">{t.paidUnit}</span>
             <p>{t.paidDesc}</p>
-            <button className="button primary" onClick={subscribe}>
+            <button className="button primary" onClick={() => subscribe('monthly')}>
               {t.subscribe}
               {arrow}
+            </button>
+            <button className="text-button" onClick={() => subscribe('yearly')}>
+              {t.yearly}
             </button>
           </article>
         </div>

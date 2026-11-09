@@ -59,8 +59,8 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'الاشتراك والدفع',
           p: [
-            'الاشتراك الشهري للمتابعة الأسبوعية بـ39 دولاراً، وأول 14 يوماً مجاناً. تتولّى Lemon Squeezy عملية الدفع بصفتها البائع المسجّل (Merchant of Record)، وتحتسب الضرائب المستحقّة وتصدر الإيصالات.',
-            'يتجدّد الاشتراك تلقائياً كلّ شهر، ويمكنك إلغاؤه في أيّ وقت من رابط الإدارة في إيصال Lemon Squeezy؛ وتبقى الخدمة متاحةً حتى نهاية الفترة المدفوعة.',
+            'الاشتراك في المتابعة الأسبوعية بـ39 دولاراً شهرياً أو 390 دولاراً سنوياً، وأول 14 يوماً مجاناً. تتولّى Lemon Squeezy عملية الدفع بصفتها البائع المسجّل (Merchant of Record)، وتحتسب الضرائب المستحقّة وتصدر الإيصالات.',
+            'يتجدّد الاشتراك تلقائياً في نهاية كلّ فترة (شهر أو سنة)، ويمكنك إلغاؤه في أيّ وقت من رابط الإدارة في إيصال Lemon Squeezy؛ وتبقى الخدمة متاحةً حتى نهاية الفترة المدفوعة.',
           ],
         },
         {
@@ -176,8 +176,8 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'Subscription and payment',
           p: [
-            'Weekly monitoring costs $39 per month, with the first 14 days free. Payments are handled by Lemon Squeezy as Merchant of Record, which calculates applicable taxes and issues receipts.',
-            'The subscription renews monthly. You can cancel at any time from the manage link in your Lemon Squeezy receipt; the service stays active until the end of the paid period.',
+            'Weekly monitoring costs $39 per month or $390 per year, with the first 14 days free. Payments are handled by Lemon Squeezy as Merchant of Record, which calculates applicable taxes and issues receipts.',
+            'The subscription renews at the end of each period (month or year). You can cancel at any time from the manage link in your Lemon Squeezy receipt; the service stays active until the end of the paid period.',
           ],
         },
         {

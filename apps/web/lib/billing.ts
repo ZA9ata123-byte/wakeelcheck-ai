@@ -64,13 +64,25 @@ export function checkoutTarget(base: string | undefined, domain: string, locale:
   return url;
 }
 
-export function handleCheckout(req: Request, deps: { base: string | undefined }): Response {
+export interface CheckoutDeps {
+  /** `LEMONSQUEEZY_CHECKOUT_URL` — الشهري. */
+  base: string | undefined;
+  /** `LEMONSQUEEZY_CHECKOUT_URL_YEARLY` — السنوي. اختياريّ. */
+  yearly?: string | undefined;
+}
+
+/**
+ * `plan=yearly` يذهب إلى رابط السنوي وحده. وبلا رابطٍ سنويّ يُرفض — لا
+ * يُحوَّل إلى الشهري بصمت، فيدفع التاجر غير ما اختاره.
+ */
+export function handleCheckout(req: Request, deps: CheckoutDeps): Response {
   const params = new URL(req.url).searchParams;
   const domain = domainOf(params.get('domain') ?? '');
   if (domain === null) return Response.json({ error: 'invalid_domain' }, { status: 400 });
 
   const locale = params.get('locale') === 'en' ? 'en' : 'ar';
-  const target = checkoutTarget(deps.base, domain, locale);
+  const base = params.get('plan') === 'yearly' ? deps.yearly : deps.base;
+  const target = checkoutTarget(base, domain, locale);
   if (target === null) return Response.json({ error: 'billing_disabled' }, { status: 503 });
 
   return new Response(null, { status: 303, headers: { location: target.toString() } });

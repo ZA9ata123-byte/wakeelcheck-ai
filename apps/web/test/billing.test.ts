@@ -294,3 +294,19 @@ test('مسار الدفع: نطاقٌ غير صالح 400، وبلا رابط 50
   assert.equal(handleCheckout(new Request('https://aitchek.online/api/billing/checkout?domain='), { base: CHECKOUT }).status, 400);
   assert.equal(handleCheckout(new Request('https://aitchek.online/api/billing/checkout?domain=noura.sa'), { base: undefined }).status, 503);
 });
+
+test('السنويّ يذهب إلى رابطه، والشهريّ إلى رابطه', () => {
+  const YEARLY = 'https://wakeelcheck.lemonsqueezy.com/buy/yearly-1';
+  const deps = { base: CHECKOUT, yearly: YEARLY };
+  const y = handleCheckout(new Request('https://aitchek.online/api/billing/checkout?domain=noura.sa&plan=yearly'), deps);
+  assert.equal(new URL(y.headers.get('location') ?? '').pathname, '/buy/yearly-1');
+  const m = handleCheckout(new Request('https://aitchek.online/api/billing/checkout?domain=noura.sa'), deps);
+  assert.equal(new URL(m.headers.get('location') ?? '').pathname, '/buy/abc-123');
+});
+
+test('سنويّ بلا رابطٍ سنويّ: 503 — لا يُحوَّل إلى الشهري بصمت', () => {
+  const res = handleCheckout(new Request('https://aitchek.online/api/billing/checkout?domain=noura.sa&plan=yearly'), {
+    base: CHECKOUT,
+  });
+  assert.equal(res.status, 503);
+});

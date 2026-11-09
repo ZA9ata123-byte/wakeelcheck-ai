@@ -19,6 +19,7 @@ import { answerSources } from '@/lib/sources';
 import { citeHost, parseAnswer, type Inline } from '@/lib/answer-format';
 import { pickCause } from '@/lib/cause';
 import { useTurnstile } from '@/components/turnstile';
+import { SUPPORT_EMAIL, legalNav } from '@/lib/legal-copy';
 
 // ── الأيقونات: مسارات الحزمة نفسها ─────────────────────────────
 
@@ -472,6 +473,14 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
         <div>
           <span className="eyebrow">AITCHEK</span>
           <p>{t.footerNote}</p>
+          <nav className="footer-links" aria-label={legalNav[locale].terms}>
+            {(['terms', 'privacy', 'refund'] as const).map((k) => (
+              <a key={k} href={ar ? `/${k}` : `/en/${k}`}>
+                {legalNav[locale][k]}
+              </a>
+            ))}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          </nav>
         </div>
         <div className="footer-controls">
           <span className="micro">{t.footer}</span>

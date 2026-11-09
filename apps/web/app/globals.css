@@ -60,3 +60,17 @@
 @media (min-width: 761px) {
   .prices-grid.two { grid-template-columns: repeat(2, 1fr); max-width: 820px; margin-inline: auto; }
 }
+
+/* الصفحات القانونية — نصٌّ طويل بخطوط الحزمة وألوانها. */
+.legal-page { max-width: 760px; padding-top: 56px; padding-bottom: 70px; }
+.legal-page h1 { font-size: 38px; letter-spacing: -.03em; margin: 12px 0 8px; }
+.legal-page section { margin-top: 34px; }
+.legal-page h2 { font-size: 19px; margin-bottom: 10px; }
+.legal-page p { font-size: 15px; line-height: 1.9; margin-bottom: 10px; }
+.legal-contact { margin-top: 40px; color: var(--text); }
+.legal-contact a, .footer-links a { color: var(--accent); }
+.nav a { color: var(--muted); font-size: 13px; padding: 10px 0; }
+.nav a:hover, .nav a[aria-current=page] { color: var(--text); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 11px; }
+.footer-links a { color: var(--muted); }
+.footer-links a:hover { color: var(--text); }

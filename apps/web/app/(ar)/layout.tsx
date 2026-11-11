@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
+import { PAGES, SEO_DESCRIPTION, SITE, alternatesFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
   title: 'وكيل تشيك — كُن أنت الجواب',
-  description:
-    'عميلك يسأل الذكاء الاصطناعي. اكتشف هل يوصي بمتجرك، ومن يظهر بدلاً منك — الإجابة الحرفية من ChatGPT وGoogle AI Mode.',
+  description: SEO_DESCRIPTION.ar,
+  alternates: alternatesFor(PAGES[0]!, 'ar'),
   icons: { icon: '/brand/mark.svg' },
+  openGraph: {
+    type: 'website',
+    siteName: 'WakeelCheck',
+    locale: 'ar_AR',
+    title: 'وكيل تشيك — كُن أنت الجواب',
+    description: SEO_DESCRIPTION.ar,
+    url: alternatesFor(PAGES[0]!, 'ar').canonical,
+  },
 };
 
 /**

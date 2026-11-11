@@ -1,39 +1,46 @@
-# وكيل تشيك — WakeelCheck
+# WakeelCheck (وكيل تشيك · AITCHEK)
 
-> يُري التاجر الإجابة الحرفية التي يعطيها ChatGPT وأسطح Google عن متجره، ومن
-> ذُكر بدلاً منه، ثم يشرح السبب التقني ويعطي الكود الذي يُصلحه.
+> WakeelCheck shows online stores the verbatim answer AI assistants give their
+> customers — which stores ChatGPT and Google AI Mode name, whether the store is
+> among them, the sources the answer relied on, the measured technical cause, and
+> a ready-to-paste fix. Arabic-first (Gulf and Maghreb), also in English.
 
-## ما يُقاس
+## What it measures
 
-- **ChatGPT** — عبر واجهة OpenAI مع البحث مفعّلاً
-- **Google AI Overviews** و **Google AI Mode** — عبر DataForSEO
-- **Perplexity**
+- **ChatGPT** — via the OpenAI API with web search on.
+- **Google AI Mode** and **Google AI Overviews** — via DataForSEO, from the store's country.
+- **Perplexity** — in weekly monitoring.
+- Questions are written the way shoppers ask, in the store's language and country.
 
-## ما لا يُقاس — ولا يقيسه أحد
+## What it does not measure
 
-- Gemini داخل Chrome
-- Apple Intelligence و Safari
-- الإجابات المخصّصة لكل مستخدم
+- Gemini inside Chrome, Apple Intelligence, and per-user personalised answers.
+  These surfaces have no public interface; we say so rather than estimate them.
 
-هذه الأسطح مغلقة بلا واجهة عامة. الاعتراف بالحدّ مذكور على الموقع نفسه.
+## The report
 
-## الفحص
+- The answer verbatim, with competitor names marked only when they appear literally.
+- A comparison of who is named in each engine.
+- Readiness checks: live-search crawler access (OAI-SearchBot, Googlebot, Bingbot,
+  PerplexityBot, Claude-SearchBot — training crawlers reported separately), product
+  structured data, price and availability consistency, sitemap, headings, image alt text.
+- A passive security check from public sources only.
 
-- **20 قاعدة جاهزية** موزونة: وصول الوكلاء (robots.txt وفق RFC 9309)، مخطّطات
-  Schema.org على صفحات المنتجات، اتساق السعر والتوفّر والعملة بين طبقات
-  البيانات، والقابلية للقراءة الآلية.
-- **فحص أمني سلبي** من مصادر عامة فقط: RDAP، وانتهاء شهادة TLS، وSPF/DMARC،
-  والنطاقات الفرعية المهجورة، والأسرار المكشوفة في ملفات JS التي يحمّلها كل
-  زائر. لا محاولة دخول ولا اختبار اختراق.
+## Pricing
 
-## قواعد ملزمة
+- Free scan: two buying questions on ChatGPT and Google AI Mode, full report, no signup.
+- Weekly monitoring: $39/month or $390/year, first 14 days free. Payments by Lemon Squeezy.
 
-- نص الإجابة يُعرض حرفياً — بلا تنظيف ولا اقتصاص. هو الدليل.
-- لا يُعلَّم اسم منافس إلا بعد التحقّق من وروده حرفياً في النص.
-- لا يُعرض رقم لم يُقَس.
-- قيمة أي سرّ تُطمَس عند المصدر ولا تدخل تقريراً ولا سجلّاً.
+## Principles
 
-## روابط
+- The answer is shown verbatim: no cleaning, trimming or rewording.
+- No number without a source. No guarantee of appearing in any answer.
 
-- الموقع: https://aitchek.online
-- النسخة الإنجليزية: https://aitchek.online/en
+## Links
+
+- Arabic: https://aitchek.online
+- English: https://aitchek.online/en
+- Terms: https://aitchek.online/en/terms
+- Privacy: https://aitchek.online/en/privacy
+- Refunds: https://aitchek.online/en/refund
+- Contact: support@aitchek.online

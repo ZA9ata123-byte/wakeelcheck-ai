@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
+import { PAGES, SEO_DESCRIPTION, SITE, alternatesFor } from '@/lib/seo';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
   title: 'AITCHEK — Be the answer.',
-  description:
-    'Your customer is asking AI. Discover if it recommends your store, and who shows up instead — the verbatim answer from ChatGPT and Google AI Mode.',
+  description: SEO_DESCRIPTION.en,
+  alternates: alternatesFor(PAGES[0]!, 'en'),
   icons: { icon: '/brand/mark.svg' },
+  openGraph: {
+    type: 'website',
+    siteName: 'WakeelCheck',
+    locale: 'en_US',
+    title: 'AITCHEK — Be the answer.',
+    description: SEO_DESCRIPTION.en,
+    url: alternatesFor(PAGES[0]!, 'en').canonical,
+  },
 };
 
 /** Independent root layout for English — see the Arabic layout for why. */

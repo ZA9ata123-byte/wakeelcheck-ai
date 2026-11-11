@@ -9,8 +9,12 @@ export const metadata: Metadata = {
   description: SEO_DESCRIPTION.en,
   alternates: alternatesFor(PAGES[0]!, 'en'),
   icons: { icon: '/brand/mark.svg' },
-  // رمز التحقّق من Google Search Console — عامٌّ بطبيعته، يُقرأ من رأس الصفحة.
-  verification: { google: 'NuWMaixoCXbIJwpkLKobKgaghjzxfX99VkrlRMwj1cI' },
+  // رموز التحقّق عامّةٌ بطبيعتها: تُقرأ من رأس الصفحة.
+  verification: {
+    google: 'NuWMaixoCXbIJwpkLKobKgaghjzxfX99VkrlRMwj1cI',
+    // Bing Webmaster Tools — وعبره Copilot، وما يستند إليه بحث ChatGPT.
+    other: { 'msvalidate.01': '659E9AC7BB6FFE9AA8F741A0315B2A28' },
+  },
   openGraph: {
     type: 'website',
     siteName: 'WakeelCheck',

@@ -39,7 +39,7 @@ export interface CacheOptions {
  *
  * v2: الأسئلة للمساعد لا للبائع، والبلد من الصفحة، وسؤالان معاً.
  */
-export const CACHE_VERSION = 'v2';
+export const CACHE_VERSION = 'v3';
 
 function cacheKey(domain: string, kind: ScanKind): string {
   return `scan:${CACHE_VERSION}:${kind}:${domain.toLowerCase().replace(/^www\./, '')}`;

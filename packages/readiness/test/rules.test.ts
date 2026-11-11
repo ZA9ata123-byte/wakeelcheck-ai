@@ -142,6 +142,58 @@ test('a store welcoming GPTBot passes it', () => {
   assert.equal(passed.get('robots.gptbot'), true);
 });
 
+// ── البحث المباشر لا التدريب ─────────────────────────────────
+//
+// OAI-SearchBot هو ما يقرّر الظهور في بحث ChatGPT؛ GPTBot للتدريب وحده.
+// وكذلك Claude-SearchBot وClaudeBot، وGooglebot (الذي تقرأ به إجابات Google)
+// وGoogle-Extended (تدريب Gemini). كان GPTBot أثقل قاعدةٍ بوزن 10 ومُسمّى
+// «ChatGPT»، فمتجرٌ يمنع التدريب وحده كان يُقال له إنه محجوبٌ عن ChatGPT،
+// ويُقدَّم ذلك سبباً أوّل لغيابه. المصدر: توثيق OpenAI للزواحف.
+
+test('blocking only training bots keeps every live-search rule passing', () => {
+  const passed = byKey(
+    ctx({
+      robots: parseRobots(
+        'User-agent: GPTBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n'
+      ),
+    })
+  );
+  for (const key of ['robots.oai_searchbot', 'robots.googlebot', 'robots.bingbot', 'robots.perplexitybot', 'robots.claude_searchbot']) {
+    assert.equal(passed.get(key), true, key);
+  }
+  assert.equal(passed.get('robots.gptbot'), false, 'the training rule still reports it, honestly');
+});
+
+test('a live-search crawler outweighs its training sibling', () => {
+  const { results } = runReadiness(blockedCtx());
+  const w = (k: string) => results.find((r) => r.key === k)?.weight ?? 0;
+  assert.ok(w('robots.oai_searchbot') > w('robots.gptbot'));
+  assert.ok(w('robots.googlebot') > w('robots.google_extended'));
+  assert.ok(w('robots.claude_searchbot') > w('robots.claudebot'));
+});
+
+test('blocking only GPTBot is never the heaviest failing cause', () => {
+  const { failures } = runReadiness(
+    ctx({ robots: parseRobots('User-agent: GPTBot\nDisallow: /\n') })
+  );
+  const BOT_KEYS = ['robots.oai_searchbot', 'robots.googlebot', 'robots.bingbot', 'robots.perplexitybot', 'robots.claude_searchbot', 'robots.gptbot', 'robots.google_extended', 'robots.claudebot'];
+  const bots = failures.filter((r) => BOT_KEYS.includes(r.key));
+  assert.deepEqual(bots.map((r) => r.key), ['robots.gptbot'], 'only the training rule fails');
+  const heaviest = failures[0];
+  assert.notEqual(heaviest?.key, 'robots.gptbot', 'a training block is not the headline cause');
+  const gptbot = failures.find((r) => r.key === 'robots.gptbot');
+  assert.doesNotMatch(gptbot?.detail.en ?? '', /never see|cannot see/i, 'training block is not invisibility');
+});
+
+test('blocking Googlebot or Bingbot fails the Google and Copilot rules', () => {
+  const passed = byKey(
+    ctx({ robots: parseRobots('User-agent: Googlebot\nDisallow: /\n\nUser-agent: Bingbot\nDisallow: /\n') })
+  );
+  assert.equal(passed.get('robots.googlebot'), false);
+  assert.equal(passed.get('robots.bingbot'), false);
+  assert.equal(passed.get('robots.oai_searchbot'), true);
+});
+
 // ── الإصلاح الثاني: صفحات المنتج لا الرئيسية ─────────────────
 
 test('product schema rules are evaluated on product pages, not the homepage', () => {

@@ -25,22 +25,36 @@ function where(onHome: boolean, count: number): string {
 
 // ── الوصول: هل يستطيع الوكيل قراءة المتجر أصلاً؟ ──────────────
 
+/**
+ * زواحف البحث المباشر تقرّر الظهور في الإجابات؛ زواحف التدريب لا.
+ *
+ * OAI-SearchBot يقرّر الظهور في بحث ChatGPT، وGPTBot للتدريب وحده (توثيق
+ * OpenAI). وكذلك Claude-SearchBot وClaudeBot. وإجابات Google — AI Overviews
+ * وAI Mode — تُبنى ممّا يقرؤه Googlebot، أمّا Google-Extended فلتدريب Gemini.
+ * وCopilot يقرأ عبر Bingbot.
+ *
+ * فمنعُ التدريب يُذكر بصدق، بوزنٍ خفيف، ولا يُقال عنه «لن يرى متجرك».
+ */
 interface BotSpec {
   key: string;
   agent: string;
-  label: string;
+  label: { ar: string; en: string };
+  purpose: 'search' | 'training';
   weight: number;
 }
 
 const BOTS: readonly BotSpec[] = [
-  { key: 'robots.gptbot', agent: 'GPTBot', label: 'ChatGPT', weight: 10 },
-  { key: 'robots.oai_searchbot', agent: 'OAI-SearchBot', label: 'ChatGPT Search', weight: 9 },
-  { key: 'robots.perplexitybot', agent: 'PerplexityBot', label: 'Perplexity', weight: 8 },
-  { key: 'robots.google_extended', agent: 'Google-Extended', label: 'Gemini', weight: 9 },
-  { key: 'robots.claudebot', agent: 'ClaudeBot', label: 'Claude', weight: 7 },
+  { key: 'robots.oai_searchbot', agent: 'OAI-SearchBot', label: { ar: 'بحث ChatGPT', en: 'ChatGPT Search' }, purpose: 'search', weight: 10 },
+  { key: 'robots.googlebot', agent: 'Googlebot', label: { ar: 'Google وإجاباته الذكية', en: 'Google and its AI answers' }, purpose: 'search', weight: 10 },
+  { key: 'robots.bingbot', agent: 'Bingbot', label: { ar: 'Bing وCopilot', en: 'Bing and Copilot' }, purpose: 'search', weight: 8 },
+  { key: 'robots.perplexitybot', agent: 'PerplexityBot', label: { ar: 'Perplexity', en: 'Perplexity' }, purpose: 'search', weight: 8 },
+  { key: 'robots.claude_searchbot', agent: 'Claude-SearchBot', label: { ar: 'بحث Claude', en: 'Claude search' }, purpose: 'search', weight: 5 },
+  { key: 'robots.gptbot', agent: 'GPTBot', label: { ar: 'تدريب ChatGPT (GPTBot)', en: 'ChatGPT training (GPTBot)' }, purpose: 'training', weight: 3 },
+  { key: 'robots.google_extended', agent: 'Google-Extended', label: { ar: 'تدريب Gemini (Google-Extended)', en: 'Gemini training (Google-Extended)' }, purpose: 'training', weight: 2 },
+  { key: 'robots.claudebot', agent: 'ClaudeBot', label: { ar: 'تدريب Claude (ClaudeBot)', en: 'Claude training (ClaudeBot)' }, purpose: 'training', weight: 2 },
 ];
 
-const botRules: Rule[] = BOTS.map(({ key, agent, label, weight }) => ({
+const botRules: Rule[] = BOTS.map(({ key, agent, label, purpose, weight }) => ({
   key,
   weight,
   active: true,
@@ -49,21 +63,25 @@ const botRules: Rule[] = BOTS.map(({ key, agent, label, weight }) => ({
     const named = isNamed(ctx.robots, agent);
 
     const state = allowed ? (named ? 'welcomed' : 'allowed by default') : 'blocked';
+    const blocked =
+      purpose === 'search'
+        ? {
+            ar: `${label.ar} محظور في robots.txt — لن يقرأ متجرك، فلن يذكره في إجاباته`,
+            en: `${label.en} is blocked in robots.txt — it cannot read your store to cite it`,
+          }
+        : {
+            ar: `${label.ar} محظور — هذا يمنع التدريب على متجرك، لا ظهوره في البحث المباشر`,
+            en: `${label.en} is blocked — this stops training on your store, not its appearance in live search`,
+          };
 
     return result(
       allowed,
-      {
-        ar: allowed
-          ? named
-            ? `${label} مسموح له صراحةً بقراءة متجرك`
-            : `${label} غير محظور — لكن متجرك لا يذكره صراحةً`
-          : `${label} محظور في robots.txt — لن يرى متجرك إطلاقاً`,
-        en: allowed
-          ? named
-            ? `${label} is explicitly welcomed`
-            : `${label} is not blocked, though never named`
-          : `${label} is blocked in robots.txt`,
-      },
+      allowed
+        ? {
+            ar: named ? `${label.ar} مسموح له صراحةً بقراءة متجرك` : `${label.ar} غير محظور — لكن متجرك لا يذكره صراحةً`,
+            en: named ? `${label.en} is explicitly welcomed` : `${label.en} is not blocked, though never named`,
+          }
+        : blocked,
       `User-agent: ${agent} → ${state}`,
       allowed ? undefined : `User-agent: ${agent}\nAllow: /`
     );

@@ -8,7 +8,16 @@ export const metadata: Metadata = {
   title: 'وكيل تشيك — كُن أنت الجواب',
   description: SEO_DESCRIPTION.ar,
   alternates: alternatesFor(PAGES[0]!, 'ar'),
-  icons: { icon: '/brand/mark.svg' },
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: 'any' }, { url: '/brand/mark.svg', type: 'image/svg+xml' }],
+    apple: '/apple-touch-icon.png',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'وكيل تشيك — كُن أنت الجواب',
+    description: SEO_DESCRIPTION.ar,
+    images: ['/brand/og-ar.png'],
+  },
   // رموز التحقّق عامّةٌ بطبيعتها: تُقرأ من رأس الصفحة.
   verification: {
     google: 'NuWMaixoCXbIJwpkLKobKgaghjzxfX99VkrlRMwj1cI',
@@ -22,6 +31,7 @@ export const metadata: Metadata = {
     title: 'وكيل تشيك — كُن أنت الجواب',
     description: SEO_DESCRIPTION.ar,
     url: alternatesFor(PAGES[0]!, 'ar').canonical,
+    images: [{ url: '/brand/og-ar.png', width: 1200, height: 630, alt: 'وكيل تشيك — كُن أنت الجواب. ChatGPT · Google AI Mode' }],
   },
 };
 

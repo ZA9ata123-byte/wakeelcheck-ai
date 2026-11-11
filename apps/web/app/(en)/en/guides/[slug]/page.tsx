@@ -25,7 +25,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         'x-default': `${SITE}${guidePath(guide.slug, 'ar')}`,
       },
     },
-    openGraph: { type: 'article', title: body.title, description: body.description, url: `${SITE}${guidePath(guide.slug, 'en')}` },
+    openGraph: {
+      type: 'article',
+      title: body.title,
+      description: body.description,
+      url: `${SITE}${guidePath(guide.slug, 'en')}`,
+      images: [{ url: '/brand/og-en.png', width: 1200, height: 630 }],
+    },
   };
 }
 

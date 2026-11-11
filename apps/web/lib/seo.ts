@@ -98,7 +98,7 @@ export function jsonLd(lang: Lang) {
         name: 'WakeelCheck',
         alternateName: ['وكيل تشيك', 'AITCHEK'],
         url: SITE,
-        logo: `${SITE}/brand/mark.svg`,
+        logo: `${SITE}/brand/logo-512.png`,
         email: 'support@aitchek.online',
       },
       {

@@ -26,7 +26,8 @@ export function articleJsonLd(guide: Guide, lang: Lang) {
     dateModified: guide.updated,
     mainEntityOfPage: `${SITE}${guidePath(guide.slug, lang)}`,
     author: { '@type': 'Organization', name: 'WakeelCheck', url: SITE },
-    publisher: { '@type': 'Organization', name: 'WakeelCheck', logo: { '@type': 'ImageObject', url: `${SITE}/brand/mark.svg` } },
+    publisher: { '@type': 'Organization', name: 'WakeelCheck', logo: { '@type': 'ImageObject', url: `${SITE}/brand/logo-512.png` } },
+    image: `${SITE}/brand/og-${lang}.png`,
     citation: guide.sources.map((s) => s.url),
   };
 }

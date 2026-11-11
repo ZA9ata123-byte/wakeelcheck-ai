@@ -8,7 +8,16 @@ export const metadata: Metadata = {
   title: 'AITCHEK — Be the answer.',
   description: SEO_DESCRIPTION.en,
   alternates: alternatesFor(PAGES[0]!, 'en'),
-  icons: { icon: '/brand/mark.svg' },
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: 'any' }, { url: '/brand/mark.svg', type: 'image/svg+xml' }],
+    apple: '/apple-touch-icon.png',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AITCHEK — Be the answer.',
+    description: SEO_DESCRIPTION.en,
+    images: ['/brand/og-en.png'],
+  },
   // رموز التحقّق عامّةٌ بطبيعتها: تُقرأ من رأس الصفحة.
   verification: {
     google: 'NuWMaixoCXbIJwpkLKobKgaghjzxfX99VkrlRMwj1cI',
@@ -22,6 +31,7 @@ export const metadata: Metadata = {
     title: 'AITCHEK — Be the answer.',
     description: SEO_DESCRIPTION.en,
     url: alternatesFor(PAGES[0]!, 'en').canonical,
+    images: [{ url: '/brand/og-en.png', width: 1200, height: 630, alt: 'AITCHEK — Be the answer. ChatGPT · Google AI Mode' }],
   },
 };
 

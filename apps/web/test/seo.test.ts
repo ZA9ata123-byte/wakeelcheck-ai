@@ -45,3 +45,17 @@ test('البيانات المنظّمة: السعر الحقيقي، ولا تق
   assert.match(text, /"price":"39"/);
   assert.doesNotMatch(text, /AggregateRating|Review|FAQPage|HowTo/);
 });
+
+test('الأدلة في الخريطة بلغتيها، وكلّ دليلٍ بجوابٍ ومصادر', async () => {
+  const { GUIDES, guidePath } = await import('../lib/guides');
+  const urls = sitemapEntries(new Date()).map((e) => e.url);
+  for (const g of GUIDES) {
+    assert.ok(urls.includes(`${SITE}${guidePath(g.slug, 'ar')}`), g.slug);
+    assert.ok(urls.includes(`${SITE}${guidePath(g.slug, 'en')}`), g.slug);
+    for (const lang of ['ar', 'en'] as const) {
+      assert.ok(g[lang].answer.length > 80, 'الجواب في أوّل الصفحة');
+      assert.ok(g[lang].answer.split(/\s+/).length <= 90, 'جوابٌ يُقتبس، لا مقالة');
+    }
+    assert.ok(g.sources.length > 0 && g.sources.every((s) => s.url.startsWith('https://')));
+  }
+});

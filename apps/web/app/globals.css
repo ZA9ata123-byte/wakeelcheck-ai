@@ -74,3 +74,21 @@
 .footer-links { display: flex; flex-wrap: wrap; gap: 18px; font-size: 11px; }
 .footer-links a { color: var(--muted); }
 .footer-links a:hover { color: var(--text); }
+
+/* الأدلة — نصٌّ طويل يُقرأ، بخطوط الحزمة وألوانها. */
+.guide-page h2 { font-size: 22px; margin: 34px 0 10px; }
+.guide-page ul, .guide-page ol { color: var(--muted); line-height: 1.9; padding-inline-start: 22px; }
+.guide-page li { margin: 6px 0; }
+.guide-page pre { margin: 14px 0; font-size: 13px; }
+.guide-answer { margin-top: 26px; padding: 20px 22px; border: 1px solid var(--line-strong); border-radius: 16px; background: var(--surface); }
+.guide-answer h2 { margin-top: 0; font-size: 15px; color: var(--accent); }
+.guide-answer p { color: var(--text); font-size: 17px; margin: 0; }
+.guide-note { padding: 14px 18px; border-inline-start: 3px solid var(--accent); background: var(--bg2); border-radius: 8px; }
+.guide-cta { margin-top: 28px; }
+.guide-sources a { color: var(--accent); word-break: break-word; }
+.guide-list { display: grid; gap: 16px; margin-top: 30px; }
+.guide-card { display: block; padding: 22px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.guide-card:hover { border-color: var(--line-strong); }
+.guide-card h2 { margin: 0 0 8px; font-size: 19px; color: var(--text); }
+.guide-card p { margin: 0; font-size: 14px; }
+.lang-switch { display: grid; place-items: center; min-width: 56px; height: 40px; border: 1px solid var(--line); border-radius: 30px; font-family: Manrope, sans-serif; font-size: 12px; }

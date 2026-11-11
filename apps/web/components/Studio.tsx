@@ -476,6 +476,7 @@ export default function Studio({ locale }: { locale: StudioLocale }) {
           <span className="eyebrow">AITCHEK</span>
           <p>{t.footerNote}</p>
           <nav className="footer-links" aria-label={legalNav[locale].terms}>
+            <a href={ar ? '/guides' : '/en/guides'}>{ar ? 'الأدلة' : 'Guides'}</a>
             {(['terms', 'privacy', 'refund'] as const).map((k) => (
               <a key={k} href={ar ? `/${k}` : `/en/${k}`}>
                 {legalNav[locale][k]}

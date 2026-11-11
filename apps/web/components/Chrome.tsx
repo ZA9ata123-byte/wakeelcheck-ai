@@ -8,8 +8,8 @@ import { SUPPORT_EMAIL, legalNav } from '@/lib/legal-copy';
 type Lang = 'ar' | 'en';
 
 const NAV = {
-  ar: { guides: 'الأدلة', home: 'افحص متجرك' },
-  en: { guides: 'Guides', home: 'Scan my store' },
+  ar: { guides: 'الأدلة', home: 'افحص متجرك', tool: 'فاحص الزواحف' },
+  en: { guides: 'Guides', home: 'Scan my store', tool: 'Crawler checker' },
 } as const;
 
 export const homeOf = (lang: Lang): string => (lang === 'ar' ? '/' : '/en');
@@ -36,6 +36,7 @@ export function SiteHeader({ lang, other }: { lang: Lang; other: string }) {
         </a>
         <nav className="nav" aria-label={NAV[lang].guides}>
           <a href={guidesOf(lang)}>{NAV[lang].guides}</a>
+          <a href={lang === 'ar' ? '/tools/ai-crawlers' : '/en/tools/ai-crawlers'}>{NAV[lang].tool}</a>
           <a href={homeOf(lang)}>{NAV[lang].home}</a>
         </nav>
         <div className="header-tools">
@@ -57,6 +58,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
           <span className="eyebrow">AITCHEK</span>
           <nav className="footer-links" aria-label={nav.terms}>
             <a href={guidesOf(lang)}>{NAV[lang].guides}</a>
+            <a href={lang === 'ar' ? '/tools/ai-crawlers' : '/en/tools/ai-crawlers'}>{NAV[lang].tool}</a>
             {(['terms', 'privacy', 'refund'] as const).map((k) => (
               <a key={k} href={legalOf(lang, k)}>
                 {nav[k]}

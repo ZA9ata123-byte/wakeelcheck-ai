@@ -44,6 +44,9 @@ importers:
       '@wakeelcheck/pipeline':
         specifier: workspace:*
         version: link:../../packages/pipeline
+      '@wakeelcheck/readiness':
+        specifier: workspace:*
+        version: link:../../packages/readiness
       '@wakeelcheck/security':
         specifier: workspace:*
         version: link:../../packages/security

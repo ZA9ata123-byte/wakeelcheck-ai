@@ -18,6 +18,7 @@ export type Lang = 'ar' | 'en';
 /** الصفحات القابلة للفهرسة — المسار العربيّ والإنجليزيّ لكلّ واحدة. */
 export const PAGES: readonly { ar: string; en: string; priority: number }[] = [
   { ar: '/', en: '/en', priority: 1 },
+  { ar: '/tools/ai-crawlers', en: '/en/tools/ai-crawlers', priority: 0.9 },
   { ar: '/guides', en: '/en/guides', priority: 0.8 },
   ...GUIDES.map((g) => ({ ar: guidePath(g.slug, 'ar'), en: guidePath(g.slug, 'en'), priority: 0.8 })),
   { ar: '/terms', en: '/en/terms', priority: 0.3 },

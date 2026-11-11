@@ -17,6 +17,7 @@
     "@wakeelcheck/limits": "workspace:*",
     "@wakeelcheck/llm": "workspace:*",
     "@wakeelcheck/pipeline": "workspace:*",
+    "@wakeelcheck/readiness": "workspace:*",
     "@wakeelcheck/security": "workspace:*",
     "@wakeelcheck/visibility": "workspace:*",
     "next": "^15.1.0",

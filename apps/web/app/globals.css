@@ -92,3 +92,12 @@
 .guide-card h2 { margin: 0 0 8px; font-size: 19px; color: var(--text); }
 .guide-card p { margin: 0; font-size: 14px; }
 .lang-switch { display: grid; place-items: center; min-width: 56px; height: 40px; border: 1px solid var(--line); border-radius: 30px; font-family: Manrope, sans-serif; font-size: 12px; }
+
+/* الأداة المجانية */
+.tool { margin: 26px 0 10px; }
+.tool .scan-form { margin: 0; max-width: none; }
+/* بلا أيقونة الرابط قبل الخانة، فلا يلتفّ الزرّ تحتها على الهاتف: أساسٌ لا صفر. */
+.tool .input-shell input { flex: 1 1 200px; padding-inline: 14px; }
+.tool-result { margin-top: 18px; }
+.tool-result .status-bar { margin: 0 0 16px; }
+.tool-next { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }

@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: SEO_DESCRIPTION.en,
   alternates: alternatesFor(PAGES[0]!, 'en'),
   icons: { icon: '/brand/mark.svg' },
+  // رمز التحقّق من Google Search Console — عامٌّ بطبيعته، يُقرأ من رأس الصفحة.
+  verification: { google: 'NuWMaixoCXbIJwpkLKobKgaghjzxfX99VkrlRMwj1cI' },
   openGraph: {
     type: 'website',
     siteName: 'WakeelCheck',

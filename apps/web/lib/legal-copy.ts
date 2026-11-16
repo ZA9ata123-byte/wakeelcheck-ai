@@ -59,8 +59,8 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'الاشتراك والدفع',
           p: [
-            'الاشتراك في المتابعة الأسبوعية بـ39 دولاراً شهرياً أو 390 دولاراً سنوياً، وأول 14 يوماً مجاناً. تتولّى Lemon Squeezy عملية الدفع بصفتها البائع المسجّل (Merchant of Record)، وتحتسب الضرائب المستحقّة وتصدر الإيصالات.',
-            'يتجدّد الاشتراك تلقائياً في نهاية كلّ فترة (شهر أو سنة)، ويمكنك إلغاؤه في أيّ وقت من رابط الإدارة في إيصال Lemon Squeezy؛ وتبقى الخدمة متاحةً حتى نهاية الفترة المدفوعة.',
+            'الاشتراك في المتابعة الأسبوعية بـ39 دولاراً شهرياً أو 390 دولاراً سنوياً، وأول 14 يوماً مجاناً. تتولّى مزوّدة الدفع عملية الدفع بصفتها البائع المسجّل (Merchant of Record)، وتحتسب الضرائب المستحقّة وتصدر الإيصالات. يظهر اسمها في صفحة الدفع وفي الإيصال.',
+            'يتجدّد الاشتراك تلقائياً في نهاية كلّ فترة (شهر أو سنة)، ويمكنك إلغاؤه في أيّ وقت من رابط إدارة الاشتراك في إيصال الدفع؛ وتبقى الخدمة متاحةً حتى نهاية الفترة المدفوعة.',
           ],
         },
         {
@@ -91,7 +91,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
           p: [
             'نطاق المتجر الذي تفحصه، وما نقرؤه من صفحاته العامة، ونتيجة الفحص: الأسئلة، وإجابات المحرّكات، والقواعد التقنية.',
             'عنوان IP الخاص بك لا يُحفظ كما هو: نحفظ بصمةً مشفّرةً منه (SHA-256 مع مِلح سرّي) لتطبيق حدّ الفحوصات المجانية فقط.',
-            'عند الاشتراك: بريدك الإلكتروني ولغة الاشتراك، كما ترسلها Lemon Squeezy، لنرسل إليك النشرة الأسبوعية. لا نحفظ اسماً ولا عنواناً ولا بيانات بطاقة — الدفع كلّه عند Lemon Squeezy.',
+            'عند الاشتراك: بريدك الإلكتروني ولغة الاشتراك، كما ترسلها مزوّدة الدفع، لنرسل إليك النشرة الأسبوعية. لا نحفظ اسماً ولا عنواناً ولا بيانات بطاقة — بيانات الدفع كلّها عند مزوّدة الدفع.',
           ],
         },
         {
@@ -104,7 +104,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'من يعالجها معنا',
           p: [
-            'OpenAI (أسئلة ChatGPT)، وDataForSEO (إجابات Google)، وVercel (الاستضافة والإحصاءات)، وUpstash (الذاكرة المؤقتة)، وNeon (قاعدة البيانات)، وCloudflare Turnstile (التحقّق من أنك لست برنامجاً)، وResend (إرسال البريد)، وLemon Squeezy (الدفع).',
+            'OpenAI (أسئلة ChatGPT)، وDataForSEO (إجابات Google)، وVercel (الاستضافة والإحصاءات)، وUpstash (الذاكرة المؤقتة)، وNeon (قاعدة البيانات)، وCloudflare Turnstile (التحقّق من أنك لست برنامجاً)، وResend (إرسال البريد)، ومزوّدة الدفع: Lemon Squeezy أو Creem (الدفع).',
             'نرسل إلى محرّكات الذكاء الاصطناعي أسئلةً عن متجرك وفئته وبلده، لا بياناتك الشخصية.',
           ],
         },
@@ -142,7 +142,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         },
         {
           h: 'كيف يتمّ الاسترجاع',
-          p: ['تتمّ المبالغ المسترجعة عبر Lemon Squeezy إلى وسيلة الدفع نفسها، وقد تستغرق أياماً حسب البنك.'],
+          p: ['تتمّ المبالغ المسترجعة عبر مزوّدة الدفع إلى وسيلة الدفع نفسها، وقد تستغرق أياماً حسب البنك.'],
         },
       ],
     },
@@ -176,8 +176,8 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'Subscription and payment',
           p: [
-            'Weekly monitoring costs $39 per month or $390 per year, with the first 14 days free. Payments are handled by Lemon Squeezy as Merchant of Record, which calculates applicable taxes and issues receipts.',
-            'The subscription renews at the end of each period (month or year). You can cancel at any time from the manage link in your Lemon Squeezy receipt; the service stays active until the end of the paid period.',
+            'Weekly monitoring costs $39 per month or $390 per year, with the first 14 days free. Payments are handled by our payment provider as Merchant of Record, which calculates applicable taxes and issues receipts. Its name appears on the checkout page and on your receipt.',
+            'The subscription renews at the end of each period (month or year). You can cancel at any time from the subscription management link in your payment receipt; the service stays active until the end of the paid period.',
           ],
         },
         {
@@ -208,7 +208,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
           p: [
             'The store domain you scan, what we read from its public pages, and the scan result: questions, engine answers, and technical checks.',
             'Your IP address is not stored as is: we keep a one-way hash of it (SHA-256 with a secret salt), only to apply the free scan limit.',
-            'When you subscribe: your email and subscription language, as sent by Lemon Squeezy, so we can send you the weekly digest. We store no name, address or card details — all payment data stays with Lemon Squeezy.',
+            'When you subscribe: your email and subscription language, as sent by our payment provider, so we can send you the weekly digest. We store no name, address or card details — all payment data stays with our payment provider.',
           ],
         },
         {
@@ -221,7 +221,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         {
           h: 'Who processes it with us',
           p: [
-            'OpenAI (ChatGPT questions), DataForSEO (Google answers), Vercel (hosting and analytics), Upstash (cache), Neon (database), Cloudflare Turnstile (bot check), Resend (email delivery), and Lemon Squeezy (payments).',
+            'OpenAI (ChatGPT questions), DataForSEO (Google answers), Vercel (hosting and analytics), Upstash (cache), Neon (database), Cloudflare Turnstile (bot check), Resend (email delivery), and our payment provider, Lemon Squeezy or Creem (payments).',
             'We send AI engines questions about your store, its category and its country — not your personal data.',
           ],
         },
@@ -259,7 +259,7 @@ export const legal: Record<'ar' | 'en', Record<LegalKind, LegalDoc>> = {
         },
         {
           h: 'How refunds are made',
-          p: ['Refunds are issued through Lemon Squeezy to the original payment method and may take a few days depending on your bank.'],
+          p: ['Refunds are issued through our payment provider to the original payment method and may take a few days depending on your bank.'],
         },
       ],
     },

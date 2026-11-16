@@ -96,14 +96,14 @@ const COPY = {
     open: 'افتح التقرير الكامل',
     basis: 'على ماذا بُني هذا',
     why: 'وصلتك لأنك مشترك في المتابعة الأسبوعية لـ',
-    manage: 'لإيقاف الاشتراك: من رابط الإدارة في إيصال Lemon Squeezy.',
+    manage: 'لإيقاف الاشتراك: من رابط إدارة الاشتراك في إيصال الدفع.',
   },
   en: {
     week: 'Your weekly digest',
     open: 'Open the full report',
     basis: 'What this is based on',
     why: 'You get this because you subscribe to weekly monitoring for',
-    manage: 'To cancel: use the manage link in your Lemon Squeezy receipt.',
+    manage: 'To cancel: use the subscription management link in your payment receipt.',
   },
 } as const;
 
